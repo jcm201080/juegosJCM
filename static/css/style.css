@@ -1,0 +1,140 @@
+/* ================================
+   🎮 JUEGOS JCM — Estilos portada
+   ================================ */
+
+/* Fondo general */
+.home-body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: linear-gradient(135deg, #1d1d1f, #38383d);
+    color: #fff;
+    min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.main-header {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.main-header h1 {
+    font-size: 3rem;
+    margin: 0;
+    color: #ffd86f;
+    text-shadow: 0 0 8px rgba(255, 200, 60, 0.6);
+}
+
+.main-header p {
+    opacity: 0.8;
+    font-size: 1.2rem;
+}
+
+/* ===== GRID DE JUEGOS ===== */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+/* ===== TARJETAS ===== */
+.game-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Hover para tarjetas activas */
+.game-card:not(.disabled):hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Título */
+.game-card h2 {
+    margin-top: 0;
+    font-size: 1.6rem;
+    color: #ffe58a;
+}
+
+/* Texto */
+.game-card p {
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+/* Botón principal */
+.btn-primary {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #ffd86f;
+    color: #000;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 12px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: #ffea98;
+    transform: scale(1.05);
+}
+
+/* ===== Tarjetas deshabilitadas ===== */
+.game-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    position: relative;
+}
+
+.game-card.disabled .badge {
+    display: inline-block;
+    background: #ff5e5e;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+    .main-header h1 {
+        font-size: 2.3rem;
+    }
+
+    .game-card {
+        padding: 18px;
+    }
+}
+
+
+
+.footer {
+    margin-top: 30px;
+    padding: 10px 0;
+    text-align: center;
+    color: #aaa;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.footer a {
+    color: #ffd700;
+    text-decoration: none;
+}
+
+.footer:hover {
+    opacity: 1;
+}
+

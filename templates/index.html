@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Juego de Cálculo Rápido</title>
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.png" />
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/juego_mate.css') }}">
+</head>
+
+<body>
+    <div class="game-container">
+        <h1>Juego de Cálculo Rápido</h1>
+
+        <div class="user-panel">
+            <div id="authSection">
+                <h2>Usuario</h2>
+                <div>
+                    <input type="text" id="usernameInput" placeholder="Usuario">
+                </div>
+                <div>
+                    <input type="password" id="passwordInput" placeholder="Contraseña">
+                </div>
+                <div class="auth-buttons">
+                    <button id="loginBtn">Iniciar sesión</button>
+                    <button id="registerBtn">Registrarse</button>
+                </div>
+                <div id="authMessage" class="message"></div>
+            </div>
+
+            <div id="userInfo" style="display:none;">
+                <p>👤 Conectado como: <span id="currentUserName"></span></p>
+                <p>🏆 Mejor puntuación: <span id="currentUserBestScore">0</span></p>
+                <!-- 🔹 NUEVO -->
+                <p>📈 Puntuación acumulada: <span id="currentUserTotalScore">0</span></p>
+                <p>🎚 Mejor en este nivel: <span id="currentUserLevelBestScore">0</span></p>
+                <button id="logoutBtn">Cerrar sesión</button>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <!-- aquí va el bloque que ya tenías del juego -->
+
+
+        <div class="top-info">
+            <div>⏱ Tiempo: <span id="time">60</span>s</div>
+            <div>⭐ Puntos: <span id="score">0</span></div>
+            <div class="level-wrapper">
+                <label for="levelSelect">Nivel:</label>
+                <select id="levelSelect">
+                    <option value="1">Nivel 1 — Sumas (1–10)</option>
+                    <option value="2">Nivel 2 — Sumas y restas (resultado ≥ 0)</option>
+                    <option value="3">Nivel 3 — Sumas y restas (1–20)</option>
+                    <option value="4">Nivel 4 — Tablas de multiplicar</option>
+                    <option value="5">Nivel 5 — Operaciones mixtas (+ − × ÷)</option>
+                    <option value="6">Nivel 6 — Ecuaciones de 1º grado</option>
+                    <option value="7">Nivel 7 — Ecuaciones de 2º grado</option>
+                </select>
+
+                <!-- 🔹 Aquí saldrá el texto dinámico del nivel -->
+                <span id="levelDescription" class="level-description"></span>
+            </div>
+
+        </div>
+
+
+        <div class="question-box" id="question">Pulsa "Empezar"</div>
+
+        <div class="answers">
+            <button class="answer" data-index="0"></button>
+            <button class="answer" data-index="1"></button>
+            <button class="answer" data-index="2"></button>
+            <button class="answer" data-index="3"></button>
+        </div>
+
+        <div class="controls">
+            <button class="btn-main" id="startBtn">Empezar partida</button>
+        </div>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <!-- Ranking centrado debajo -->
+    <div class="ranking-container">
+        <section id="rankingSection">
+            <h2>🏆 Ranking global</h2>
+            <ul id="globalRankingList"></ul>
+
+            <h3>🎯 Ranking del nivel actual</h3>
+            <p id="levelRankingTitle"></p>
+            <ul id="levelRankingList"></ul>
+        </section>
+    
+
+        <section id="historySection">
+         <h2>📜 Historial de partidas</h2>
+            <button id="showHistoryBtn">Ver / ocultar historial</button>
+            <ul id="historyList" style="display: none;"></ul>
+        </section>
+    </div>
+    <a href="{{ url_for('home') }}" class="back-link">⬅ Volver a Juegos JCM</a>
+    <footer class="footer">
+        <p>© 2025 — JCM | <a href="https://github.com/jcm201080" target="_blank">GitHub</a></p>
+    </footer>
+
+    <!-- Sonidos del juego -->
+    <audio id="soundCorrect" src="/static/sounds/correct.wav" preload="auto"></audio>
+    <audio id="soundWrong" src="/static/sounds/wrong.wav" preload="auto"></audio>
+    <audio id="soundEnd" src="/static/sounds/end.wav" preload="auto"></audio>
+
+
+
+    <!-- JS externo -->
+    <script src="{{ url_for('static', filename='js/game.js') }}" defer></script>
+</body>
+
+</html>

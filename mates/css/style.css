@@ -1,0 +1,104 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    background: #111;
+    color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 1.5rem;
+    background: #1e1e1e;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+.top-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.question-box {
+    text-align: center;
+    padding: 1.2rem;
+    border-radius: 1rem;
+    background: #272727;
+    margin-bottom: 1.2rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+}
+
+button.answer {
+    padding: 0.9rem;
+    border-radius: 0.8rem;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: #333;
+    color: #f5f5f5;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.1s ease;
+}
+
+button.answer:active {
+    transform: scale(0.97);
+}
+
+button.answer.correct {
+    background: #2e7d32;
+}
+
+button.answer.wrong {
+    background: #c62828;
+}
+
+.controls {
+    text-align: center;
+}
+
+.btn-main {
+    padding: 0.8rem 1.2rem;
+    border-radius: 999px;
+    border: none;
+    background: #1976d2;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-main:active {
+    transform: scale(0.98);
+}
+
+.message {
+    text-align: center;
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+    min-height: 1.2rem;
+}

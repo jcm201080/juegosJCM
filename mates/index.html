@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Juego de Cálculo Rápido</title>
+
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="game-container">
+    <h1>Juego de Cálculo Rápido</h1>
+
+    <div class="top-info">
+        <div>⏱ Tiempo: <span id="time">60</span>s</div>
+        <div>⭐ Puntos: <span id="score">0</span></div>
+    </div>
+
+    <div class="question-box" id="question">Pulsa "Empezar"</div>
+
+    <div class="answers">
+        <button class="answer" data-index="0"></button>
+        <button class="answer" data-index="1"></button>
+        <button class="answer" data-index="2"></button>
+        <button class="answer" data-index="3"></button>
+    </div>
+
+    <div class="controls">
+        <button class="btn-main" id="startBtn">Empezar partida</button>
+    </div>
+
+    <div class="message" id="message"></div>
+</div>
+
+<!-- JS externo -->
+<script src="js/game.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<MathGame>:
+    operation_label: operation_label
+    problem_label: problem_label
+    answer_input: answer_input
+    result_label: result_label
+    
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        
+        Label:
+            id: operation_label
+            text: 'Resuelve la operación:'
+            font_size: '30sp'
+            size_hint_y: 0.2
+        
+        Label:
+            id: problem_label
+            text: ''
+            font_size: '40sp'
+            size_hint_y: 0.3
+        
+        TextInput:
+            id: answer_input
+            multiline: False
+            font_size: '30sp'
+            size_hint_y: 0.15
+            input_filter: 'int'
+            on_text_validate: root.check_answer(self)
+        
+        Button:
+            text: 'Verificar'
+            font_size: '30sp'
+            size_hint_y: 0.15
+            on_press: root.check_answer(self)
+        
+        Label:
+            id: result_label
+            text: ''
+            font_size: '25sp'
+            size_hint_y: 0.2

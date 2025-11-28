@@ -1,0 +1,41 @@
+<!-- templates/home.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Juegos JCM - Inicio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="home-body">
+
+    <header class="main-header">
+        <h1>🎮 Juegos JCM</h1>
+        <p>By Jesús Castaño</p>
+    </header>
+
+    <main class="games-grid">
+
+        <!-- Tarjeta juego de mates -->
+        <article class="game-card">
+            <h2>🧮 Juego de Cálculo Rápido</h2>
+            <p>Entrena sumas, restas, multiplicaciones, divisiones y ecuaciones a contrarreloj.</p>
+            <a class="btn-primary" href="{{ url_for('juego_mate') }}">
+                Jugar ahora
+            </a>
+        </article>
+
+        <!-- Tarjeta juego tablero (placeholder) -->
+        <article class="game-card disabled">
+            <h2>🎲 Juego de Tablero (próximamente)</h2>
+            <p>Un recorrido estilo juego de la oca, con casillas especiales y sorpresas.</p>
+            <span class="badge">En desarrollo</span>
+        </article>
+
+    </main>
+
+    <footer class="footer">
+        <p>© 2025 — JCM | <a href="https://github.com/jcm201080" target="_blank">GitHub</a></p>
+    </footer>
+
+</body>
+</html>
