@@ -29,7 +29,12 @@ def home():
 @app.route("/juego-mate")
 def juego_mate():
     # Aquí usamos tu index.html actual del juego
-    return render_template("index.html")
+    return render_template("juego_mate.html")
+
+# 🆕 Nueva ruta para el juego de tablero
+@app.route("/tablero-oca")
+def tablero_oca():
+    return render_template("tablero_oca.html")
 
 
 

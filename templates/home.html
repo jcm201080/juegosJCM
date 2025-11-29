@@ -24,11 +24,13 @@
             </a>
         </article>
 
-        <!-- Tarjeta juego tablero (placeholder) -->
-        <article class="game-card disabled">
-            <h2>🎲 Juego de Tablero (próximamente)</h2>
-            <p>Un recorrido estilo juego de la oca, con casillas especiales y sorpresas.</p>
-            <span class="badge">En desarrollo</span>
+        <!-- Tarjeta juego tablero (ya activo) -->
+        <article class="game-card">
+            <h2>🎲 Juego de Tablero</h2>
+            <p>Un recorrido estilo juego de la oca, con casillas especiales, rebotes y sorpresas.</p>
+            <a class="btn-primary" href="{{ url_for('tablero_oca') }}">
+                Jugar ahora
+            </a>
         </article>
 
     </main>
