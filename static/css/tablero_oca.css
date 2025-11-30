@@ -1,3 +1,10 @@
+/* ========== VARIABLES GLOBALES (MÓVIL POR DEFECTO) ========== */
+:root {
+    --size-casilla: 48px;        /* tamaño casilla en móvil */
+    --size-ficha: 30px;          /* tamaño ficha en móvil */
+    --tablero-max-width: 95vmin; /* ancho máx. del tablero en móvil */
+}
+
 /* ========== LAYOUT GENERAL DEL JUEGO DE TABLERO ========== */
 
 .tablero-main {
@@ -16,7 +23,7 @@
     margin: 0 auto;
 }
 
-/* Paneles superiores (valor por defecto, luego afinamos en reglas específicas) */
+/* Paneles superiores */
 .panel-config,
 .panel-nombres,
 .panel-controles,
@@ -59,44 +66,74 @@
     cursor: not-allowed;
 }
 
-/* Contenedor de nombres (valor por defecto, luego lo sobreescribimos) */
+/* ========== NOMBRES DE JUGADORES ========== */
+
+/* Base: móvil en columna */
 .panel-nombres {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
-.nombreJugador {
-    padding: 5px 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+#nombresJugadores input {
+    width: 220px;
+    max-width: 90%;
+}
+
+#nombresJugadores .btn-confirmar-jugadores {
+    width: 220px;
+}
+
+/* En pantallas medianas/grandes → 2 inputs por fila */
+@media (min-width: 768px) {
+    #nombresJugadores {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(200px, 1fr)); /* 2 columnas */
+        gap: 10px 20px;
+        justify-content: center;
+    }
+
+    #nombresJugadores input {
+        width: 100%;
+        max-width: none;
+    }
+
+    /* Botón ocupa toda la fila y queda centrado debajo */
+    #nombresJugadores .btn-confirmar-jugadores {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: 220px;
+    }
 }
 
 /* ========== TABLERO ========== */
-/* Reaprovechamos tu grid 7x5 con casillas de 40px */
 
-#tablero {
+#tablero,
+.tablero {
     display: grid;
-    grid-template-columns: repeat(7, 40px);
-    grid-template-rows: repeat(5, 40px);
+    grid-template-columns: repeat(7, var(--size-casilla));
+    grid-auto-rows: var(--size-casilla);
     gap: 5px;
-    margin-bottom: 20px;
-    width: fit-content;
     margin: 20px auto;
+    width: 100%;
+    max-width: var(--tablero-max-width);
+    justify-content: center;
 }
 
 /* Casilla básica */
 .casilla {
+    width: var(--size-casilla);
+    height: var(--size-casilla);
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #fff;
     border: 1px solid #ccc;
-    font-size: 16px;   /* 🔥 número más grande */
+    font-size: 16px;   /* número de casilla */
     font-weight: bold;
     position: relative;
-    color: black;      /* Asegura visibilidad */
+    color: black;
 }
 
 /* Casillas especiales con color + icono */
@@ -105,93 +142,210 @@
 .casilla.especial {
     background-color: #ffeb7a;
     background-image: url('/static/img/tablero/rayo.png');
-    background-size: 80% 80%;       /* icono grande */
+    background-size: 80% 80%;
     background-repeat: no-repeat;
-    background-position: center;    /* centrado */
+    background-position: center;
 }
 
 /* PENALIZACIÓN (cárcel) */
 .casilla.penalizacion {
     background-color: #ff9e9e;
-    background-image: url('/static/img/tablero/carcel.avif');
-    background-size: 80% 80%;
+    background-image: url('/static/img/tablero/carcel1.avif');
+    background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
 }
+
 .casilla.especial .numero,
-.casilla.penalizacion .numero {
+.casilla.penalizacion .numero,
+.casilla.carcel .numero,
+.casilla.rayo .numero,
+.casilla.trampolin .numero,
+.casilla.trampolin-back .numero,
+.casilla.retroceso .numero,
+.casilla.retroceso-fuerte .numero,
+.casilla.muerte .numero,
+.casilla.meta .numero {
     display: none;
 }
 
 
-
 /* ICONOS: carcel / estrella usando pseudo-elementos */
-/* Avance (⭐) y penalización (⛓️) */
 .casilla.especial::after,
 .casilla.penalizacion::after {
     position: absolute;
     bottom: 2px;
     right: 3px;
-    font-size: 14px;  /* 🔥 más pequeño que antes */
-    opacity: 0.8;     /* no tapa el número */
+    font-size: 14px;
+    opacity: 0.8;
     pointer-events: none;
 }
 
+
+
+/* === ICONO TRAMPOLÍN (casilla 18) === */
+.casilla.trampolin {
+    background-color: #c3ffe6;
+    background-image: url('/static/img/tablero/trampolin.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* === ICONO TRAMPOLÍN INVERSO (casilla 36) === */
+.casilla.trampolin-back {
+    background-color: #ccddff;
+    background-image: url('/static/img/tablero/trampolin_back.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* === RETROCESO NORMAL (casilla 40) === */
+.casilla.retroceso {
+    background-color: #ffe4e1;
+    background-image: url('/static/img/tablero/retroceso.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* === RETROCESO FUERTE (casilla 50) === */
+.casilla.retroceso-fuerte {
+    background-color: #ffcccc;
+    background-image: url('/static/img/tablero/retroceso_fuerte.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* === MUERTE (casilla 34) → vuelve al inicio === */
+.casilla.muerte {
+    background-color: #000000dd;
+    color: white;
+    background-image: url('/static/img/tablero/muerte.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* 🏁 Casilla META (55) */
+.casilla.meta {
+    background-color: #d4edda;
+    background-image: url('/static/img/tablero/meta.png'); /* o bandera.png */
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
 /* ===== CASILLA DE SALIDA ===== */
 .casilla-salida {
-    margin: 0 auto 10px;
-    min-width: 160px;
-    padding: 5px 10px 10px;
-    border-radius: 10px;
+    margin: 0 auto 16px;
+    min-width: 260px;                  /* más ancha para 6 fichas */
+    padding: 18px 14px 12px;           /* hueco arriba para la etiqueta SALIDA */
+    border-radius: 12px;
     border: 2px solid #ffaa00;
     background: linear-gradient(135deg, #fff3cd, #ffe9a3);
     display: flex;
-    flex-direction: column;      /* SALIDA arriba, fichas debajo */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 8px;
     font-weight: bold;
     position: relative;
+    max-height: 50px;
 }
 
-/* Contenedor de fichas en salida */
-.salida-fichas {
-    display: flex;
-    flex-wrap: wrap;             /* 👈 salto de línea cuando no caben */
-    justify-content: center;     /* centradas en cada fila */
-    gap: 6px;                    /* separación entre fichas */
-    width: 100%;
-}
-
-/* Texto SALIDA dentro */
+/* Texto SALIDA: fuera, encima de la caja */
 .casilla-salida .salida-label {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 0.9rem;
     color: #b36b00;
     text-transform: uppercase;
+    background-color: #ffffff;
+    padding: 2px 12px;
+    border-radius: 999px;
 }
 
-/* ⭐ para casilla especial (avance) */
-.casilla.especial::after {
-    content: "⭐";
+/* Fichas en una fila, de izda a dcha */
+.salida-fichas {
+    display: flex;
+    flex-wrap: nowrap;        /* todas en una sola fila */
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    overflow: hidden;
 }
 
-/* ⛓️ para penalización (cárcel/pierde turno) */
-.casilla.penalizacion::after {
-    content: "⛓️";
+/* ========== OVERLAY DE GANADOR ========== */
+
+.winner-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;                /* se muestra al ganar */
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
 }
 
-/* Si algún día quieres cambiar de emoji a imagen, puedes usar:
-.casilla.penalizacion {
-    background-image: url('/static/img/perderTurno.jpg');
-    background-size: cover;
+.winner-overlay.visible {
+    display: flex;
 }
-*/
+
+.winner-card {
+    background: #ffffff;
+    padding: 20px 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    max-width: 320px;
+}
+
+.winner-card h2 {
+    margin-bottom: 10px;
+}
+
+#winnerName {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+#winnerOverlay button,
+.winner-card button {
+    margin-top: 5px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: #28a745;
+    color: white;
+}
+
+.winner-card button:hover {
+    background-color: #218838;
+}
+
+.winner-card,
+.winner-card h2,
+.winner-card p,
+#winnerName {
+    color: #000;   /* texto negro dentro de la tarjeta */
+}
+
+
 
 /* ========== FICHAS ========== */
 
 .ficha {
-    width: 30px;
-    height: 30px;
+    width: var(--size-ficha);
+    height: var(--size-ficha);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -206,12 +360,12 @@
     transform: translate(-50%, -50%);
 }
 
-/* Ficha dentro de la salida → comportamiento normal (no absoluta) */
+/* Fichas dentro de la salida → más pequeñas y sin posición absoluta */
 .casilla-salida .ficha {
     position: static;
     transform: none;
-    width: 28px;
-    height: 28px;
+    width: calc(var(--size-ficha) - 6px);
+    height: calc(var(--size-ficha) - 6px);
 }
 
 /* ========== ESTADO DEL JUEGO ========== */
@@ -228,7 +382,6 @@
 }
 
 /* ========== REGLAS ========== */
-/* Usamos tu estilo de caja oscura translúcida */
 
 .reglas {
     color: white;
@@ -246,7 +399,7 @@
     margin-bottom: 10px;
 }
 
-/* Botón de reglas (ya viene del bloque de botones) pero afinamos un poco */
+/* Botón de reglas */
 #mostrarReglas {
     background-color: #ffcc00;
     color: black;
@@ -256,10 +409,11 @@
     background-color: #ffaa00;
 }
 
-/* ========== RESPONSIVE ========== */
+/* ========== RESPONSIVE PEQUEÑO (MÓVIL MUY ESTRECHO) ========== */
 
 @media (max-width: 600px) {
-    #tablero {
+    #tablero,
+    .tablero {
         transform: scale(0.9);
         transform-origin: center;
     }
@@ -274,11 +428,9 @@
 }
 
 /* =========================================================
-   🔽 A PARTIR DE AQUÍ: REGLAS QUE AJUSTAN LAYOUT EN COLUMNA
-   (sobrescriben lo de arriba gracias al orden)
+   CONTROLES EN COLUMNA
    ========================================================= */
 
-/* Configuración: label, input y botón en columna */
 .panel-config {
     display: flex;
     flex-direction: column;
@@ -301,25 +453,7 @@
     max-width: 90%;
 }
 
-/* Nombres de jugadores en columna */
-.panel-nombres {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-#nombresJugadores input {
-    width: 220px;
-    max-width: 90%;
-}
-
-#nombresJugadores .btn-confirmar-jugadores {
-    width: 220px;
-}
-
-/* Controles del juego en columna:
-   Tirar dado → Turno → Mensaje → Mostrar reglas */
+/* Controles del juego en columna */
 .panel-controles {
     display: flex;
     flex-direction: column;
@@ -342,4 +476,18 @@
 /* Ajustamos un poco el margen del mensaje para que no se separe tanto del turno */
 #estadoJuego {
     margin-top: 5px;
+}
+
+/* ========== PC / PORTÁTIL (TABLERO MÁS GRANDE) ========== */
+
+@media (min-width: 992px) {
+    :root {
+        --size-casilla: 72px;       /* casillas más grandes en PC */
+        --size-ficha: 40px;         /* fichas más grandes en PC */
+        --tablero-max-width: 720px; /* ancho máx. del tablero en PC */
+    }
+
+    .reglas {
+        width: 60%;
+    }
 }

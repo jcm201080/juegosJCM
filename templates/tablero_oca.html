@@ -7,6 +7,7 @@
     <title>🎲 Juego de Tablero JCM</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tablero_oca.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}" type="image/x-icon">
 </head>
 
 <body class="home-body">
@@ -17,7 +18,7 @@
         <a class="btn-secondary" href="{{ url_for('home') }}">← Volver al inicio</a>
     </header>
 
-    <!-- 👇 Aquí el id que enlazamos con el CSS -->
+    <!-- 👇 Contenedor principal del juego -->
     <main id="tablero_principal" class="tablero-main">
 
         <section id="configuracion" class="panel-config">
@@ -30,21 +31,28 @@
             </div>
         </section>
 
-
         <section id="nombresJugadores" class="panel-nombres">
             <!-- Inputs dinámicos -->
         </section>
 
         <section class="panel-tablero">
-            <div id="salida" class="casilla-salida">
+            <!-- 🔹 Casilla de salida: también la tratamos como casilla -->
+            <div id="salida" class="casilla casilla-salida">
                 <span class="salida-label">SALIDA</span>
-                <div id="salida-fichas" class="salida-fichas"></div>
+                <div id="salida-fichas" class="salida-fichas">
+                    <!-- Aquí irán las fichas en la salida -->
+                </div>
             </div>
 
-
-            <div id="tablero"></div>
+            <!-- 🔹 Tablero donde el JS creará las casillas -->
+            <div id="tablero" class="tablero">
+                <!-- Aquí el JS irá metiendo:
+                     <div class="casilla" data-num="1"></div>
+                     <div class="casilla" data-num="2"></div>
+                     ...
+                -->
+            </div>
         </section>
-
 
         <section class="panel-controles">
             <button id="tirarDado">Tirar Dado</button>
@@ -53,18 +61,37 @@
             <button id="mostrarReglas">Mostrar Reglas</button>
         </section>
 
-
-
         <section class="reglas">
             <h1>Cómo funciona el juego de tablero</h1>
-            <p>🔢 <strong>Tablero:</strong> 35 casillas numeradas del 1 al 35.</p>
+            <p>🔢 <strong>Tablero:</strong> 55 casillas numeradas del 1 al 55.</p>
             <p>👥 <strong>Jugadores:</strong> De 1 a 6, cada uno con su ficha de color.</p>
-            <p>☠️ <strong>Casillas 12 y 19:</strong> Penalización, pierdes un turno (icono de cárcel).</p>
-            <p>✨ <strong>Casillas 4 y 22:</strong> Avanzas 2 casillas extra (icono bonito ⭐).</p>
-            <p>🏁 <strong>Objetivo:</strong> llegar exactamente a la casilla 35 (con rebote si te pasas).</p>
+            <hr>
+            <h3>Casillas especiales</h3>
+            <p>⚡ <strong>4 y 22 — Impulso:</strong> Avanzas 2 casillas extra.</p>
+            <p>⛓️ <strong>12 y 46 — Cárcel:</strong> Pierdes un turno.</p>
+            <p>🟩 <strong>18 — Trampolín:</strong> Saltas directamente a la casilla 36.</p>
+            <p>🔁 <strong>36 — Rebote:</strong> Vuelves a la casilla 18.</p>
+            <p>⬅️ <strong>40 — Retroceso:</strong> Retrocedes 7 casillas.</p>
+            <p>⏪ <strong>50 — Gran retroceso:</strong> Vuelves a la casilla 25.</p>
+            <p>💀 <strong>34 — Muerte:</strong> Regresas a la SALIDA.</p>
+            <hr>
+            <p>🏁 <strong>Objetivo:</strong> llegar exactamente a la casilla 55.
+                Si te pasas, <em>rebotas hacia atrás</em> según el exceso.</p>
         </section>
 
+
     </main>
+    <!-- Overlay de ganador -->
+    <div id="winnerOverlay" class="winner-overlay">
+        <div class="winner-card">
+            <h2>🎉 ¡Ganador!</h2>
+            <!-- Si quieres poner una imagen de trofeo, descomenta la línea siguiente -->
+            <!-- <img src="{{ url_for('static', filename='img/tablero/trofeo.png') }}" alt="Trofeo" class="winner-trophy"> -->
+            <p id="winnerName"></p>
+            <button id="closeWinner">Cerrar</button>
+        </div>
+    </div>
+
 
     <footer class="footer">
         <p>© 2025 — JCM</p>
