@@ -16,7 +16,7 @@
     margin: 0 auto;
 }
 
-/* Paneles superiores */
+/* Paneles superiores (valor por defecto, luego afinamos en reglas específicas) */
 .panel-config,
 .panel-nombres,
 .panel-controles,
@@ -25,7 +25,7 @@
     text-align: center;
 }
 
-/* Inputs y botones */
+/* Inputs y botones básicos */
 #configuracion input[type="number"] {
     width: 80px;
     padding: 5px;
@@ -59,7 +59,7 @@
     cursor: not-allowed;
 }
 
-/* Contenedor de nombres */
+/* Contenedor de nombres (valor por defecto, luego lo sobreescribimos) */
 .panel-nombres {
     display: flex;
     flex-wrap: wrap;
@@ -99,18 +99,31 @@
     color: black;      /* Asegura visibilidad */
 }
 
-
 /* Casillas especiales con color + icono */
 
-/* Avance extra (4 y 22) */
+/* PREMIO (rayo) */
 .casilla.especial {
-    background-color: #ffcc00;
+    background-color: #ffeb7a;
+    background-image: url('/static/img/tablero/rayo.png');
+    background-size: 80% 80%;       /* icono grande */
+    background-repeat: no-repeat;
+    background-position: center;    /* centrado */
 }
 
-/* Penalización (12 y 19) */
+/* PENALIZACIÓN (cárcel) */
 .casilla.penalizacion {
-    background-color: #ff6666;
+    background-color: #ff9e9e;
+    background-image: url('/static/img/tablero/carcel.avif');
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
+.casilla.especial .numero,
+.casilla.penalizacion .numero {
+    display: none;
+}
+
+
 
 /* ICONOS: carcel / estrella usando pseudo-elementos */
 /* Avance (⭐) y penalización (⛓️) */
@@ -124,7 +137,6 @@
     pointer-events: none;
 }
 
-/* Casilla de salida (fuera del tablero) */
 /* ===== CASILLA DE SALIDA ===== */
 .casilla-salida {
     margin: 0 auto 10px;
@@ -142,9 +154,10 @@
     position: relative;
 }
 
+/* Contenedor de fichas en salida */
 .salida-fichas {
     display: flex;
-    flex-wrap: wrap;             /* 👈 aquí está la magia del salto de línea */
+    flex-wrap: wrap;             /* 👈 salto de línea cuando no caben */
     justify-content: center;     /* centradas en cada fila */
     gap: 6px;                    /* separación entre fichas */
     width: 100%;
@@ -156,11 +169,6 @@
     color: #b36b00;
     text-transform: uppercase;
 }
-
-
-
-
-
 
 /* ⭐ para casilla especial (avance) */
 .casilla.especial::after {
@@ -198,14 +206,13 @@
     transform: translate(-50%, -50%);
 }
 
-/* Ficha dentro de la salida → comportamiento normal */
+/* Ficha dentro de la salida → comportamiento normal (no absoluta) */
 .casilla-salida .ficha {
     position: static;
     transform: none;
     width: 28px;
     height: 28px;
 }
-
 
 /* ========== ESTADO DEL JUEGO ========== */
 
@@ -264,4 +271,75 @@
     #estadoJuego {
         font-size: 1rem;
     }
+}
+
+/* =========================================================
+   🔽 A PARTIR DE AQUÍ: REGLAS QUE AJUSTAN LAYOUT EN COLUMNA
+   (sobrescriben lo de arriba gracias al orden)
+   ========================================================= */
+
+/* Configuración: label, input y botón en columna */
+.panel-config {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.panel-config .config-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.panel-config label,
+.panel-config input,
+.panel-config button {
+    width: 220px;
+    max-width: 90%;
+}
+
+/* Nombres de jugadores en columna */
+.panel-nombres {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#nombresJugadores input {
+    width: 220px;
+    max-width: 90%;
+}
+
+#nombresJugadores .btn-confirmar-jugadores {
+    width: 220px;
+}
+
+/* Controles del juego en columna:
+   Tirar dado → Turno → Mensaje → Mostrar reglas */
+.panel-controles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.panel-controles button {
+    width: 150px;
+    max-width: 90%;
+}
+
+/* Texto de turno */
+#turnoJugador {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Ajustamos un poco el margen del mensaje para que no se separe tanto del turno */
+#estadoJuego {
+    margin-top: 5px;
 }

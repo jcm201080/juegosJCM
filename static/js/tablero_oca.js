@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const salidaFichasDiv = document.getElementById("salida-fichas"); // 👈 NUEVO
     const tirarDadoBtn = document.getElementById("tirarDado");
     const estadoJuego = document.getElementById("estadoJuego");
+    const turnoJugadorDiv = document.getElementById("turnoJugador");
     const numJugadoresInput = document.getElementById("numJugadores");
     const iniciarJuegoBtn = document.getElementById("iniciarJuego");
     const nombresJugadoresDiv = document.getElementById("nombresJugadores");
@@ -18,6 +19,24 @@ document.addEventListener("DOMContentLoaded", function() {
     let turno = 0;
     let juegoTerminado = false;
     let jugadoresPenalizados = new Set();
+
+    function actualizarTurnoUI() {
+    if (!jugadores.length || juegoTerminado) return;
+
+    const jugadorActual = jugadores[turno];
+
+    // Mostrar de quién es el turno
+    if (turnoJugadorDiv) {
+        turnoJugadorDiv.textContent = `Turno: ${jugadorActual.nombre}`;
+    }
+
+    // Cambiar color del botón del dado al color de la ficha
+    if (tirarDadoBtn && jugadorActual.ficha) {
+        const colorFicha = jugadorActual.ficha.style.backgroundColor || "#ff6600";
+        tirarDadoBtn.style.backgroundColor = colorFicha;
+    }
+}
+
 
     tirarDadoBtn.disabled = true;
 
@@ -101,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         tirarDadoBtn.disabled = false;
         estadoJuego.textContent = "Partida iniciada. Empieza " + jugadores[0].nombre;
+        actualizarTurnoUI();
     }
 
     function moverJugador(jugador, pasos) {
@@ -162,30 +182,34 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     tirarDadoBtn.addEventListener("click", function() {
-        if (juegoTerminado) return;
-        if (jugadores.length === 0) {
-            estadoJuego.textContent = "Primero inicia la partida.";
-            return;
-        }
+    if (juegoTerminado) return;
+    if (jugadores.length === 0) {
+        estadoJuego.textContent = "Primero inicia la partida.";
+        return;
+    }
 
-        const jugadorActual = jugadores[turno];
+    const jugadorActual = jugadores[turno];
 
-        if (jugadoresPenalizados.has(jugadorActual.nombre)) {
-            estadoJuego.textContent = `${jugadorActual.nombre} pierde su turno por penalización.`;
-            jugadoresPenalizados.delete(jugadorActual.nombre);
-            turno = (turno + 1) % jugadores.length;
-            return;
-        }
+    // ¿Está penalizado?
+    if (jugadoresPenalizados.has(jugadorActual.nombre)) {
+        estadoJuego.textContent = `${jugadorActual.nombre} pierde su turno por penalización.`;
+        jugadoresPenalizados.delete(jugadorActual.nombre);
+        turno = (turno + 1) % jugadores.length;
+        actualizarTurnoUI();  // 👈 nuevo
+        return;
+    }
 
-        const pasos = tirarDado();
-        estadoJuego.textContent = `${jugadorActual.nombre} tira el dado y saca un ${pasos}.`;
+    const pasos = tirarDado();
+    estadoJuego.textContent = `${jugadorActual.nombre} tira el dado y saca un ${pasos}.`;
 
-        if (moverJugador(jugadorActual, pasos)) {
-            turno = (turno + 1) % jugadores.length;
-        } else if (juegoTerminado) {
-            tirarDadoBtn.disabled = true;
-        }
-    });
+    if (moverJugador(jugadorActual, pasos)) {
+        turno = (turno + 1) % jugadores.length;
+        actualizarTurnoUI();  // 👈 nuevo
+    } else if (juegoTerminado) {
+        tirarDadoBtn.disabled = true;
+    }
+});
+
 
     if (btnMostrarReglas && contenedorReglas) {
         contenedorReglas.style.display = "none";

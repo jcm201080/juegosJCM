@@ -22,10 +22,14 @@
 
         <section id="configuracion" class="panel-config">
             <h2>Configuración de partida</h2>
-            <label for="numJugadores">Número de jugadores (1-6):</label>
-            <input type="number" id="numJugadores" min="1" max="6" value="2">
-            <button id="iniciarJuego">Iniciar Juego</button>
+
+            <div class="config-block">
+                <label for="numJugadores">Número de jugadores (1-6):</label>
+                <input type="number" id="numJugadores" min="1" max="6" value="2">
+                <button id="iniciarJuego">Iniciar Juego</button>
+            </div>
         </section>
+
 
         <section id="nombresJugadores" class="panel-nombres">
             <!-- Inputs dinámicos -->
@@ -44,9 +48,12 @@
 
         <section class="panel-controles">
             <button id="tirarDado">Tirar Dado</button>
+            <div id="turnoJugador"></div>
             <div id="estadoJuego"></div>
             <button id="mostrarReglas">Mostrar Reglas</button>
         </section>
+
+
 
         <section class="reglas">
             <h1>Cómo funciona el juego de tablero</h1>
