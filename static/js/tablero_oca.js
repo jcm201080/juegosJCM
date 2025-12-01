@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const nombresJugadoresDiv = document.getElementById("nombresJugadores");
     const btnMostrarReglas = document.getElementById("mostrarReglas");
     const contenedorReglas = document.querySelector(".reglas");
+    const dadoVisual = document.getElementById("dadoVisual");
+
 
     const winnerOverlay = document.getElementById("winnerOverlay");
     const winnerNameSpan = document.getElementById("winnerName");
@@ -34,10 +36,33 @@ document.addEventListener("DOMContentLoaded", function() {
         s.volume = 0.6;
     });
 
+    
+    
+
     let jugadores = [];
     let turno = 0;
     let juegoTerminado = false;
     let jugadoresPenalizados = new Set();
+
+// Limitar duración a 1 segundo
+soundDado.addEventListener("timeupdate", () => {
+    if (soundDado.currentTime > 1) {
+        soundDado.pause();
+        soundDado.currentTime = 0;
+    }
+});
+
+
+    // ================== DADO VISUAL ==================
+    function actualizarDadoVisual(valor) {
+        if (!dadoVisual) return;
+
+        // Mostrar solo el número
+        dadoVisual.textContent = valor;
+    }
+
+    
+
 
     // ================== UI TURNO ==================
     function actualizarTurnoUI() {
@@ -100,29 +125,37 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     function iniciarPartida() {
-        const inputs = document.querySelectorAll(".nombreJugador");
-        jugadores = [];
+    const inputs = document.querySelectorAll(".nombreJugador");
+    jugadores = [];
 
-        inputs.forEach((input, i) => {
-            let nombre = input.value.trim();
-            if (nombre === "") nombre = `Jugador ${i + 1}`;
-            jugadores.push({ nombre, posicion: -1, ficha: null });
-        });
+    inputs.forEach((input, i) => {
+        let nombre = input.value.trim();
+        if (nombre === "") nombre = `Jugador ${i + 1}`;
+        jugadores.push({ nombre, posicion: -1, ficha: null });
+    });
 
-        tablero.innerHTML = "";
-        turno = 0;
-        juegoTerminado = false;
-        jugadoresPenalizados.clear();
-        estadoJuego.textContent = "";
+    tablero.innerHTML = "";
+    turno = 0;
+    juegoTerminado = false;
+    jugadoresPenalizados.clear();
+    estadoJuego.textContent = "";
 
-        if (winnerOverlay) {
-            winnerOverlay.classList.remove("visible");
-        }
+    if (winnerOverlay) {
+        winnerOverlay.classList.remove("visible");
+    }
 
-        // Limpiar fichas de salida
-        if (salidaFichasDiv) {
-            salidaFichasDiv.innerHTML = "";
-        }
+    // 🔹 AQUÍ: limpiar el dado visual al empezar
+    if (dadoVisual) {
+        dadoVisual.textContent = "";
+    }
+
+    // Limpiar fichas de salida
+    if (salidaFichasDiv) {
+        salidaFichasDiv.innerHTML = "";
+    }
+
+    // ... (resto de iniciarPartida)
+
 
         // 🔢 Generar 55 casillas
         for (let i = 1; i <= NUM_CASILLAS; i++) {
@@ -143,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // 💀 34 — muerte (salida)
             if (i === 12 || i === 46) {
                 casilla.classList.add("penalizacion", "carcel");
-            } else if (i === 4 || i === 22) {
+            } else if (i === 5 || i === 22) {
                 casilla.classList.add("especial", "rayo");
             } else if (i === 18) {
                 casilla.classList.add("trampolin");
@@ -169,7 +202,15 @@ document.addEventListener("DOMContentLoaded", function() {
         jugadores.forEach((jugador, index) => {
             const ficha = document.createElement("div");
             ficha.classList.add("ficha");
-            ficha.textContent = index + 1;
+
+            // Nombre (recortado si es muy largo) dentro de la ficha
+            const nombreCorto = jugador.nombre.length > 8
+                ? jugador.nombre.slice(0, 8) + "…"
+                : jugador.nombre;
+
+            ficha.textContent = nombreCorto;
+            ficha.title = jugador.nombre;  // tooltip con el nombre completo
+
             ficha.style.backgroundColor = `hsl(${index * 60}, 70%, 50%)`;
             jugador.ficha = ficha;
             jugador.posicion = -1;
@@ -178,6 +219,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 salidaFichasDiv.appendChild(ficha);
             }
         });
+
 
         tirarDadoBtn.disabled = false;
         estadoJuego.textContent = "Partida iniciada. Empieza " + jugadores[0].nombre;
@@ -245,7 +287,7 @@ document.addEventListener("DOMContentLoaded", function() {
             try { soundPenalizacion.currentTime = 0; soundPenalizacion.play(); } catch (e) {}
 
         // ⚡ 4 y 22 — impulso (+2)
-        } else if (numeroCasilla === 4 || numeroCasilla === 22) {
+        } else if (numeroCasilla === 5 || numeroCasilla === 22) {
             jugador.posicion = Math.min(jugador.posicion + 2, casillaFinal);
             numeroCasilla = jugador.posicion + 1;
             estadoJuego.textContent = `${jugador.nombre} recibe un impulso y avanza 2 casillas ✨ (ahora está en la ${numeroCasilla}).`;
@@ -270,7 +312,7 @@ document.addEventListener("DOMContentLoaded", function() {
             jugador.posicion = 17; // casilla 18
             numeroCasilla = 18;
             estadoJuego.textContent = `${jugador.nombre} cae en la casilla 36 y rebota de vuelta a la 18 🔁`;
-            try { soundPremio.currentTime = 0; soundPremio.play(); } catch (e) {}
+            try { soundPremio.currentTime = 0; soundPenalizacion.play(); } catch (e) {}
 
         // ⏪ 50 — gran retroceso
         } else if (numeroCasilla === 50) {
@@ -334,7 +376,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         const pasos = tirarDado();
+
+        // 🔹 Actualizar dado visual
+        actualizarDadoVisual(pasos);
+
         estadoJuego.textContent = `${jugadorActual.nombre} tira el dado y saca un ${pasos}.`;
+
 
         if (moverJugador(jugadorActual, pasos)) {
             turno = (turno + 1) % jugadores.length;
