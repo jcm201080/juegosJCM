@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Puzzle Matemático — Generador</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <!-- CSS externo -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/puzzle_mate.css') }}">
+</head>
+<body>
+    <h1>Puzzle Matemático</h1>
+
+    <div id="topbar">
+        <label for="difficultySelect">Dificultad:</label>
+        <select id="difficultySelect">
+            <option value="easy">Fácil</option>
+            <option value="medium">Media</option>
+            <option value="pro">Pro</option>
+            <option value="infernal">Infernal 😈</option>
+        </select>
+
+        <button id="newPuzzleBtn">Nuevo puzzle</button>
+        <button id="restartBtn">Reiniciar</button>
+    </div>
+
+    <div id="hud">
+        <div>Vidas: <span id="lives"></span></div>
+        <div>Operaciones resueltas: <span id="solvedCount"></span>/<span id="totalEq"></span></div>
+    </div>
+
+    <div id="board"></div>
+
+    <div id="numbers"></div>
+
+    <div id="message"></div>
+
+    
+    <a href="{{ url_for('home') }}" class="back-link">⬅ Volver a Juegos JCM</a>
+    <footer class="footer">
+        <p>© 2025 — JCM | <a href="https://github.com/jcm201080" target="_blank">GitHub</a></p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/puzzle_mate.js') }}"></script>
+</body>
+</html>

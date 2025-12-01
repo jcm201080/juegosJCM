@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Puzzle Matemático Demo</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            background: #f0f4ff;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        #hud {
+            display: flex;
+            gap: 2rem;
+            font-size: 1.1rem;
+        }
+
+        #lives span {
+            font-size: 1.4rem;
+            margin-right: 2px;
+        }
+
+        #board {
+            display: inline-block;
+            padding: 10px;
+            background: #fff7d1;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .cell {
+            width: 48px;
+            height: 48px;
+            border: 1px solid #c7b57a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-sizing: border-box;
+        }
+
+        .cell.blank {
+            background: #fff0b3;
+            cursor: pointer;
+        }
+
+        .cell.static {
+            background: #ffe7a3;
+        }
+
+        .cell.correct {
+            background: #b5ffb8;
+        }
+
+        .cell.wrong {
+            background: #ffb5b5;
+        }
+
+        #numbers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .num-tile {
+            width: 52px;
+            height: 52px;
+            border-radius: 6px;
+            border: 2px solid #3f6ddf;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: #e7f0ff;
+            user-select: none;
+        }
+
+        .num-tile.selected {
+            outline: 3px solid #ff9800;
+        }
+
+        .num-tile.used {
+            opacity: 0.3;
+            cursor: default;
+        }
+
+        #message {
+            min-height: 1.5rem;
+            font-weight: 600;
+        }
+
+        #resetBtn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: none;
+            background: #3f6ddf;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Puzzle Matemático — Demo</h1>
+
+<div id="hud">
+    <div>Vidas: <span id="lives"></span></div>
+    <div>Piezas restantes: <span id="remaining"></span></div>
+</div>
+
+<div id="board"></div>
+
+<div id="numbers"></div>
+
+<div id="message"></div>
+
+<button id="resetBtn">Reiniciar demo</button>
+
+<script>
+    // === Definición del puzzle DEMO =====================================
+    const demoLevel = {
+        layout: [
+            // "" = casilla en blanco, cualquier otro string se pinta tal cual
+            ["", "+", "3", "=", "7"],
+            ["9", "−", "", "=", "4"],
+            ["", "×", "2", "=", "10"]
+        ],
+        // "fila-columna" : valor correcto
+        blanks: {
+            "0-0": 4,   // 4 + 3 = 7
+            "1-2": 5,   // 9 - 5 = 4
+            "2-0": 5    // 5 x 2 = 10
+        },
+        numbers: [4, 5, 5, 1, 2, 3], // pool de números (puede haber distractores)
+        lives: 3
+    };
+
+    // === Estado del juego ===============================================
+    let lives, remainingBlanks, selectedTile = null;
+    const boardDiv = document.getElementById("board");
+    const numbersDiv = document.getElementById("numbers");
+    const messageDiv = document.getElementById("message");
+    const livesSpan = document.getElementById("lives");
+    const remainingSpan = document.getElementById("remaining");
+    const resetBtn = document.getElementById("resetBtn");
+
+    // Renderiza corazones de vidas
+    function renderLives() {
+        livesSpan.innerHTML = "";
+        for (let i = 0; i < lives; i++) {
+            const heart = document.createElement("span");
+            heart.textContent = "❤";
+            livesSpan.appendChild(heart);
+        }
+    }
+
+    // Construye el tablero y los números
+    function initDemo() {
+        boardDiv.innerHTML = "";
+        numbersDiv.innerHTML = "";
+        messageDiv.textContent = "";
+
+        lives = demoLevel.lives;
+        remainingBlanks = Object.keys(demoLevel.blanks).length;
+        renderLives();
+        remainingSpan.textContent = remainingBlanks;
+
+        // --- Tablero ---
+        demoLevel.layout.forEach((row, r) => {
+            const rowDiv = document.createElement("div");
+            rowDiv.className = "row";
+            row.forEach((cellContent, c) => {
+                const cell = document.createElement("div");
+                cell.className = "cell";
+
+                const key = `${r}-${c}`;
+                if (cellContent === "") {
+                    // es una casilla en blanco que hay que rellenar
+                    cell.classList.add("blank");
+                    cell.dataset.pos = key;
+                    cell.addEventListener("click", () => onBlankClick(cell));
+                } else {
+                    // casilla estática
+                    cell.classList.add("static");
+                    cell.textContent = cellContent;
+                }
+                rowDiv.appendChild(cell);
+            });
+            boardDiv.appendChild(rowDiv);
+        });
+
+        // --- Números disponibles ---
+        demoLevel.numbers.forEach((num, idx) => {
+            const tile = document.createElement("div");
+            tile.className = "num-tile";
+            tile.textContent = num;
+            tile.dataset.value = num;
+            tile.dataset.index = idx;
+            tile.addEventListener("click", () => onNumberClick(tile));
+            numbersDiv.appendChild(tile);
+        });
+    }
+
+    function onNumberClick(tile) {
+        if (tile.classList.contains("used")) return;
+
+        document.querySelectorAll(".num-tile").forEach(t => t.classList.remove("selected"));
+        selectedTile = tile;
+        tile.classList.add("selected");
+        messageDiv.textContent = `Número seleccionado: ${tile.dataset.value}`;
+    }
+
+    function onBlankClick(cell) {
+        if (!selectedTile || selectedTile.classList.contains("used")) {
+            messageDiv.textContent = "Selecciona primero un número de abajo.";
+            return;
+        }
+        if (cell.classList.contains("correct")) return; // ya rellena
+
+        const key = cell.dataset.pos;
+        const correctValue = demoLevel.blanks[key];
+        const chosenValue = parseInt(selectedTile.dataset.value);
+
+        if (chosenValue === correctValue) {
+            // Correcto
+            cell.textContent = chosenValue;
+            cell.classList.add("correct");
+            selectedTile.classList.add("used");
+            selectedTile.classList.remove("selected");
+            selectedTile = null;
+
+            remainingBlanks--;
+            remainingSpan.textContent = remainingBlanks;
+            messageDiv.textContent = "¡Bien hecho! ✅";
+
+            if (remainingBlanks === 0) {
+                messageDiv.textContent = "🎉 ¡Nivel completado! (Demo)";
+            }
+        } else {
+            // Incorrecto
+            cell.classList.add("wrong");
+            setTimeout(() => cell.classList.remove("wrong"), 400);
+            lives--;
+            renderLives();
+            messageDiv.textContent = "Ups, número incorrecto ❌";
+
+            if (lives <= 0) {
+                messageDiv.textContent = "💀 Sin vidas. Fin de la demo.";
+                // Desactivar interacción
+                document.querySelectorAll(".blank").forEach(b => {
+                    b.replaceWith(b.cloneNode(true)); // truco rápido para quitar listeners
+                });
+            }
+        }
+    }
+
+    resetBtn.addEventListener("click", initDemo);
+
+    initDemo();
+</script>
+</body>
+</html>

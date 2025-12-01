@@ -36,6 +36,10 @@ def juego_mate():
 def tablero_oca():
     return render_template("tablero_oca.html")
 
+# ruta para el puzzle de imágenes
+@app.route("/puzzle-mate")
+def puzzle_mate():
+    return render_template("puzzle_mate.html")
 
 
 # =========================

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Puzzle Matemático — Niveles</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            background: #eef4ff;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        #topbar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        select, button {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #3f6ddf;
+            font-size: 0.95rem;
+        }
+
+        #hud {
+            display: flex;
+            gap: 2rem;
+            font-size: 1.05rem;
+        }
+
+        #lives span {
+            font-size: 1.4rem;
+            margin-right: 2px;
+        }
+
+        #board {
+            display: inline-block;
+            padding: 10px;
+            background: #fff7d1;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .row {
+            display: flex;
+        }
+
+        .cell {
+            width: 48px;
+            height: 48px;
+            border: 1px solid #c7b57a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-sizing: border-box;
+        }
+
+        .cell.blank {
+            background: #fff0b3;
+            cursor: pointer;
+        }
+
+        .cell.static {
+            background: #ffe7a3;
+        }
+
+        .cell.empty {
+            border: none;
+            background: transparent;
+        }
+
+        .cell.correct {
+            background: #b5ffb8;
+        }
+
+        .cell.wrong {
+            background: #ffb5b5;
+        }
+
+        #numbers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .num-tile {
+            width: 52px;
+            height: 52px;
+            border-radius: 6px;
+            border: 2px solid #3f6ddf;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            background: #e7f0ff;
+            user-select: none;
+        }
+
+        .num-tile.selected {
+            outline: 3px solid #ff9800;
+        }
+
+        .num-tile.used {
+            opacity: 0.3;
+            cursor: default;
+        }
+
+        #message {
+            min-height: 1.5rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<h1>Puzzle Matemático — Modo Niveles</h1>
+
+<div id="topbar">
+    <label for="levelSelect">Nivel:</label>
+    <select id="levelSelect"></select>
+    <button id="restartBtn">Reiniciar nivel</button>
+</div>
+
+<div id="hud">
+    <div>Vidas: <span id="lives"></span></div>
+    <div>Piezas restantes: <span id="remaining"></span></div>
+</div>
+
+<div id="board"></div>
+
+<div id="numbers"></div>
+
+<div id="message"></div>
+
+<script>
+    // === Definición de niveles ==========================================
+    // layout: matriz de strings
+    //   " "  -> hueco vacío (no hay casilla)
+    //   ""   -> casilla para rellenar
+    //   otro -> se muestra tal cual (número / operador / =)
+    const levels = [
+        {
+            id: 1,
+            name: "Nivel 1 — Fácil (demo)",
+            layout: [
+                ["", "+", "3", "=", "7"],
+                ["9", "−", "", "=", "4"],
+                ["", "×", "2", "=", "10"]
+            ],
+            blanks: {
+                "0-0": 4,
+                "1-2": 5,
+                "2-0": 5
+            },
+            numbers: [4,5,5,1,2,3],
+            lives: 4
+        },
+        {
+            id: 2,
+            name: "Nivel 2 — Intermedio",
+            layout: [
+                ["", "+", "", "=", "11"],
+                ["9", "−", "", "=", "4"],
+                ["10", "÷", "", "=", "5"]
+            ],
+            blanks: {
+                "0-0": 2,   // 2 + 9 = 11
+                "0-2": 9,
+                "1-2": 5,   // 9 - 5 = 4
+                "2-2": 2    // 10 / 2 = 5
+            },
+            numbers: [2,2,5,9,1,3],
+            lives: 3
+        },
+        {
+            id: 3,
+            name: "Nivel 3 — PRO 😈",
+            layout: [
+                ["", "+", "", "=", "11"],
+                ["", "−", "4", "=", "5"],
+                ["10", "÷", "", "=", "2"],
+                ["53","−","", "=", "8"]
+            ],
+            blanks: {
+                "0-0": 2,    // 2 + 9 = 11
+                "0-2": 9,
+                "1-0": 9,    // 9 - 4 = 5
+                "2-2": 5,    // 10 / 5 = 2
+                "3-2": 45    // 53 - 45 = 8
+            },
+            // Incluimos todos los necesarios + algunos distractores
+            numbers: [2,9,9,5,45,1,10],
+            lives: 3
+        }
+    ];
+
+    // === Estado =========================================================
+    let currentLevelIndex = 0;
+    let lives, remainingBlanks, selectedTile = null;
+
+    const levelSelect = document.getElementById("levelSelect");
+    const restartBtn = document.getElementById("restartBtn");
+    const boardDiv = document.getElementById("board");
+    const numbersDiv = document.getElementById("numbers");
+    const messageDiv = document.getElementById("message");
+    const livesSpan = document.getElementById("lives");
+    const remainingSpan = document.getElementById("remaining");
+
+    // Rellenar selector de niveles
+    levels.forEach((lvl, idx) => {
+        const opt = document.createElement("option");
+        opt.value = idx;
+        opt.textContent = lvl.name;
+        levelSelect.appendChild(opt);
+    });
+
+    levelSelect.addEventListener("change", () => {
+        currentLevelIndex = parseInt(levelSelect.value);
+        loadLevel(currentLevelIndex);
+    });
+
+    restartBtn.addEventListener("click", () => loadLevel(currentLevelIndex));
+
+    function renderLives() {
+        livesSpan.innerHTML = "";
+        for (let i = 0; i < lives; i++) {
+            const heart = document.createElement("span");
+            heart.textContent = "❤";
+            livesSpan.appendChild(heart);
+        }
+    }
+
+    function loadLevel(index) {
+        const lvl = levels[index];
+        boardDiv.innerHTML = "";
+        numbersDiv.innerHTML = "";
+        messageDiv.textContent = "";
+        selectedTile = null;
+
+        lives = lvl.lives;
+        remainingBlanks = Object.keys(lvl.blanks).length;
+        renderLives();
+        remainingSpan.textContent = remainingBlanks;
+
+        // --- Tablero ---
+        lvl.layout.forEach((row, r) => {
+            const rowDiv = document.createElement("div");
+            rowDiv.className = "row";
+            row.forEach((cellContent, c) => {
+                const cell = document.createElement("div");
+                const key = `${r}-${c}`;
+
+                if (cellContent === " ") {
+                    // hueco sin casilla
+                    cell.className = "cell empty";
+                } else if (cellContent === "") {
+                    cell.className = "cell blank";
+                    cell.dataset.pos = key;
+                    cell.addEventListener("click", () => onBlankClick(cell));
+                } else {
+                    cell.className = "cell static";
+                    cell.textContent = cellContent;
+                }
+                rowDiv.appendChild(cell);
+            });
+            boardDiv.appendChild(rowDiv);
+        });
+
+        // --- Números ---
+        lvl.numbers.forEach((num, idx) => {
+            const tile = document.createElement("div");
+            tile.className = "num-tile";
+            tile.textContent = num;
+            tile.dataset.value = num;
+            tile.dataset.index = idx;
+            tile.addEventListener("click", () => onNumberClick(tile));
+            numbersDiv.appendChild(tile);
+        });
+    }
+
+    function onNumberClick(tile) {
+        if (tile.classList.contains("used")) return;
+
+        document.querySelectorAll(".num-tile").forEach(t => t.classList.remove("selected"));
+        selectedTile = tile;
+        tile.classList.add("selected");
+        messageDiv.textContent = `Número seleccionado: ${tile.dataset.value}`;
+    }
+
+    function onBlankClick(cell) {
+        const lvl = levels[currentLevelIndex];
+
+        if (!selectedTile || selectedTile.classList.contains("used")) {
+            messageDiv.textContent = "Selecciona primero un número de la bandeja.";
+            return;
+        }
+        if (cell.classList.contains("correct")) return;
+
+        const key = cell.dataset.pos;
+        const correctValue = lvl.blanks[key];
+        const chosenValue = parseInt(selectedTile.dataset.value);
+
+        if (chosenValue === correctValue) {
+            // ✅ Correcto
+            cell.textContent = chosenValue;
+            cell.classList.add("correct");
+            selectedTile.classList.add("used");
+            selectedTile.classList.remove("selected");
+            selectedTile = null;
+
+            remainingBlanks--;
+            remainingSpan.textContent = remainingBlanks;
+            messageDiv.textContent = "¡Perfecto! ✅";
+
+            if (remainingBlanks === 0) {
+                messageDiv.textContent = `🎉 ¡Has completado ${levels[currentLevelIndex].name}!`;
+            }
+        } else {
+            // ❌ Incorrecto
+            cell.classList.add("wrong");
+            setTimeout(() => cell.classList.remove("wrong"), 300);
+
+            lives--;
+            renderLives();
+            messageDiv.textContent = "Número incorrecto, pierdes una vida 💔";
+
+            if (lives <= 0) {
+                messageDiv.textContent = "💀 Has perdido todas las vidas.";
+                document.querySelectorAll(".blank").forEach(b => {
+                    b.replaceWith(b.cloneNode(true)); // desactiva listeners rápido
+                });
+            }
+        }
+    }
+
+    // Carga inicial
+    loadLevel(currentLevelIndex);
+</script>
+</body>
+</html>
