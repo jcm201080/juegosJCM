@@ -1,53 +1,29 @@
-<!-- templates/home.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Juegos JCM - Inicio</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
-</head>
-<body class="home-body">
+{% extends "base.html" %}
 
-    <header class="main-header">
-        <h1>🎮 Juegos JCM</h1>
-        <p>By Jesús Castaño</p>
-    </header>
+{% block title %}Juegos JCM{% endblock %}
 
-    <main class="games-grid">
+{% block content %}
 
-        <!-- Tarjeta juego de mates -->
-        <article class="game-card">
-            <h2>🧮 Juego de Cálculo Rápido</h2>
-            <p>Entrena sumas, restas, multiplicaciones, divisiones y ecuaciones a contrarreloj.</p>
-            <a class="btn-primary" href="{{ url_for('juego_mate') }}">
-                Jugar ahora
-            </a>
-        </article>
+<div class="games-grid">
 
-        <!-- Tarjeta juego tablero (ya activo) -->
-        <article class="game-card">
-            <h2>🎲 Juego de Tablero</h2>
-            <p>Un recorrido estilo juego de la oca, con casillas especiales, rebotes y sorpresas.</p>
-            <a class="btn-primary" href="{{ url_for('tablero_oca') }}">
-                Jugar ahora
-            </a>
-        </article>
+    <article class="game-card">
+        <h2>🧮 Juego de Cálculo Rápido</h2>
+        <p>Entrena sumas, restas...</p>
+        <a class="btn-primary" href="{{ url_for('main.juego_mate') }}">Jugar ahora</a>
+    </article>
 
-        <!-- Tarjeta juego puzzle de imágenes -->
-        <article class="game-card">
-            <h2>🧩 Puzzle de Imágenes</h2>
-            <p>Resuelve puzzles deslizantes con imágenes divertidas y desafiantes.</p>
-            <a class="btn-primary" href="{{ url_for('puzzle_mate') }}">
-                Jugar ahora
-            </a>
-        </article>
+    <article class="game-card">
+        <h2>🎲 Juego de Tablero</h2>
+        <p>Recorrido con casillas especiales...</p>
+        <a class="btn-primary" href="{{ url_for('main.tablero_oca') }}">Jugar ahora</a>
+    </article>
 
-    </main>
+    <article class="game-card">
+        <h2>🧩 Puzzle de Imágenes</h2>
+        <p>Resuelve puzzles deslizantes...</p>
+        <a class="btn-primary" href="{{ url_for('main.puzzle_mate') }}">Jugar ahora</a>
+    </article>
 
-    <footer class="footer">
-        <p>© 2025 — JCM | <a href="https://github.com/jcm201080" target="_blank">GitHub</a></p>
-    </footer>
+</div>
 
-</body>
-</html>
+{% endblock %}

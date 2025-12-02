@@ -1,0 +1,133 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Juegos JCM{% endblock %}</title>
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="home-body">
+
+    <!-- CABECERA GLOBAL -->
+    <header class="main-header">
+        <div class="header-inner">
+
+            <!-- Lado izquierdo: título + navegación -->
+            <div class="header-left">
+                <div class="header-title">
+                    <h1>🎮 Juegos JCM</h1>
+                    <p>By Jesús Castaño</p>
+                </div>
+
+                <nav class="header-nav">
+                    <a href="{{ url_for('main.home') }}" class="header-link">Inicio</a>
+                    <!-- 🔹 Enlace a Historial: solo visible si hay usuario -->
+                    <a href="{{ url_for('main.historial') }}" class="header-link hidden" id="headerHistoryLink">
+                        Historial
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Lado derecho: estado de usuario -->
+            <div class="header-user">
+                <!-- Invitado: botón para abrir modal -->
+                <button id="openAuthBtn" class="btn-secondary header-btn">
+                    Iniciar sesión
+                </button>
+
+                <!-- Logueado: nombre + botón salir -->
+                <div id="headerUsernameBox" class="header-username hidden">
+                    👤 <span id="headerUsernameText"></span>
+                </div>
+                <br>
+                <button id="headerLogoutBtn" class="btn-secondary header-btn hidden">
+                    Salir
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO DE CADA PÁGINA -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- FOOTER GLOBAL -->
+    <footer class="footer">
+        <p>© 2025 — JCM |
+            <a href="https://github.com/jcm201080" target="_blank">GitHub</a>
+        </p>
+    </footer>
+
+    <!-- 🔐 MODAL GLOBAL DE AUTENTICACIÓN -->
+    <div id="authModal" class="auth-modal hidden">
+        <div class="auth-modal-backdrop"></div>
+
+        <div class="auth-modal-content auth-card">
+            <button id="closeAuthBtn" class="auth-close-btn">✕</button>
+
+            <!-- Invitado -->
+            <div id="auth-guest">
+                <h2>Tu cuenta</h2>
+                <p class="auth-text">
+                    Inicia sesión o regístrate para guardar tus puntuaciones y progresos
+                    en todos los juegos.
+                </p>
+
+                <form id="loginForm" class="auth-form">
+                    <h3>Iniciar sesión</h3>
+                    <label>Usuario
+                        <input id="loginUsername" type="text" required>
+                    </label>
+                    <label>Contraseña
+                        <input id="loginPassword" type="password" required>
+                    </label>
+                    <button type="submit" class="btn-primary">Entrar</button>
+                    <p class="auth-message" id="loginMessage"></p>
+                </form>
+
+                <hr class="auth-divider">
+
+                <form id="registerForm" class="auth-form">
+                    <h3>Crear nueva cuenta</h3>
+                    <label>Usuario
+                        <input id="registerUsername" type="text" required>
+                    </label>
+                    <label>Contraseña
+                        <input id="registerPassword" type="password" required>
+                    </label>
+                    <button type="submit" class="btn-secondary">Registrarse</button>
+                    <p class="auth-message" id="registerMessage"></p>
+                </form>
+            </div>
+
+            <!-- Logueado -->
+            <div id="auth-logged" class="hidden">
+                <h2>Bienvenido 👋</h2>
+                <p class="auth-text">
+                    Estás conectado como <strong id="currentUsername"></strong>.
+                </p>
+                <p class="auth-text-small">
+                    🏆 Mejor puntuación global: <span id="currentBestScore">0</span><br>
+                    ⭐ Puntuación total: <span id="currentTotalScore">0</span>
+                </p>
+                <button id="logoutBtn" class="btn-secondary">Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS global de auth -->
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

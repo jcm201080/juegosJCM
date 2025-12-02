@@ -42,5 +42,24 @@ def init_db():
         """
     )
 
+    # 🔹 NUEVA TABLA: partidas del Puzzle Matemático
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS puzzle_scores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            difficulty TEXT NOT NULL,      -- easy / medium / pro / infernal
+            solved INTEGER NOT NULL,       -- operaciones correctas
+            total_eq INTEGER NOT NULL,     -- total de operaciones del puzzle
+            mistakes INTEGER NOT NULL,     -- fallos cometidos
+            lives_left INTEGER NOT NULL,   -- vidas restantes al final
+            duration_sec INTEGER NOT NULL, -- duración de la partida en segundos
+            score INTEGER NOT NULL,        -- puntuación calculada
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+        """
+    )
+
     conn.commit()
     conn.close()

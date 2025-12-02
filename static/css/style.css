@@ -1,5 +1,5 @@
 /* ================================
-   🎮 JUEGOS JCM — Estilos portada
+   🎮 JUEGOS JCM — Estilos generales
    ================================ */
 
 /* Fondo general */
@@ -12,25 +12,86 @@
     min-height: 100vh;
 }
 
-/* ===== HEADER ===== */
+/* ================================
+   🧢 Header global
+   ================================ */
+
 .main-header {
     text-align: center;
-    padding: 40px 20px;
+    padding: 25px 20px 15px;
 }
 
-.main-header h1 {
-    font-size: 3rem;
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 30px 10px;
+    display: flex;
+    flex-direction: column;   /* apilado en columna para móvil/escritorio */
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.header-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header-title h1 {
     margin: 0;
+    font-size: 3rem;
     color: #ffd86f;
     text-shadow: 0 0 8px rgba(255, 200, 60, 0.6);
 }
 
-.main-header p {
+.header-title p {
+    margin: 4px 0 0;
     opacity: 0.8;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
-/* ===== GRID DE JUEGOS ===== */
+/* Navegación del header */
+.header-nav {
+    margin-top: 8px;
+}
+
+.header-link {
+    color: #a5a2ac;
+    text-decoration: none;
+    margin: 0 6px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+.header-link:hover {
+    color: #e5e7ff;
+    text-shadow: 0 0 6px rgba(196, 181, 253, 0.7);
+}
+
+/* Zona usuario en header */
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.header-btn {
+    font-size: 0.9rem;
+    padding: 8px 14px;
+}
+
+.header-username {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* ================================
+   🎮 Portada — Grid de juegos
+   ================================ */
+
 .games-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -40,7 +101,7 @@
     padding: 30px;
 }
 
-/* ===== TARJETAS ===== */
+/* Tarjeta de juego */
 .game-card {
     background: rgba(255, 255, 255, 0.08);
     border-radius: 16px;
@@ -58,38 +119,20 @@
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
-/* Título */
+/* Título de tarjeta */
 .game-card h2 {
     margin-top: 0;
     font-size: 1.6rem;
     color: #ffe58a;
 }
 
-/* Texto */
+/* Texto tarjeta */
 .game-card p {
     opacity: 0.8;
     line-height: 1.5;
 }
 
-/* Botón principal */
-.btn-primary {
-    display: inline-block;
-    padding: 10px 20px;
-    background: #ffd86f;
-    color: #000;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    margin-top: 12px;
-    transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.btn-primary:hover {
-    background: #ffea98;
-    transform: scale(1.05);
-}
-
-/* ===== Tarjetas deshabilitadas ===== */
+/* Tarjetas deshabilitadas */
 .game-card.disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -106,9 +149,9 @@
     margin-top: 10px;
 }
 
-/* ===== Responsive ===== */
+/* Responsive portada */
 @media (max-width: 480px) {
-    .main-header h1 {
+    .header-title h1 {
         font-size: 2.3rem;
     }
 
@@ -117,11 +160,197 @@
     }
 }
 
+/* ================================
+   🎨 Botones globales
+   ================================ */
 
+.btn-primary,
+.btn-secondary {
+    display: inline-block;
+    padding: 9px 18px;
+    border-radius: 999px;            /* estilo pill */
+    border: 1px solid transparent;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: inherit;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+}
+
+/* Botón principal: morado sólido */
+.btn-primary {
+    background: linear-gradient(135deg, #dbe2d9, #797580);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+/* Botón secundario: borde morado, fondo transparente */
+.btn-secondary {
+    background: transparent;
+    color: #e5e7eb;
+    border-color: rgba(168, 85, 247, 0.8);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.btn-secondary:hover {
+    background: rgba(124, 58, 237, 0.18);
+    color: #f9fafb;
+    transform: translateY(-1px);
+}
+
+/* ================================
+   🔐 Panel de autenticación (card)
+   ================================ */
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 20px 24px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.35);
+    margin-bottom: 10px;
+}
+
+.auth-card h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1.4rem;
+    color: #ffe58a;
+}
+
+.auth-card h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+}
+
+.auth-text {
+    margin: 0 0 10px;
+    opacity: 0.85;
+}
+
+.auth-text-small {
+    margin-top: 4px;
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+/* Formularios login / registro */
+.auth-form {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.auth-form label {
+    display: grid;
+    gap: 3px;
+    font-size: 0.9rem;
+}
+
+.auth-form input {
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    outline: none;
+}
+
+.auth-form input:focus {
+    border-color: #ffd86f;
+}
+
+/* Mensajes de error/ok */
+.auth-message {
+    font-size: 0.8rem;
+    min-height: 1.1rem;
+    margin: 2px 0 0;
+}
+
+.auth-message.error {
+    color: #ff7070;
+}
+
+.auth-message.ok {
+    color: #4cd964;
+}
+
+.auth-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin: 10px 0;
+}
+
+/* ================================
+   🔐 Modal de autenticación
+   ================================ */
+
+.auth-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+.auth-modal.hidden {
+    display: none;
+}
+
+.auth-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.auth-modal-content {
+    position: relative;
+    max-width: 480px;
+    margin: 80px auto;
+}
+
+/* Botón cerrar del modal */
+.auth-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0.75;
+}
+
+.auth-close-btn:hover {
+    opacity: 1;
+}
+
+/* ================================
+   🧩 Utilidades
+   ================================ */
+
+.hidden {
+    display: none;
+}
+
+/* ================================
+   📜 Footer
+   ================================ */
 
 .footer {
     margin-top: 30px;
-    padding: 10px 0;
+    padding: 10px 0 20px;
     text-align: center;
     color: #aaa;
     font-size: 0.85rem;
@@ -137,4 +366,3 @@
 .footer:hover {
     opacity: 1;
 }
-

@@ -1,15 +1,34 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <title>Puzzle Matemático — Generador</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.png') }}">
-    <!-- CSS externo -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/puzzle_mate.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Puzzle Matemático{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/puzzle_mate.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="game-container puzzle-container">
     <h1>Puzzle Matemático</h1>
 
+    <!-- Panel usuario -->
+    <div class="user-panel">
+        <!-- Vista invitado -->
+        <div id="puzzleUserGuest">
+            <p class="user-status">
+                Estás jugando como <strong>invitado</strong>.  
+                Inicia sesión desde la parte superior para guardar tus resultados y aparecer en el ranking.
+            </p>
+        </div>
+
+        <!-- Vista logueado -->
+        <div id="puzzleUserLogged" class="hidden">
+            <p>👤 Sesión iniciada como: <strong id="puzzleUserName"></strong></p>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Controles superiores -->
     <div id="topbar">
         <label for="difficultySelect">Dificultad:</label>
         <select id="difficultySelect">
@@ -23,22 +42,43 @@
         <button id="restartBtn">Reiniciar</button>
     </div>
 
+    <!-- HUD -->
     <div id="hud">
         <div>Vidas: <span id="lives"></span></div>
         <div>Operaciones resueltas: <span id="solvedCount"></span>/<span id="totalEq"></span></div>
     </div>
 
+    <!-- Tablero + números -->
     <div id="board"></div>
 
     <div id="numbers"></div>
 
     <div id="message"></div>
+</div>
 
-    
-    <a href="{{ url_for('home') }}" class="back-link">⬅ Volver a Juegos JCM</a>
-    <footer class="footer">
-        <p>© 2025 — JCM | <a href="https://github.com/jcm201080" target="_blank">GitHub</a></p>
-    </footer>
-    <script src="{{ url_for('static', filename='js/puzzle_mate.js') }}"></script>
-</body>
-</html>
+<div class="ranking-container">
+    <section>
+        <h2>🏆 Ranking global (todos los juegos)</h2>
+        <ul id="puzzleGlobalRankingList"></ul>
+    </section>
+
+    <section>
+        <h3>🎯 Ranking por dificultad actual (puzzle)</h3>
+        <p id="puzzleDifficultyTitle"></p>
+        <ul id="puzzleDifficultyRankingList"></ul>
+    </section>
+
+    <section>
+        <h3>📜 Historial de partidas (puzzle)</h3>
+        <button id="puzzleHistoryToggleBtn">Ver / ocultar historial</button>
+        <ul id="puzzleHistoryList" style="display:none;"></ul>
+    </section>
+</div>
+
+
+<a href="{{ url_for('main.home') }}" class="back-link">⬅ Volver a Juegos JCM</a>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/puzzle_mate.js') }}" defer></script>
+{% endblock %}
