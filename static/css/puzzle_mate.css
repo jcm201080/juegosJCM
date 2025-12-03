@@ -75,7 +75,27 @@ button:active {
     background: #1e1e1e;
     border-radius: 1.5rem;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;     /* 🔥 Evita que padding haga crecer el ancho */
+    margin: 0 auto;              /* 🔥 Centra en pantallas grandes */
 }
+
+/* Tablets y móviles grandes */
+@media (max-width: 768px) {
+    .game-container {
+        max-width: 95vw;     /* deja un pelín de margen a los lados */
+        padding: 1rem;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .game-container {
+        max-width: 90vw;     /* aún más margen lateral */
+        padding: 0.75rem;    /* menos espacio interior */
+        border-radius: 1rem;
+    }
+}
+
 
 /* --- FORZAR el ranking debajo y centrado --- */
 .ranking-container {
@@ -243,13 +263,18 @@ button:active {
    =============================== */
 
 #numbers {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
     gap: 12px;
     margin-top: 12px;
 }
 
+/* Móviles: máximo 6 por fila */
+@media (max-width: 480px) {
+    #numbers {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
 .num-tile {
     width: 54px;
     height: 54px;
