@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const restartBtn      = document.getElementById("restartBtn");
     const newPuzzleBtn    = document.getElementById("newPuzzleBtn");
     const difficultySelect= document.getElementById("difficultySelect");
+    const sortNumbersBtn  = document.getElementById("sortNumbersBtn");
 
     // Sonidos
     const soundError    = new Audio("/static/sounds/penalizacion.mp3");
@@ -111,6 +112,27 @@ document.addEventListener("DOMContentLoaded", () => {
         currentUser = user || null;
         updatePuzzleUserUI();
     });
+
+
+    // === ORDENAR NÚMEROS ====================================================
+        function sortNumbers() {
+        if (!numbersDiv) return;
+
+        const tiles = Array.from(numbersDiv.querySelectorAll(".num-tile"));
+
+        tiles.sort((a, b) => {
+            const va = Number(a.dataset.value);
+            const vb = Number(b.dataset.value);
+            return va - vb;  // orden ascendente
+        });
+
+        tiles.forEach(tile => numbersDiv.appendChild(tile));
+
+        if (messageDiv) {
+            messageDiv.textContent = "Números ordenados.";
+        }
+    }
+
 
     // === UTILIDADES =========================================================
     function randomInt(min, max) {
@@ -365,11 +387,19 @@ document.addEventListener("DOMContentLoaded", () => {
         if (messageDiv) messageDiv.textContent = `Número seleccionado: ${tile.dataset.value}`;
     }
 
-    function onBlankClick(cell) {
+        function onBlankClick(cell) {
         const puzzle = currentPuzzle;
         if (!puzzle || finished) return;
 
-        // 1) Quitar número si hay y no hay ficha seleccionada
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
+
+        // Ecuaciones que pasan por esta casilla
+        const relatedEqs = puzzle.equations.filter(eq =>
+            eq.cells.some(([er, ec]) => er === row && ec === col)
+        );
+
+        // 1) QUITAR NÚMERO (click en blanco con número y sin ficha seleccionada)
         if (cell.textContent.trim() !== "" && !selectedTile) {
             const idx = cell.dataset.tileIndex;
             if (idx !== "") {
@@ -378,20 +408,30 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             cell.textContent = "";
             cell.dataset.tileIndex = "";
+
+            // Esta casilla formaba parte de una ecuación que estaba marcada como OK → la reseteamos
+            relatedEqs.forEach(resetEquation);
+            updateSolvedCount();
+
             if (messageDiv) messageDiv.textContent = "Número devuelto a la bandeja.";
             return;
         }
 
-        // 2) Cambiar número si hay ficha seleccionada
+        // 2) CAMBIAR NÚMERO (ya hay número y hemos seleccionado otro)
         if (cell.textContent.trim() !== "" && selectedTile) {
             const oldIdx = cell.dataset.tileIndex;
             if (oldIdx !== "") {
                 const oldTile = document.querySelector(`.num-tile[data-index="${oldIdx}"]`);
                 if (oldTile) oldTile.classList.remove("used");
             }
+
+            // Al cambiar una casilla de una ecuación que ya estaba en verde,
+            // hay que volver a dejarla "sin resolver"
+            relatedEqs.forEach(resetEquation);
+            updateSolvedCount();
         }
 
-        // 3) Colocar nuevo número
+        // 3) COLOCAR NUEVO NÚMERO
         if (!selectedTile || selectedTile.classList.contains("used")) {
             if (messageDiv) messageDiv.textContent = "Selecciona primero un número de la bandeja.";
             return;
@@ -406,23 +446,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const usedTile = selectedTile;
         selectedTile = null;
 
-        const row = parseInt(cell.dataset.row);
-        const col = parseInt(cell.dataset.col);
-
-        const relatedEqs = puzzle.equations.filter(eq =>
-            eq.cells.some(([er, ec]) => er === row && ec === col)
-        );
-
+        // 4) COMPROBAR ECUACIONES QUE PASAN POR ESTA CASILLA
         for (const eq of relatedEqs) {
-            if (eq.solved) continue;
+            if (eq.solved) continue; // (si se volvió a marcar como false arriba, sí entra)
 
             if (isEquationComplete(eq, puzzle)) {
                 const ok = evaluateEquation(eq, puzzle);
 
                 if (!ok) {
+                    // Incorrecta → quitamos el número de la casilla y devolvemos ficha
                     cell.textContent = "";
                     cell.dataset.tileIndex = "";
                     usedTile.classList.remove("used");
+
                     lives--;
                     mistakes++;
                     renderLives();
@@ -439,11 +475,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                     return;
                 } else {
+                    // Correcta → marcamos en verde
                     eq.solved = true;
                     markEquationOk(eq);
                     updateSolvedCount();
                     if (messageDiv) messageDiv.textContent = "¡Operación correcta! ✅";
 
+                    // ¿Todas resueltas?
                     if (puzzle.equations.every(e => e.solved)) {
                         finished = true;
                         if (messageDiv) messageDiv.textContent = "🎉 ¡Has completado el puzzle!";
@@ -454,6 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
+
 
     function isEquationComplete(eq, puzzle) {
         for (const [r, c] of eq.cells) {
@@ -512,6 +551,19 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
+    function resetEquation(eq) {
+        // Marcar como no resuelta
+        eq.solved = false;
+
+        // Quitar el fondo verde de todas sus celdas
+        for (const [r, c] of eq.cells) {
+            const cell = getCellElement(r, c);
+            if (cell) {
+                cell.classList.remove("equation-ok");
+            }
+        }
+    }
+
 
     function disableAllBlanks() {
         document.querySelectorAll(".blank").forEach(cell => {
@@ -617,6 +669,13 @@ document.addEventListener("DOMContentLoaded", () => {
             loadPuzzle(puzzle, cfg);
         });
     }
+
+        if (sortNumbersBtn) {
+        sortNumbersBtn.addEventListener("click", () => {
+            sortNumbers();
+        });
+    }
+
 
     if (difficultySelect) {
         difficultySelect.addEventListener("change", () => {
