@@ -3,14 +3,29 @@
    =============================== */
 
 body {
-    font-family: system-ui, sans-serif;
+    background: url('../img/fondo_mate.png') no-repeat center center fixed !important;
+    background-size: cover;
+    color: #f5f5f5;
+
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
-    gap: 1rem;
-    background: #eef2ff; /* más suave */
-    padding: 20px;
-    color: #222;  /* por si algo hereda */
+    min-height: 100vh;
+
+    padding-top: 40px;
+    gap: 20px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.65); /* oscurece un poco la imagen */
+    z-index: -1;
 }
 
 h1 {
@@ -50,6 +65,89 @@ button:active {
 }
 
 /* ===============================
+   🧩 CONTENEDOR DEL JUEGO
+   =============================== */
+
+.game-container {
+    width: 100%;
+    max-width: 600px;
+    padding: 1.5rem;
+    background: #1e1e1e;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* --- FORZAR el ranking debajo y centrado --- */
+.ranking-container {
+    width: 100%;
+    max-width: 320px; /* MÁS PEQUEÑO */
+    margin: 25px auto; /* CENTRADO */
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.25); /* semitransparente */
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* Título más pequeño */
+.ranking-container h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #ffd700;
+}
+
+/* Quitar los puntos de las listas del ranking */
+.ranking-container ul {
+    list-style: none;      /* quita los bullets */
+    margin: 0;             
+    padding-left: 0;       /* quita sangrado izquierdo */
+}
+
+/* (Opcional) un poco de espacio entre filas */
+.ranking-container li {
+    margin-bottom: 4px;
+}
+
+
+/* Lista centrada */
+#rankingList {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Cada entrada más pequeña */
+#rankingList li {
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 6px 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+/* Hover bonito */
+#rankingList li:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Centramos el enlace usando flex o block */
+.back-link {
+    display: block;           /* Con esto ya lo centra */
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    color: #f5f5f5;
+}
+
+.back-link:hover {
+    background: #666;
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
+}
+
+
+/* ===============================
    ❤️ HUD / VIDAS / INFO
    =============================== */
 
@@ -72,6 +170,7 @@ button:active {
    =============================== */
 
 #board {
+    max-width: 95%;
     display: inline-block;
     padding: 16px;
     background: #fff8d8;
