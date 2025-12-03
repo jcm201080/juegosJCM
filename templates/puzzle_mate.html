@@ -1,12 +1,6 @@
-{% extends "base.html" %}
-
-{% block title %}Puzzle Matemático{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/puzzle_mate.css') }}">
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Puzzle Matemático{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/puzzle_mate.css') }}" />
+{% endblock %} {% block content %}
 <div class="game-container puzzle-container">
     <h1>Puzzle Matemático</h1>
 
@@ -15,8 +9,8 @@
         <!-- Vista invitado -->
         <div id="puzzleUserGuest">
             <p class="user-status">
-                Estás jugando como <strong>invitado</strong>.  
-                Inicia sesión desde la parte superior para guardar tus resultados y aparecer en el ranking.
+                Estás jugando como <strong>invitado</strong>. Inicia sesión desde la parte superior
+                para guardar tus resultados y aparecer en el ranking.
             </p>
         </div>
 
@@ -26,7 +20,7 @@
         </div>
     </div>
 
-    <hr>
+    <hr />
 
     <!-- Controles superiores -->
     <div id="topbar">
@@ -42,8 +36,6 @@
         <button id="restartBtn">Reiniciar</button>
         <button id="sortNumbersBtn">Ordenar números</button>
     </div>
-
-    
 
     <!-- HUD -->
     <div id="hud">
@@ -74,14 +66,11 @@
     <section>
         <h3>📜 Historial de partidas (puzzle)</h3>
         <button id="puzzleHistoryToggleBtn">Ver / ocultar historial</button>
-        <ul id="puzzleHistoryList" style="display:none;"></ul>
+        <ul id="puzzleHistoryList" style="display: none"></ul>
     </section>
 </div>
 
-
 <a href="{{ url_for('main.home') }}" class="back-link">⬅ Volver a Juegos JCM</a>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{{ url_for('static', filename='js/puzzle_mate.js') }}" defer></script>
 {% endblock %}

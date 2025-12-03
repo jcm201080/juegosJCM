@@ -1,12 +1,7 @@
-{% extends "base.html" %}
-
-{% block title %}Juego de Cálculo Rápido{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/juego_mate.css') }}">
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Juego de Cálculo Rápido{% endblock %} {% block extra_css
+%}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/juego_mate.css') }}" />
+{% endblock %} {% block content %}
 <div class="game-container">
     <h1>Juego de Cálculo Rápido</h1>
 
@@ -15,21 +10,24 @@
         <!-- Vista invitado -->
         <div id="gameUserGuest">
             <p class="user-status">
-                Estás jugando como <strong>invitado</strong>.  
-                Inicia sesión desde la parte superior para guardar tus puntuaciones y aparecer en el ranking.
+                Estás jugando como <strong>invitado</strong>. Inicia sesión desde la parte superior
+                para guardar tus puntuaciones y aparecer en el ranking.
             </p>
         </div>
 
         <!-- Vista usuario logueado -->
         <div id="gameUserLogged" class="hidden">
             <p>👤 Sesión iniciada como: <strong id="currentUserName"></strong></p>
-            <p>🏆 Mejor puntuación global (todos los niveles): <span id="currentUserBestScore">0</span></p>
+            <p>
+                🏆 Mejor puntuación global (todos los niveles):
+                <span id="currentUserBestScore">0</span>
+            </p>
             <p>📈 Puntuación acumulada: <span id="currentUserTotalScore">0</span></p>
             <p>🎚 Mejor puntuación en este nivel: <span id="currentUserLevelBestScore">0</span></p>
         </div>
     </div>
 
-    <hr>
+    <hr />
 
     <!-- BLOQUE DEL JUEGO -->
     <div class="top-info">
@@ -82,7 +80,7 @@
     <section id="historySection">
         <h2>📜 Historial de partidas</h2>
         <button id="showHistoryBtn">Ver / ocultar historial</button>
-        <ul id="historyList" style="display: none;"></ul>
+        <ul id="historyList" style="display: none"></ul>
     </section>
 </div>
 
@@ -92,8 +90,6 @@
 <audio id="soundCorrect" src="/static/sounds/correct.wav" preload="auto"></audio>
 <audio id="soundWrong" src="/static/sounds/wrong.wav" preload="auto"></audio>
 <audio id="soundEnd" src="/static/sounds/end.wav" preload="auto"></audio>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{{ url_for('static', filename='js/juego_mate.js') }}" defer></script>
 {% endblock %}

@@ -1,11 +1,6 @@
-{% extends "base.html" %}
-
-{% block title %}Juegos JCM{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Juegos JCM{% endblock %} {% block content %}
 
 <div class="games-grid">
-
     <article class="game-card">
         <h2>🧮 Juego de Cálculo Rápido</h2>
         <p>Entrena sumas, restas...</p>
@@ -23,7 +18,6 @@
         <p>Resuelve puzzles deslizantes...</p>
         <a class="btn-primary" href="{{ url_for('main.puzzle_mate') }}">Jugar ahora</a>
     </article>
-
 </div>
 
 {% endblock %}

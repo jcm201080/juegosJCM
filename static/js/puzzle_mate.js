@@ -5,10 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === CONFIGURACIÓN DE DIFICULTADES =====================================
     const difficultyConfigs = {
-        easy:   { lives: 4, ops: ["+", "-"] },
+        easy: { lives: 4, ops: ["+", "-"] },
         medium: { lives: 3, ops: ["+", "-", "×"] },
-        pro:    { lives: 3, ops: ["+", "-", "×", "÷"] },
-        infernal: { lives: 2, ops: ["+", "-", "×", "÷"] }
+        pro: { lives: 3, ops: ["+", "-", "×", "÷"] },
+        infernal: { lives: 2, ops: ["+", "-", "×", "÷"] },
     };
 
     // === PLANTILLA DE TABLERO ==============================================
@@ -18,17 +18,65 @@ document.addEventListener("DOMContentLoaded", () => {
         baseGrid: Array.from({ length: 7 }, () => Array(17).fill(" ")),
         equations: [
             // Fila 1
-            { cells: [[1, 2], [1, 3], [1, 4], [1, 5], [1, 6]] },
-            { cells: [[1,10], [1,11], [1,12], [1,13], [1,14]] },
+            {
+                cells: [
+                    [1, 2],
+                    [1, 3],
+                    [1, 4],
+                    [1, 5],
+                    [1, 6],
+                ],
+            },
+            {
+                cells: [
+                    [1, 10],
+                    [1, 11],
+                    [1, 12],
+                    [1, 13],
+                    [1, 14],
+                ],
+            },
 
             // Fila 3
-            { cells: [[3, 2], [3, 3], [3, 4], [3, 5], [3, 6]] },
-            { cells: [[3,10], [3,11], [3,12], [3,13], [3,14]] },
+            {
+                cells: [
+                    [3, 2],
+                    [3, 3],
+                    [3, 4],
+                    [3, 5],
+                    [3, 6],
+                ],
+            },
+            {
+                cells: [
+                    [3, 10],
+                    [3, 11],
+                    [3, 12],
+                    [3, 13],
+                    [3, 14],
+                ],
+            },
 
             // Fila 5
-            { cells: [[5, 2], [5, 3], [5, 4], [5, 5], [5, 6]] },
-            { cells: [[5,10], [5,11], [5,12], [5,13], [5,14]] }
-        ]
+            {
+                cells: [
+                    [5, 2],
+                    [5, 3],
+                    [5, 4],
+                    [5, 5],
+                    [5, 6],
+                ],
+            },
+            {
+                cells: [
+                    [5, 10],
+                    [5, 11],
+                    [5, 12],
+                    [5, 13],
+                    [5, 14],
+                ],
+            },
+        ],
     };
 
     // === ESTADO GLOBAL ======================================================
@@ -45,37 +93,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // stats de la partida
     let mistakes = 0;
-    let startTime = null;   // Date
-    let finished = false;   // cuando se acaba (win/fail) para no seguir jugando
+    let startTime = null; // Date
+    let finished = false; // cuando se acaba (win/fail) para no seguir jugando
 
     // === REFERENCIAS DOM ====================================================
-    const puzzleUserGuest  = document.getElementById("puzzleUserGuest");
+    const puzzleUserGuest = document.getElementById("puzzleUserGuest");
     const puzzleUserLogged = document.getElementById("puzzleUserLogged");
-    const puzzleUserName   = document.getElementById("puzzleUserName");
+    const puzzleUserName = document.getElementById("puzzleUserName");
 
-    const boardDiv        = document.getElementById("board");
-    const numbersDiv      = document.getElementById("numbers");
-    const messageDiv      = document.getElementById("message");
-    const livesSpan       = document.getElementById("lives");
+    const boardDiv = document.getElementById("board");
+    const numbersDiv = document.getElementById("numbers");
+    const messageDiv = document.getElementById("message");
+    const livesSpan = document.getElementById("lives");
     const solvedCountSpan = document.getElementById("solvedCount");
-    const totalEqSpan     = document.getElementById("totalEq");
+    const totalEqSpan = document.getElementById("totalEq");
 
-    const restartBtn      = document.getElementById("restartBtn");
-    const newPuzzleBtn    = document.getElementById("newPuzzleBtn");
-    const difficultySelect= document.getElementById("difficultySelect");
-    const sortNumbersBtn  = document.getElementById("sortNumbersBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const newPuzzleBtn = document.getElementById("newPuzzleBtn");
+    const difficultySelect = document.getElementById("difficultySelect");
+    const sortNumbersBtn = document.getElementById("sortNumbersBtn");
 
     // Sonidos
-    const soundError    = new Audio("/static/sounds/penalizacion.mp3");
-    const soundWin      = new Audio("/static/sounds/victoria.mp3");
+    const soundError = new Audio("/static/sounds/penalizacion.mp3");
+    const soundWin = new Audio("/static/sounds/victoria.mp3");
     const soundGameOver = new Audio("/static/sounds/muerte.mp3");
 
     // Ranking / historial (si no existen en el HTML, el código los ignora)
-    const puzzleGlobalRankingList     = document.getElementById("puzzleGlobalRankingList");
+    const puzzleGlobalRankingList = document.getElementById("puzzleGlobalRankingList");
     const puzzleDifficultyRankingList = document.getElementById("puzzleDifficultyRankingList");
-    const puzzleDiffTitle             = document.getElementById("puzzleDiffTitle");
-    const puzzleHistoryList           = document.getElementById("puzzleHistoryList");
-    const puzzleShowHistoryBtn        = document.getElementById("puzzleShowHistoryBtn");
+    const puzzleDiffTitle = document.getElementById("puzzleDiffTitle");
+    const puzzleHistoryList = document.getElementById("puzzleHistoryList");
+    const puzzleShowHistoryBtn = document.getElementById("puzzleShowHistoryBtn");
 
     // Comprobación de DOM mínimo
     if (!boardDiv || !numbersDiv) {
@@ -113,9 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
         updatePuzzleUserUI();
     });
 
-
     // === ORDENAR NÚMEROS ====================================================
-        function sortNumbers() {
+    function sortNumbers() {
         if (!numbersDiv) return;
 
         const tiles = Array.from(numbersDiv.querySelectorAll(".num-tile"));
@@ -123,16 +170,15 @@ document.addEventListener("DOMContentLoaded", () => {
         tiles.sort((a, b) => {
             const va = Number(a.dataset.value);
             const vb = Number(b.dataset.value);
-            return va - vb;  // orden ascendente
+            return va - vb; // orden ascendente
         });
 
-        tiles.forEach(tile => numbersDiv.appendChild(tile));
+        tiles.forEach((tile) => numbersDiv.appendChild(tile));
 
         if (messageDiv) {
             messageDiv.textContent = "Números ordenados.";
         }
     }
-
 
     // === UTILIDADES =========================================================
     function randomInt(min, max) {
@@ -211,7 +257,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 A = B * R;
                 break;
             default:
-                A = 1; B = 1; R = 2;
+                A = 1;
+                B = 1;
+                R = 2;
         }
         return { A, B, R, op };
     }
@@ -223,11 +271,18 @@ document.addEventListener("DOMContentLoaded", () => {
             return choice(options);
         }
         if (diff === "medium") {
-            const options = [[0, 2], [2, 4]];
+            const options = [
+                [0, 2],
+                [2, 4],
+            ];
             return choice(options);
         }
         if (diff === "pro") {
-            const options = [[0, 2], [0, 4], [2, 4]];
+            const options = [
+                [0, 2],
+                [0, 4],
+                [2, 4],
+            ];
             return choice(options);
         }
         // infernal
@@ -236,11 +291,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === GENERAR PUZZLE =====================================================
     function generatePuzzle(config) {
-        const grid = BOARD_TEMPLATE.baseGrid.map(row => [...row]);
+        const grid = BOARD_TEMPLATE.baseGrid.map((row) => [...row]);
         const equations = [];
         const numbersPool = [];
 
-        BOARD_TEMPLATE.equations.forEach(eqDef => {
+        BOARD_TEMPLATE.equations.forEach((eqDef) => {
             const opAllowed = choice(config.ops);
             const { A, B, R, op } = generateEquationValues(opAllowed);
             const values = [A, op, B, "=", R];
@@ -271,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
             lives: config.lives,
             grid,
             equations,
-            numbers: numbersPool
+            numbers: numbersPool,
         };
     }
 
@@ -286,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
         finished = false;
         startTime = new Date();
 
-        puzzle.equations.forEach(eq => eq.solved = false);
+        puzzle.equations.forEach((eq) => (eq.solved = false));
 
         boardDiv.innerHTML = "";
         numbersDiv.innerHTML = "";
@@ -294,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderLives();
         if (solvedCountSpan) solvedCountSpan.textContent = 0;
-        if (totalEqSpan)    totalEqSpan.textContent = puzzle.equations.length;
+        if (totalEqSpan) totalEqSpan.textContent = puzzle.equations.length;
 
         // Tablero
         puzzle.grid.forEach((row, r) => {
@@ -336,10 +391,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === ENVÍO RESULTADO AL BACKEND ========================================
     async function sendPuzzleResult() {
-        if (!currentUser) return;          // solo si hay usuario logueado
+        if (!currentUser) return; // solo si hay usuario logueado
         if (!currentPuzzle) return;
 
-        const solved = currentPuzzle.equations.filter(eq => eq.solved).length;
+        const solved = currentPuzzle.equations.filter((eq) => eq.solved).length;
         const total_eq = currentPuzzle.equations.length;
         const lives_left = Math.max(lives, 0);
         const duration_sec = getElapsedSeconds();
@@ -355,8 +410,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     total_eq,
                     mistakes,
                     lives_left,
-                    duration_sec
-                })
+                    duration_sec,
+                }),
             });
 
             const data = await res.json();
@@ -371,7 +426,6 @@ document.addEventListener("DOMContentLoaded", () => {
             loadPuzzleGlobalRanking();
             loadPuzzleDifficultyRanking();
             loadPuzzleHistory();
-
         } catch (err) {
             console.error(err);
         }
@@ -381,13 +435,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function onNumberClick(tile) {
         if (tile.classList.contains("used")) return;
 
-        document.querySelectorAll(".num-tile").forEach(t => t.classList.remove("selected"));
+        document.querySelectorAll(".num-tile").forEach((t) => t.classList.remove("selected"));
         selectedTile = tile;
         tile.classList.add("selected");
         if (messageDiv) messageDiv.textContent = `Número seleccionado: ${tile.dataset.value}`;
     }
 
-        function onBlankClick(cell) {
+    function onBlankClick(cell) {
         const puzzle = currentPuzzle;
         if (!puzzle || finished) return;
 
@@ -395,7 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const col = parseInt(cell.dataset.col);
 
         // Ecuaciones que pasan por esta casilla
-        const relatedEqs = puzzle.equations.filter(eq =>
+        const relatedEqs = puzzle.equations.filter((eq) =>
             eq.cells.some(([er, ec]) => er === row && ec === col)
         );
 
@@ -463,13 +517,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     mistakes++;
                     renderLives();
                     flashEquation(eq);
-                    if (messageDiv) messageDiv.textContent = "Operación incorrecta. Pierdes una vida 💔";
-                    try { soundError.currentTime = 0; soundError.play(); } catch(e){}
+                    if (messageDiv)
+                        messageDiv.textContent = "Operación incorrecta. Pierdes una vida 💔";
+                    try {
+                        soundError.currentTime = 0;
+                        soundError.play();
+                    } catch (e) {
+                        //Ignoramos error de audio (no es crítico si falla el sonido)
+                    }
 
                     if (lives <= 0) {
                         finished = true;
-                        if (messageDiv) messageDiv.textContent = "💀 Te has quedado sin vidas. Puzzle fallido.";
-                        try { soundGameOver.currentTime = 0; soundGameOver.play(); } catch(e){}
+                        if (messageDiv)
+                            messageDiv.textContent = "💀 Te has quedado sin vidas. Puzzle fallido.";
+                        try {
+                            soundGameOver.currentTime = 0;
+                            soundGameOver.play();
+                        } catch (e) {
+                            //Ignoramos error de audio (no es crítico si falla el sonido)
+                        }
                         disableAllBlanks();
                         sendPuzzleResult();
                     }
@@ -482,17 +548,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (messageDiv) messageDiv.textContent = "¡Operación correcta! ✅";
 
                     // ¿Todas resueltas?
-                    if (puzzle.equations.every(e => e.solved)) {
+                    if (puzzle.equations.every((e) => e.solved)) {
                         finished = true;
                         if (messageDiv) messageDiv.textContent = "🎉 ¡Has completado el puzzle!";
-                        try { soundWin.currentTime = 0; soundWin.play(); } catch(e){}
+                        try {
+                            soundWin.currentTime = 0;
+                            soundWin.play();
+                        } catch (e) {
+                            //Ignoramos error de audio (no es crítico si falla el sonido)
+                        }
                         sendPuzzleResult();
                     }
                 }
             }
         }
     }
-
 
     function isEquationComplete(eq, puzzle) {
         for (const [r, c] of eq.cells) {
@@ -524,11 +594,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let computed;
         switch (opToken) {
-            case "+": computed = a + b; break;
-            case "-": computed = a - b; break;
-            case "×": computed = a * b; break;
-            case "÷": computed = a / b; break;
-            default:  return false;
+            case "+":
+                computed = a + b;
+                break;
+            case "-":
+                computed = a - b;
+                break;
+            case "×":
+                computed = a * b;
+                break;
+            case "÷":
+                computed = a / b;
+                break;
+            default:
+                return false;
         }
         return computed === r;
     }
@@ -564,16 +643,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
     function disableAllBlanks() {
-        document.querySelectorAll(".blank").forEach(cell => {
+        document.querySelectorAll(".blank").forEach((cell) => {
             cell.replaceWith(cell.cloneNode(true));
         });
     }
 
     function updateSolvedCount() {
         if (!solvedCountSpan) return;
-        const solved = currentPuzzle.equations.filter(eq => eq.solved).length;
+        const solved = currentPuzzle.equations.filter((eq) => eq.solved).length;
         solvedCountSpan.textContent = solved;
     }
 
@@ -589,8 +667,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         ranking.forEach((item, idx) => {
             const li = document.createElement("li");
-            li.textContent =
-                `${idx + 1}. ${item.username} — ${item.best_score} puntos (partidas: ${item.games_played})`;
+            li.textContent = `${idx + 1}. ${item.username} — ${item.best_score} puntos (partidas: ${item.games_played})`;
             ulElement.appendChild(li);
         });
     }
@@ -611,7 +688,9 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadPuzzleDifficultyRanking() {
         if (!puzzleDifficultyRankingList) return;
         try {
-            const res = await fetch(`${API_BASE}/api/puzzle_ranking?difficulty=${currentDifficulty}`);
+            const res = await fetch(
+                `${API_BASE}/api/puzzle_ranking?difficulty=${currentDifficulty}`
+            );
             const data = await res.json();
             if (data.success && data.ranking) {
                 if (puzzleDiffTitle) {
@@ -670,12 +749,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-        if (sortNumbersBtn) {
+    if (sortNumbersBtn) {
         sortNumbersBtn.addEventListener("click", () => {
             sortNumbers();
         });
     }
-
 
     if (difficultySelect) {
         difficultySelect.addEventListener("change", () => {
@@ -693,7 +771,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Inicia sesión para ver tu historial del puzzle.");
                 return;
             }
-            const hidden = puzzleHistoryList.style.display === "none" || puzzleHistoryList.style.display === "";
+            const hidden =
+                puzzleHistoryList.style.display === "none" ||
+                puzzleHistoryList.style.display === "";
             puzzleHistoryList.style.display = hidden ? "block" : "none";
             if (hidden) loadPuzzleHistory();
         });

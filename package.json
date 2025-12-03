@@ -1,0 +1,29 @@
+{
+  "name": "juegosmovil",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "lint": "eslint static/js --ext .js",
+    "lint:fix": "eslint static/js --ext .js --fix",
+    "format": "prettier \"static/**/*.{js,css,html}\" \"templates/**/*.html\" --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcm201080/juegosJCM.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jcm201080/juegosJCM/issues"
+  },
+  "homepage": "https://github.com/jcm201080/juegosJCM#readme",
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "prettier": "^3.7.4"
+  }
+}

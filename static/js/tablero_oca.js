@@ -1,7 +1,6 @@
 // static/js/tablero_oca.js
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const tablero = document.getElementById("tablero");
-    const salidaDiv = document.getElementById("salida");
     const salidaFichasDiv = document.getElementById("salida-fichas");
     const tirarDadoBtn = document.getElementById("tirarDado");
     const estadoJuego = document.getElementById("estadoJuego");
@@ -12,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnMostrarReglas = document.getElementById("mostrarReglas");
     const contenedorReglas = document.querySelector(".reglas");
     const dadoVisual = document.getElementById("dadoVisual");
-
 
     const winnerOverlay = document.getElementById("winnerOverlay");
     const winnerNameSpan = document.getElementById("winnerName");
@@ -27,31 +25,27 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // ================== SONIDOS ==================
     // Coloca estos archivos en: static/sounds/
-    const soundDado         = new Audio("/static/sounds/dado.mp3");
-    const soundPremio       = new Audio("/static/sounds/premio.mp3");
+    const soundDado = new Audio("/static/sounds/dado.mp3");
+    const soundPremio = new Audio("/static/sounds/premio.mp3");
     const soundPenalizacion = new Audio("/static/sounds/penalizacion.mp3");
-    const soundMuerte       = new Audio("/static/sounds/muerte.mp3");
-    const soundVictoria     = new Audio("/static/sounds/victoria.mp3");
-    [soundDado, soundPremio, soundPenalizacion, soundMuerte, soundVictoria].forEach(s => {
+    const soundMuerte = new Audio("/static/sounds/muerte.mp3");
+    const soundVictoria = new Audio("/static/sounds/victoria.mp3");
+    [soundDado, soundPremio, soundPenalizacion, soundMuerte, soundVictoria].forEach((s) => {
         s.volume = 0.6;
     });
-
-    
-    
 
     let jugadores = [];
     let turno = 0;
     let juegoTerminado = false;
     let jugadoresPenalizados = new Set();
 
-// Limitar duración a 1 segundo
-soundDado.addEventListener("timeupdate", () => {
-    if (soundDado.currentTime > 1) {
-        soundDado.pause();
-        soundDado.currentTime = 0;
-    }
-});
-
+    // Limitar duración a 1 segundo
+    soundDado.addEventListener("timeupdate", () => {
+        if (soundDado.currentTime > 1) {
+            soundDado.pause();
+            soundDado.currentTime = 0;
+        }
+    });
 
     // ================== DADO VISUAL ==================
     function actualizarDadoVisual(valor) {
@@ -60,9 +54,6 @@ soundDado.addEventListener("timeupdate", () => {
         // Mostrar solo el número
         dadoVisual.textContent = valor;
     }
-
-    
-
 
     // ================== UI TURNO ==================
     function actualizarTurnoUI() {
@@ -99,7 +90,7 @@ soundDado.addEventListener("timeupdate", () => {
     }
 
     // ================== CONFIGURAR JUGADORES ==================
-    iniciarJuegoBtn.addEventListener("click", function() {
+    iniciarJuegoBtn.addEventListener("click", function () {
         const numJugadores = parseInt(numJugadoresInput.value);
         if (isNaN(numJugadores) || numJugadores < 1 || numJugadores > 6) {
             alert("El número de jugadores debe estar entre 1 y 6.");
@@ -125,37 +116,36 @@ soundDado.addEventListener("timeupdate", () => {
     });
 
     function iniciarPartida() {
-    const inputs = document.querySelectorAll(".nombreJugador");
-    jugadores = [];
+        const inputs = document.querySelectorAll(".nombreJugador");
+        jugadores = [];
 
-    inputs.forEach((input, i) => {
-        let nombre = input.value.trim();
-        if (nombre === "") nombre = `Jugador ${i + 1}`;
-        jugadores.push({ nombre, posicion: -1, ficha: null });
-    });
+        inputs.forEach((input, i) => {
+            let nombre = input.value.trim();
+            if (nombre === "") nombre = `Jugador ${i + 1}`;
+            jugadores.push({ nombre, posicion: -1, ficha: null });
+        });
 
-    tablero.innerHTML = "";
-    turno = 0;
-    juegoTerminado = false;
-    jugadoresPenalizados.clear();
-    estadoJuego.textContent = "";
+        tablero.innerHTML = "";
+        turno = 0;
+        juegoTerminado = false;
+        jugadoresPenalizados.clear();
+        estadoJuego.textContent = "";
 
-    if (winnerOverlay) {
-        winnerOverlay.classList.remove("visible");
-    }
+        if (winnerOverlay) {
+            winnerOverlay.classList.remove("visible");
+        }
 
-    // 🔹 AQUÍ: limpiar el dado visual al empezar
-    if (dadoVisual) {
-        dadoVisual.textContent = "";
-    }
+        // 🔹 AQUÍ: limpiar el dado visual al empezar
+        if (dadoVisual) {
+            dadoVisual.textContent = "";
+        }
 
-    // Limpiar fichas de salida
-    if (salidaFichasDiv) {
-        salidaFichasDiv.innerHTML = "";
-    }
+        // Limpiar fichas de salida
+        if (salidaFichasDiv) {
+            salidaFichasDiv.innerHTML = "";
+        }
 
-    // ... (resto de iniciarPartida)
-
+        // ... (resto de iniciarPartida)
 
         // 🔢 Generar 55 casillas
         for (let i = 1; i <= NUM_CASILLAS; i++) {
@@ -204,12 +194,11 @@ soundDado.addEventListener("timeupdate", () => {
             ficha.classList.add("ficha");
 
             // Nombre (recortado si es muy largo) dentro de la ficha
-            const nombreCorto = jugador.nombre.length > 8
-                ? jugador.nombre.slice(0, 8) + "…"
-                : jugador.nombre;
+            const nombreCorto =
+                jugador.nombre.length > 8 ? jugador.nombre.slice(0, 8) + "…" : jugador.nombre;
 
             ficha.textContent = nombreCorto;
-            ficha.title = jugador.nombre;  // tooltip con el nombre completo
+            ficha.title = jugador.nombre; // tooltip con el nombre completo
 
             ficha.style.backgroundColor = `hsl(${index * 60}, 70%, 50%)`;
             jugador.ficha = ficha;
@@ -219,7 +208,6 @@ soundDado.addEventListener("timeupdate", () => {
                 salidaFichasDiv.appendChild(ficha);
             }
         });
-
 
         tirarDadoBtn.disabled = false;
         estadoJuego.textContent = "Partida iniciada. Empieza " + jugadores[0].nombre;
@@ -237,7 +225,9 @@ soundDado.addEventListener("timeupdate", () => {
         try {
             soundVictoria.currentTime = 0;
             soundVictoria.play();
-        } catch (e) {}
+        } catch (e) {
+            // Ignoramos errores de sonido (no crítico)
+        }
 
         const casillaGanadora = tablero.children[casillaFinal];
         if (casillaGanadora) {
@@ -284,49 +274,84 @@ soundDado.addEventListener("timeupdate", () => {
         if (numeroCasilla === 12 || numeroCasilla === 46) {
             estadoJuego.textContent = `${jugador.nombre} cae en una casilla de penalización y pierde un turno. ☠️`;
             jugadoresPenalizados.add(jugador.nombre);
-            try { soundPenalizacion.currentTime = 0; soundPenalizacion.play(); } catch (e) {}
+            try {
+                soundPenalizacion.currentTime = 0;
+                soundPenalizacion.play();
+            } catch (e) {
+                // Ignoramos errores de sonido (no crítico)
+            }
 
-        // ⚡ 4 y 22 — impulso (+2)
+            // ⚡ 4 y 22 — impulso (+2)
         } else if (numeroCasilla === 5 || numeroCasilla === 22) {
             jugador.posicion = Math.min(jugador.posicion + 2, casillaFinal);
             numeroCasilla = jugador.posicion + 1;
             estadoJuego.textContent = `${jugador.nombre} recibe un impulso y avanza 2 casillas ✨ (ahora está en la ${numeroCasilla}).`;
-            try { soundPremio.currentTime = 0; soundPremio.play(); } catch (e) {}
+            try {
+                soundPremio.currentTime = 0;
+                soundPremio.play();
+            } catch (e) {
+                // Ignoramos errores de sonido (no crítico)
+            }
 
-        // ⬅️ 40 — retroceso 7
+            // ⬅️ 40 — retroceso 7
         } else if (numeroCasilla === 40) {
             jugador.posicion = Math.max(jugador.posicion - 7, 0);
             numeroCasilla = jugador.posicion + 1;
             estadoJuego.textContent = `${jugador.nombre} cae en la casilla 40 y retrocede 7 casillas hasta la ${numeroCasilla}. ⬅️`;
-            try { soundPenalizacion.currentTime = 0; soundPenalizacion.play(); } catch (e) {}
+            try {
+                soundPenalizacion.currentTime = 0;
+                soundPenalizacion.play();
+            } catch (e) {
+                // Ignoramos errores de sonido (no crítico)
+            }
 
-        // 🟩 18 — trampolín a 36
+            // 🟩 18 — trampolín a 36
         } else if (numeroCasilla === 18) {
             jugador.posicion = 35; // casilla 36
             numeroCasilla = 36;
             estadoJuego.textContent = `${jugador.nombre} cae en el trampolín de la casilla 18 y salta a la 36 🚀`;
-            try { soundPremio.currentTime = 0; soundPremio.play(); } catch (e) {}
+            try {
+                soundPremio.currentTime = 0;
+                soundPremio.play();
+            } catch (e) {
+                // Ignoramos errores de sonido (no crítico)
+            }
 
-        // 🔁 36 — rebote a 18
+            // 🔁 36 — rebote a 18
         } else if (numeroCasilla === 36) {
             jugador.posicion = 17; // casilla 18
             numeroCasilla = 18;
             estadoJuego.textContent = `${jugador.nombre} cae en la casilla 36 y rebota de vuelta a la 18 🔁`;
-            try { soundPremio.currentTime = 0; soundPenalizacion.play(); } catch (e) {}
+            try {
+                soundPremio.currentTime = 0;
+                soundPenalizacion.play();
+            } catch (e) {
+                // Ignoramos errores de sonido (no crítico)
+            }
 
-        // ⏪ 50 — gran retroceso
+            // ⏪ 50 — gran retroceso
         } else if (numeroCasilla === 50) {
             jugador.posicion = 24; // casilla 25
             numeroCasilla = 25;
             estadoJuego.textContent = `${jugador.nombre} sufre un gran retroceso y va a la casilla 25 ❗`;
-            try { soundPenalizacion.currentTime = 0; soundPenalizacion.play(); } catch (e) {}
+            try {
+                soundPenalizacion.currentTime = 0;
+                soundPenalizacion.play();
+            } catch (e) {
+                // Ignoramos errores de sonido (no crítico)
+            }
 
-        // 💀 34 — muerte
+            // 💀 34 — muerte
         } else if (numeroCasilla === 34) {
             jugador.posicion = -1;
             numeroCasilla = 0;
             estadoJuego.textContent = `${jugador.nombre} cae en la casilla de muerte (34) 💀 y vuelve a la SALIDA.`;
-            try { soundMuerte.currentTime = 0; soundMuerte.play(); } catch (e) {}
+            try {
+                soundMuerte.currentTime = 0;
+                soundMuerte.play();
+            } catch (e) {
+                // Ignoramos errores de sonido (no crítico)
+            }
         }
 
         // ¿Ha llegado a meta después de casilla especial?
@@ -355,7 +380,7 @@ soundDado.addEventListener("timeupdate", () => {
         return Math.floor(Math.random() * 6) + 1;
     }
 
-    tirarDadoBtn.addEventListener("click", function() {
+    tirarDadoBtn.addEventListener("click", function () {
         if (juegoTerminado) return;
         if (jugadores.length === 0) {
             estadoJuego.textContent = "Primero inicia la partida.";
@@ -365,7 +390,12 @@ soundDado.addEventListener("timeupdate", () => {
         const jugadorActual = jugadores[turno];
 
         // Sonido de tirar dado
-        try { soundDado.currentTime = 0; soundDado.play(); } catch (e) {}
+        try {
+            soundDado.currentTime = 0;
+            soundDado.play();
+        } catch (e) {
+            // Ignoramos errores de sonido (no crítico)
+        }
 
         if (jugadoresPenalizados.has(jugadorActual.nombre)) {
             estadoJuego.textContent = `${jugadorActual.nombre} pierde su turno por penalización.`;
@@ -382,7 +412,6 @@ soundDado.addEventListener("timeupdate", () => {
 
         estadoJuego.textContent = `${jugadorActual.nombre} tira el dado y saca un ${pasos}.`;
 
-
         if (moverJugador(jugadorActual, pasos)) {
             turno = (turno + 1) % jugadores.length;
             actualizarTurnoUI();
@@ -395,7 +424,7 @@ soundDado.addEventListener("timeupdate", () => {
     if (btnMostrarReglas && contenedorReglas) {
         contenedorReglas.style.display = "none";
 
-        btnMostrarReglas.addEventListener("click", function() {
+        btnMostrarReglas.addEventListener("click", function () {
             if (contenedorReglas.style.display === "none") {
                 contenedorReglas.style.display = "block";
                 btnMostrarReglas.textContent = "Ocultar Reglas";

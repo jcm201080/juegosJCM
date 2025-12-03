@@ -7,7 +7,6 @@ const STORAGE_KEY = "jcm_user";
 window.JCM_USER = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-
     // --- ELEMENTOS DE CABECERA ---
     const openAuthBtn = document.getElementById("openAuthBtn");
     const headerUsernameBox = document.getElementById("headerUsernameBox");
@@ -102,15 +101,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 authGuest.classList.add("hidden");
                 authLogged.classList.remove("hidden");
 
-                if (currentUsernameSpan)
-                    currentUsernameSpan.textContent = user.username;
+                if (currentUsernameSpan) currentUsernameSpan.textContent = user.username;
 
-                if (currentBestScoreSpan)
-                    currentBestScoreSpan.textContent = user.best_score ?? 0;
+                if (currentBestScoreSpan) currentBestScoreSpan.textContent = user.best_score ?? 0;
 
                 if (currentTotalScoreSpan)
                     currentTotalScoreSpan.textContent = user.total_score ?? 0;
-
             } else {
                 authGuest.classList.remove("hidden");
                 authLogged.classList.add("hidden");
@@ -132,13 +128,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (headerLogoutBtn) headerLogoutBtn.classList.toggle("hidden", !user);
 
         // ----- Enlace "Historial" -----
-        if (headerHistoryLink)
-            headerHistoryLink.classList.toggle("hidden", !user);
+        if (headerHistoryLink) headerHistoryLink.classList.toggle("hidden", !user);
 
         // 🔔 Avisar al resto de la app (juegos) de que el usuario ha cambiado
-        window.dispatchEvent(new CustomEvent("jcm:user-changed", {
-            detail: { user }
-        }));
+        window.dispatchEvent(
+            new CustomEvent("jcm:user-changed", {
+                detail: { user },
+            })
+        );
     }
 
     // Aplicar estado inicial
@@ -166,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const resp = await fetch(`${API_BASE}/api/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ username, password }),
                 });
 
                 const data = await resp.json();
@@ -183,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 registerMessage.classList.add("ok");
 
                 setTimeout(closeModal, 600);
-
             } catch (err) {
                 console.error(err);
                 registerMessage.textContent = "Error de conexión con el servidor.";
@@ -215,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const resp = await fetch(`${API_BASE}/api/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ username, password }),
                 });
 
                 const data = await resp.json();
@@ -232,7 +228,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 loginMessage.classList.add("ok");
 
                 setTimeout(closeModal, 500);
-
             } catch (err) {
                 console.error(err);
                 loginMessage.textContent = "Error de conexión con el servidor.";

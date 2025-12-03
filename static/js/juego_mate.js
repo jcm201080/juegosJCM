@@ -183,9 +183,7 @@ function updateGameUserPanel(extraStats = {}) {
         currentUserTotalScoreSpan.textContent = total;
     }
     if (currentUserLevelBestScoreSpan) {
-        const lvlBest =
-            extraStats.level_best ??
-            (currentUserLevelBestScoreSpan.textContent || 0);
+        const lvlBest = extraStats.level_best ?? (currentUserLevelBestScoreSpan.textContent || 0);
         currentUserLevelBestScoreSpan.textContent = lvlBest;
     }
 }
@@ -355,13 +353,14 @@ function generateQuestion() {
                 result = a * b;
                 text = `${a} × ${b}`;
                 break;
-            default:
+            default: {
                 const divisor2 = getRandomInt(2, 9);
                 const dividend2 = getRandomInt(10, 99);
                 result = parseFloat((dividend2 / divisor2).toFixed(1));
                 text = `${dividend2} ÷ ${divisor2}`;
                 currentOperation = "÷";
                 break;
+            }
         }
     }
 
@@ -502,7 +501,7 @@ async function sendScoreToServer(scoreValue) {
             body: JSON.stringify({
                 user_id: currentUser.id,
                 score: scoreValue,
-                level: currentLevel
+                level: currentLevel,
             }),
         });
         const data = await res.json();
@@ -522,7 +521,7 @@ async function sendScoreToServer(scoreValue) {
         updateGameUserPanel({
             best_score: data.best_score,
             total_score: data.total_score,
-            level_best: bestForLevel
+            level_best: bestForLevel,
         });
 
         loadGlobalRanking();
@@ -587,9 +586,7 @@ if (showHistoryBtn && historyList) {
             alert("Inicia sesión para ver tu historial.");
             return;
         }
-        const hidden =
-            historyList.style.display === "none" ||
-            historyList.style.display === "";
+        const hidden = historyList.style.display === "none" || historyList.style.display === "";
         historyList.style.display = hidden ? "block" : "none";
         if (hidden) loadUserHistory();
     });
@@ -598,7 +595,7 @@ if (showHistoryBtn && historyList) {
 // =========================
 //   Inicialización
 // =========================
-loadGlobalRanking();       // Ranking global visible siempre
+loadGlobalRanking(); // Ranking global visible siempre
 if (levelSelect) {
     loadLevelRanking(currentLevel);
 }

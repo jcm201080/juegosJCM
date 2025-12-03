@@ -1,7 +1,7 @@
 /* ========== VARIABLES GLOBALES (MÓVIL POR DEFECTO) ========== */
 :root {
-    --size-casilla: 48px;        /* tamaño casilla en móvil */
-    --size-ficha: 30px;          /* tamaño ficha en móvil */
+    --size-casilla: 48px; /* tamaño casilla en móvil */
+    --size-ficha: 30px; /* tamaño ficha en móvil */
     --tablero-max-width: 95vmin; /* ancho máx. del tablero en móvil */
 }
 
@@ -86,7 +86,7 @@
 }
 
 .back-link {
-    display: block;           /* Con esto ya lo centra */
+    display: block; /* Con esto ya lo centra */
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
@@ -96,7 +96,7 @@
 .back-link:hover {
     background: #666;
     transform: translateY(-2px);
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* En pantallas medianas/grandes → 2 inputs por fila */
@@ -144,7 +144,7 @@
     justify-content: center;
     background-color: #fff;
     border: 1px solid #ccc;
-    font-size: 16px;   /* número de casilla */
+    font-size: 16px; /* número de casilla */
     font-weight: bold;
     position: relative;
     color: black;
@@ -155,7 +155,7 @@
 /* PREMIO (rayo) */
 .casilla.especial {
     background-color: #ffeb7a;
-    background-image: url('/static/img/tablero/rayo.png');
+    background-image: url("/static/img/tablero/rayo.png");
     background-size: 80% 80%;
     background-repeat: no-repeat;
     background-position: center;
@@ -164,7 +164,7 @@
 /* PENALIZACIÓN (cárcel) */
 .casilla.penalizacion {
     background-color: #ff9e9e;
-    background-image: url('/static/img/tablero/carcel1.avif');
+    background-image: url("/static/img/tablero/carcel1.avif");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -183,7 +183,6 @@
     display: none;
 }
 
-
 /* ICONOS: carcel / estrella usando pseudo-elementos */
 .casilla.especial::after,
 .casilla.penalizacion::after {
@@ -195,12 +194,10 @@
     pointer-events: none;
 }
 
-
-
 /* === ICONO TRAMPOLÍN (casilla 18) === */
 .casilla.trampolin {
     background-color: #c3ffe6;
-    background-image: url('/static/img/tablero/trampolin.jpg');
+    background-image: url("/static/img/tablero/trampolin.jpg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -209,7 +206,7 @@
 /* === ICONO TRAMPOLÍN INVERSO (casilla 36) === */
 .casilla.trampolin-back {
     background-color: #ccddff;
-    background-image: url('/static/img/tablero/trampolin_back.png');
+    background-image: url("/static/img/tablero/trampolin_back.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -218,7 +215,7 @@
 /* === RETROCESO NORMAL (casilla 40) === */
 .casilla.retroceso {
     background-color: #ffe4e1;
-    background-image: url('/static/img/tablero/retroceso.jpg');
+    background-image: url("/static/img/tablero/retroceso.jpg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -227,7 +224,7 @@
 /* === RETROCESO FUERTE (casilla 50) === */
 .casilla.retroceso-fuerte {
     background-color: #ffcccc;
-    background-image: url('/static/img/tablero/retroceso_fuerte.jpg');
+    background-image: url("/static/img/tablero/retroceso_fuerte.jpg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -237,7 +234,7 @@
 .casilla.muerte {
     background-color: #000000dd;
     color: white;
-    background-image: url('/static/img/tablero/muerte.png');
+    background-image: url("/static/img/tablero/muerte.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -246,18 +243,17 @@
 /* 🏁 Casilla META (55) */
 .casilla.meta {
     background-color: #d4edda;
-    background-image: url('/static/img/tablero/meta.png'); /* o bandera.png */
+    background-image: url("/static/img/tablero/meta.png"); /* o bandera.png */
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-
 /* ===== CASILLA DE SALIDA ===== */
 .casilla-salida {
     margin: 0 auto 16px;
-    min-width: 260px;                  /* más ancha para 6 fichas */
-    padding: 18px 14px 12px;           /* hueco arriba para la etiqueta SALIDA */
+    min-width: 260px; /* más ancha para 6 fichas */
+    padding: 18px 14px 12px; /* hueco arriba para la etiqueta SALIDA */
     border-radius: 12px;
     border: 2px solid #ffaa00;
     background: linear-gradient(135deg, #fff3cd, #ffe9a3);
@@ -288,7 +284,7 @@
 /* Fichas en una fila, de izda a dcha */
 .salida-fichas {
     display: flex;
-    flex-wrap: nowrap;        /* todas en una sola fila */
+    flex-wrap: nowrap; /* todas en una sola fila */
     justify-content: center;
     gap: 6px;
     width: 100%;
@@ -301,7 +297,7 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
-    display: none;                /* se muestra al ganar */
+    display: none; /* se muestra al ganar */
     align-items: center;
     justify-content: center;
     z-index: 999;
@@ -350,10 +346,8 @@
 .winner-card h2,
 .winner-card p,
 #winnerName {
-    color: #000;   /* texto negro dentro de la tarjeta */
+    color: #000; /* texto negro dentro de la tarjeta */
 }
-
-
 
 /* ========== FICHAS ========== */
 
@@ -401,7 +395,6 @@
     top: 60%;
     left: 70%;
 }
-
 
 /* Fichas dentro de la salida → más pequeñas y sin posición absoluta */
 .casilla-salida .ficha {
@@ -543,14 +536,12 @@
     color: #000; /* importante para que se vea el número */
 }
 
-
-
 /* ========== PC / PORTÁTIL (TABLERO MÁS GRANDE) ========== */
 
 @media (min-width: 992px) {
     :root {
-        --size-casilla: 72px;       /* casillas más grandes en PC */
-        --size-ficha: 40px;         /* fichas más grandes en PC */
+        --size-casilla: 72px; /* casillas más grandes en PC */
+        --size-ficha: 40px; /* fichas más grandes en PC */
         --tablero-max-width: 720px; /* ancho máx. del tablero en PC */
     }
 
