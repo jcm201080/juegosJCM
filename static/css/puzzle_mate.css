@@ -189,7 +189,7 @@ button:active {
 
 #board {
     max-width: 95%;
-    display: inline-block;
+    display: block;
     padding: 16px;
     background: #fff8d8;
     border-radius: 14px;
@@ -272,7 +272,7 @@ button:active {
 /* Móviles: máximo 6 por fila */
 @media (max-width: 480px) {
     #numbers {
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 .num-tile {

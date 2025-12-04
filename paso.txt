@@ -1,0 +1,13 @@
+1) Revisión:
+   npm run lint
+
+2) Reparar:
+   npm run lint:fix
+
+3) Formatear:
+   npm run format
+
+4) Guardar en VS Code:
+   (formatea solo)
+
+5) Subir a GitHub con todo limpio.
