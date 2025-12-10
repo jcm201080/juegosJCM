@@ -1,0 +1,262 @@
+/* static/css/english_games.css */
+/* OJO: no tocar el body, ya lo tienes en style.css */
+
+.english-game-container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 1rem;
+    backdrop-filter: blur(6px);
+}
+
+.english-header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.english-header p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Navegación de modos (colores, números, etc.) */
+.english-nav {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.english-nav .eg-mode-btn {
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: transform 0.1s ease, box-shadow 0.1s ease,
+        background 0.15s ease, border-color 0.15s ease;
+}
+
+.english-nav .eg-mode-btn.active {
+    background: linear-gradient(135deg, #f1c40f, #9b59b6);
+    border-color: transparent;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.6);
+    transform: translateY(-1px);
+}
+
+/* HUD */
+.english-hud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.english-hud .hud-item {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Tablero principal */
+.english-game-board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.english-words-panel,
+.english-targets-panel {
+    background: rgba(0, 0, 0, 0.35);
+    padding: 1rem;
+    border-radius: 0.9rem;
+}
+
+.english-words-panel h2,
+.english-targets-panel h2 {
+    margin-top: 0;
+    margin-bottom: 0.7rem;
+}
+
+.english-words-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Palabras arrastrables */
+.eg-word {
+    padding: 0.4rem 0.75rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.1s ease, box-shadow 0.1s ease,
+        background 0.15s ease, border-color 0.15s ease;
+}
+
+.eg-word.dragging {
+    opacity: 0.8;
+    transform: scale(1.03);
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.8);
+}
+
+.eg-word.eg-word-correct {
+    background: rgba(46, 204, 113, 0.2);
+    border-color: rgba(46, 204, 113, 0.8);
+}
+
+/* Zona de objetivos (colores / números) */
+.english-targets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.75rem;
+}
+
+.eg-target {
+    min-height: 60px;
+    border-radius: 0.7rem;
+    border: 2px dashed rgba(255, 255, 255, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.1s ease, box-shadow 0.1s ease,
+        border-color 0.15s ease, background 0.15s ease;
+}
+
+/* Objetivos de colores */
+.eg-target-color {
+    border-style: solid;
+}
+
+/* Borde extra para colores claros (como el blanco) */
+.eg-target-light {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.6) inset;
+}
+
+/* Objetivos numéricos */
+.eg-target-number {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.eg-target-hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(241, 196, 15, 0.7);
+    border-color: rgba(241, 196, 15, 0.9);
+}
+
+.eg-target-correct {
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.9);
+    border-color: rgba(46, 204, 113, 0.9);
+}
+
+/* Controles y mensaje */
+.english-controls {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.english-message {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.english-message.success {
+    color: #2ecc71;
+}
+
+.english-message.error {
+    color: #e74c3c;
+}
+
+.english-message.info {
+    color: #f1c40f;
+}
+
+/* Responsive para móvil */
+@media (max-width: 768px) {
+    .english-game-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .english-game-board {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Selector de nivel */
+.english-levels {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.english-levels select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Tarjetas de imagen (niveles 3 y 4) */
+.eg-target-image {
+    background: rgba(0, 0, 0, 0.6);
+    border-style: solid;
+    padding: 0.3rem;
+}
+
+.eg-target-image img {
+    max-width: 100%;
+    max-height: 70px;
+    object-fit: contain;
+    border-radius: 0.5rem;
+}
+
+
+/* Selector de nivel */
+.english-levels {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.english-levels select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Imágenes niveles 3 y 4 */
+.eg-target-image {
+    background: rgba(0, 0, 0, 0.6);
+    border-style: solid;
+    padding: 0.3rem;
+}
+
+.eg-target-image img {
+    max-width: 100%;
+    max-height: 70px;
+    object-fit: contain;
+    border-radius: 0.5rem;
+}
+
+/* Cuadros combinados nivel 5 */
+.eg-target-composite {
+    border-style: solid;
+}

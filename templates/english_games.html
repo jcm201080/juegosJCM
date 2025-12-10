@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}English Games - Colores{% endblock %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/english_games.css') }}"
+>
+{% endblock %}
+
+{% block content %}
+<div class="english-game-container">
+    <header class="english-header">
+        <h1>🎨 English Colors</h1>
+        <p id="eg-description">
+            Arrastra la palabra en inglés hasta su pareja correcta.
+        </p>
+    </header>
+    
+    <!-- Selector de nivel -->
+    <section class="english-levels">
+        <label for="eg-level-select">Nivel:</label>
+        <select id="eg-level-select">
+            <option value="1">Nivel 1 — Colores básicos</option>
+            <option value="2">Nivel 2 — 15 colores</option>
+            <option value="3">Nivel 3 — Frases + imágenes (1 color)</option>
+            <option value="4">Nivel 4 — Frases + imágenes (2 colores)</option>
+            <option value="5">Nivel 5 — Combinación de colores (3 colores)</option>
+        </select>
+    </section>
+
+    <!-- HUD: info de partida -->
+    <section class="english-hud">
+        <div class="hud-item">
+            ❤️ Vidas: <span id="eg-lives">3</span>
+        </div>
+        <div class="hud-item">
+            ⭐ Puntuación: <span id="eg-score">0</span>
+        </div>
+        <div class="hud-item">
+            📚 Nivel: <span id="eg-level">1</span>
+        </div>
+        <div class="hud-item">
+            ⏱ Tiempo: <span id="eg-time">0</span>s
+        </div>
+    </section>
+
+    <!-- Área principal del juego -->
+    <main class="english-game-board">
+        <!-- Columna de palabras / frases -->
+        <section class="english-words-panel">
+            <h2>Palabras / frases</h2>
+            <div id="eg-words" class="english-words-list">
+                <!-- Se rellena desde JS -->
+            </div>
+        </section>
+
+        <!-- Columna de objetivos (colores o imágenes) -->
+        <section class="english-targets-panel">
+            <h2 id="eg-targets-title">Objetivos</h2>
+            <div id="eg-targets" class="english-targets-grid">
+                <!-- Se rellena desde JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Zona de controles y mensajes -->
+    <section class="english-controls">
+        <button id="eg-start-btn" class="btn-primary">
+            Empezar nivel
+        </button>
+
+        <p id="eg-message" class="english-message">
+            Pulsa <strong>“Empezar nivel”</strong> para jugar.
+        </p>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/english_games.js') }}"></script>
+{% endblock %}
