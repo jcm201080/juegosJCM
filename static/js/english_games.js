@@ -1,5 +1,16 @@
 // static/js/english_games.js
 document.addEventListener("DOMContentLoaded", () => {
+    // === Usuario ===
+    const API_BASE = window.location.origin;
+    let currentUser = null;
+
+    const userGuestDiv  = document.getElementById("gameUserGuest");
+    const userLoggedDiv = document.getElementById("gameUserLogged");
+    const spanUserName  = document.getElementById("currentUserName");
+    const spanBestScoreGlobal = document.getElementById("currentUserBestScore");
+    const spanTotalScore      = document.getElementById("currentUserTotalScore");
+    const spanBestScoreLevel  = document.getElementById("currentUserLevelBestScore");
+
     // === Estado del juego ===
     let lives = 3;
     let score = 0;
@@ -116,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     alt: "Blue and yellow car"
                 },
                 {
-                    id: "car_red_blue",
+                    id: "car_orange_green",
                     sentence: "This car is orange and green.",
                     img: "/static/img/english/car_orange_green.jpeg",
                     alt: "Orange and green car"
@@ -124,10 +135,10 @@ document.addEventListener("DOMContentLoaded", () => {
             ]
         },
         5: {
-            type: "composite", // NUEVO: frases ↔ cuadro con 3 colores
+            type: "composite", // frases ↔ cuadro con 3 colores
             description: "Nivel 5: Une la frase con el cuadro que contiene esos tres colores.",
-            baseColors: BASE_COLORS, // usamos los 15 como “paleta”
-            count: 5                 // 5 frases/casillas por partida
+            baseColors: BASE_COLORS,
+            count: 5
         }
     };
 
@@ -146,6 +157,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const messageP = document.getElementById("eg-message");
     const startBtn = document.getElementById("eg-start-btn");
     const levelSelect = document.getElementById("eg-level-select");
+
+    // Ranking
+    const rankingBody = document.getElementById("eg-ranking-body");
 
     // === Sonidos ===
     const soundCorrect = new Audio("/static/sounds/correct.wav");
@@ -220,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const sortedIds = trio.map(c => c.id).sort();
             const id = sortedIds.join("_");
-            if (usedIds.has(id)) continue; // evitar combos repetidos en la misma partida
+            if (usedIds.has(id)) continue; // evitar combos repetidos
 
             usedIds.add(id);
             const colors = trio.map(c => c.color);
@@ -242,7 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const levelCfg = COLOR_LEVELS[currentLevel];
         if (!levelCfg) return;
 
-        // Elegimos texto del título de objetivos
         if (levelCfg.type === "simple") {
             targetsTitle.textContent = "Colores";
         } else if (levelCfg.type === "sentence_image") {
@@ -256,10 +269,8 @@ document.addEventListener("DOMContentLoaded", () => {
         wordsContainer.innerHTML   = "";
         targetsContainer.innerHTML = "";
 
-        // items = conjunto de pares palabra/objetivo para este nivel
         let items;
         if (levelCfg.type === "composite") {
-            // Nivel 5: generamos dinámicamente 5 combinaciones nuevas
             items = buildCompositeItems(levelCfg.baseColors, levelCfg.count);
         } else {
             items = shuffleArray([...levelCfg.items]);
@@ -326,7 +337,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 targetsContainer.appendChild(targetEl);
             });
         } else if (levelCfg.type === "composite") {
-            // Nivel 5: frases con 3 colores ↔ cuadros combinados
             // Frases (izquierda)
             items.forEach(item => {
                 const wordEl = document.createElement("div");
@@ -346,7 +356,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 targetEl.dataset.id = item.id;
 
                 const [c1, c2, c3] = item.colors;
-                // 3 franjas verticales de color
                 targetEl.style.background = `linear-gradient(
                     90deg,
                     ${c1} 0%,   ${c1} 33%,
@@ -416,6 +425,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     "🎉 ¡Nivel completado! Puedes cambiar de nivel o repetir para practicar más.",
                     "success"
                 );
+
+                // 🔹 Si hay usuario logueado, guardamos puntuación
+                if (currentUser && currentUser.logged_in) {
+                    saveEnglishColorsScore().catch(err =>
+                        console.error("Error guardando puntuación:", err)
+                    );
+                }
             }
         } else {
             // ❌ Error
@@ -444,6 +460,124 @@ document.addEventListener("DOMContentLoaded", () => {
             .querySelectorAll(".eg-word.dragging")
             .forEach(el => el.classList.remove("dragging"));
     });
+
+    // === Gestión del panel de usuario ===
+    function updateUserPanel(stats = null) {
+        if (!currentUser || !currentUser.logged_in) {
+            userGuestDiv?.classList.remove("hidden");
+            userLoggedDiv?.classList.add("hidden");
+            return;
+        }
+
+        userGuestDiv?.classList.add("hidden");
+        userLoggedDiv?.classList.remove("hidden");
+
+        spanUserName.textContent = currentUser.username || "";
+
+        if (stats) {
+            spanBestScoreGlobal.textContent = stats.best_global ?? 0;
+            spanTotalScore.textContent      = stats.total_score ?? 0;
+            spanBestScoreLevel.textContent  = stats.best_level ?? 0;
+        } else {
+            spanBestScoreGlobal.textContent ||= "0";
+            spanTotalScore.textContent      ||= "0";
+            spanBestScoreLevel.textContent  ||= "0";
+        }
+    }
+
+    async function fetchCurrentUser() {
+        try {
+            const resp = await fetch(`${API_BASE}/api/current-user`);
+            if (!resp.ok) throw new Error("HTTP " + resp.status);
+            const data = await resp.json();
+            currentUser = data;
+        } catch (err) {
+            console.error("Error obteniendo usuario actual:", err);
+            currentUser = null;
+        }
+        updateUserPanel();
+    }
+
+    // === Ranking del juego ===
+    async function fetchRanking() {
+        if (!rankingBody) return;
+
+        try {
+            const resp = await fetch(`${API_BASE}/api/english-colors/ranking`);
+            if (!resp.ok) throw new Error("HTTP " + resp.status);
+            const data = await resp.json();
+            if (!data.ok) throw new Error("Respuesta no OK");
+
+            const ranking = data.ranking || [];
+            rankingBody.innerHTML = "";
+
+            if (ranking.length === 0) {
+                const tr = document.createElement("tr");
+                const td = document.createElement("td");
+                td.colSpan = 4;
+                td.textContent = "Todavía no hay puntuaciones registradas.";
+                tr.appendChild(td);
+                rankingBody.appendChild(tr);
+                return;
+            }
+
+            ranking.forEach((item) => {
+                const tr = document.createElement("tr");
+
+                const tdPos = document.createElement("td");
+                tdPos.textContent = item.position;
+
+                const tdUser = document.createElement("td");
+                tdUser.textContent = item.username;
+
+                const tdBest = document.createElement("td");
+                tdBest.textContent = item.best_score;
+
+                const tdGames = document.createElement("td");
+                tdGames.textContent = item.games_played;
+
+                tr.appendChild(tdPos);
+                tr.appendChild(tdUser);
+                tr.appendChild(tdBest);
+                tr.appendChild(tdGames);
+
+                rankingBody.appendChild(tr);
+            });
+        } catch (err) {
+            console.error("Error cargando ranking:", err);
+        }
+    }
+
+    // === Guardar puntuación del juego en el backend ===
+    async function saveEnglishColorsScore() {
+        const payload = {
+            level: currentLevel,
+            score: score,
+            duration_sec: time
+        };
+
+        const resp = await fetch(`${API_BASE}/api/english-colors/save-score`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!resp.ok) {
+            console.warn("No se pudo guardar la puntuación (HTTP " + resp.status + ")");
+            return;
+        }
+
+        const data = await resp.json();
+        if (data.ok) {
+            updateUserPanel({
+                best_global: data.best_global,
+                total_score: data.total_score,
+                best_level: data.best_level
+            });
+            // Actualizar ranking tras nueva puntuación
+            fetchRanking();
+        }
+    }
 
     // === Cambio de nivel ===
     levelSelect.addEventListener("change", () => {
@@ -480,4 +614,8 @@ document.addEventListener("DOMContentLoaded", () => {
         'Selecciona un nivel y pulsa "Empezar nivel" para jugar.',
         "info"
     );
+
+    // Cargar usuario y ranking al entrar en la página
+    fetchCurrentUser();
+    fetchRanking();
 });

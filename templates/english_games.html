@@ -17,7 +17,33 @@
             Arrastra la palabra en inglés hasta su pareja correcta.
         </p>
     </header>
-    
+
+    <!-- 🔹 Panel de usuario -->
+    <div class="user-panel">
+        <!-- Vista invitado -->
+        <div id="gameUserGuest">
+            <p class="user-status">
+                Estás jugando como <strong>invitado</strong>. Inicia sesión desde la parte superior
+                para guardar tus puntuaciones y aparecer en el ranking.
+            </p>
+        </div>
+
+        <!-- Vista usuario logueado -->
+        <div id="gameUserLogged" class="hidden">
+            <p>👤 Sesión iniciada como: <strong id="currentUserName"></strong></p>
+            <p>
+                🏆 Mejor puntuación global (todos los niveles):
+                <span id="currentUserBestScore">0</span>
+            </p>
+            <p>📈 Puntuación acumulada:
+                <span id="currentUserTotalScore">0</span>
+            </p>
+            <p>🎚 Mejor puntuación en este nivel:
+                <span id="currentUserLevelBestScore">0</span>
+            </p>
+        </div>
+    </div>
+
     <!-- Selector de nivel -->
     <section class="english-levels">
         <label for="eg-level-select">Nivel:</label>
@@ -74,6 +100,27 @@
         <p id="eg-message" class="english-message">
             Pulsa <strong>“Empezar nivel”</strong> para jugar.
         </p>
+    </section>
+
+    <!-- 🔹 Ranking del juego -->
+    <section class="english-ranking">
+        <h2>🏆 Ranking English Colors</h2>
+        <p class="ranking-hint">
+            Se muestran las mejores puntuaciones de todos los jugadores.
+        </p>
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Usuario</th>
+                    <th>Mejor puntuación</th>
+                    <th>Partidas</th>
+                </tr>
+            </thead>
+            <tbody id="eg-ranking-body">
+                <!-- Rellenado por JS -->
+            </tbody>
+        </table>
     </section>
 </div>
 {% endblock %}

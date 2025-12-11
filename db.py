@@ -61,5 +61,24 @@ def init_db():
         """
     )
 
+        # 🔹 NUEVA TABLA: puntuaciones del juego de colores en inglés
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS english_color_scores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            level INTEGER NOT NULL,
+            score INTEGER NOT NULL,
+            duration_sec INTEGER NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+        """
+    )
+
     conn.commit()
     conn.close()
+
+
+    
+

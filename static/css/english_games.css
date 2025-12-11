@@ -209,6 +209,7 @@
     border-radius: 0.5rem;
     border: 1px solid rgba(255, 255, 255, 0.25);
     background: rgba(0, 0, 0, 0.5);
+    color: white;
 }
 
 /* Tarjetas de imagen (niveles 3 y 4) */
@@ -259,4 +260,39 @@
 /* Cuadros combinados nivel 5 */
 .eg-target-composite {
     border-style: solid;
+}
+
+
+.english-ranking {
+    margin-top: 2rem;
+}
+
+.english-ranking h2 {
+    margin-bottom: 0.5rem;
+}
+
+.ranking-hint {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 0.75rem;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.ranking-table th,
+.ranking-table td {
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+}
+
+.ranking-table thead {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.ranking-table tbody tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
 }
