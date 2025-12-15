@@ -4,12 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const API_BASE = window.location.origin;
     let currentUser = null;
 
-    const userGuestDiv  = document.getElementById("gameUserGuest");
+    const userGuestDiv = document.getElementById("gameUserGuest");
     const userLoggedDiv = document.getElementById("gameUserLogged");
-    const spanUserName  = document.getElementById("currentUserName");
+    const spanUserName = document.getElementById("currentUserName");
     const spanBestScoreGlobal = document.getElementById("currentUserBestScore");
-    const spanTotalScore      = document.getElementById("currentUserTotalScore");
-    const spanBestScoreLevel  = document.getElementById("currentUserLevelBestScore");
+    const spanTotalScore = document.getElementById("currentUserTotalScore");
+    const spanBestScoreLevel = document.getElementById("currentUserLevelBestScore");
 
     // === Estado del juego ===
     let lives = 3;
@@ -21,21 +21,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === Colores base (15) ===
     const BASE_COLORS = [
-        { id: "red",      word: "red",        color: "#e74c3c" },
-        { id: "blue",     word: "blue",       color: "#3498db" },
-        { id: "yellow",   word: "yellow",     color: "#f1c40f" },
-        { id: "green",    word: "green",      color: "#2ecc71" },
-        { id: "black",    word: "black",      color: "#000000" },
-        { id: "white",    word: "white",      color: "#ecf0f1" },
-        { id: "orange",   word: "orange",     color: "#e67e22" },
-        { id: "purple",   word: "purple",     color: "#9b59b6" },
-        { id: "pink",     word: "pink",       color: "#ff6baf" },
-        { id: "brown",    word: "brown",      color: "#8e5b3c" },
-        { id: "grey",     word: "grey",       color: "#7f8c8d" },
-        { id: "beige",    word: "beige",      color: "#f5deb3" },
-        { id: "lightblue",word: "light blue", color: "#85c1e9" },
-        { id: "darkgreen",word: "dark green", color: "#145a32" },
-        { id: "gold",     word: "gold",       color: "#ffd700" }
+        { id: "red", word: "red", color: "#e74c3c" },
+        { id: "blue", word: "blue", color: "#3498db" },
+        { id: "yellow", word: "yellow", color: "#f1c40f" },
+        { id: "green", word: "green", color: "#2ecc71" },
+        { id: "black", word: "black", color: "#000000" },
+        { id: "white", word: "white", color: "#ecf0f1" },
+        { id: "orange", word: "orange", color: "#e67e22" },
+        { id: "purple", word: "purple", color: "#9b59b6" },
+        { id: "pink", word: "pink", color: "#ff6baf" },
+        { id: "brown", word: "brown", color: "#8e5b3c" },
+        { id: "grey", word: "grey", color: "#7f8c8d" },
+        { id: "beige", word: "beige", color: "#f5deb3" },
+        { id: "lightblue", word: "light blue", color: "#85c1e9" },
+        { id: "darkgreen", word: "dark green", color: "#145a32" },
+        { id: "gold", word: "gold", color: "#ffd700" },
     ];
 
     // === Configuración de niveles ===
@@ -43,12 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
         1: {
             type: "simple", // palabra ↔ color
             description: "Nivel 1: Arrastra la palabra en inglés hasta el color correcto.",
-            items: BASE_COLORS.slice(0, 6) // 6 colores básicos
+            items: BASE_COLORS.slice(0, 6), // 6 colores básicos
         },
         2: {
             type: "simple",
             description: "Nivel 2: Más colores. ¡Recuerda bien sus nombres en inglés!",
-            items: BASE_COLORS // los 15 colores
+            items: BASE_COLORS, // los 15 colores
         },
         3: {
             type: "sentence_image", // frase ↔ imagen
@@ -58,39 +58,39 @@ document.addEventListener("DOMContentLoaded", () => {
                     id: "cow_black",
                     sentence: "This cow is black.",
                     img: "/static/img/english/cow_black.jpeg",
-                    alt: "Black cow"
+                    alt: "Black cow",
                 },
                 {
                     id: "sheep_white",
                     sentence: "This sheep is white.",
                     img: "/static/img/english/sheep_white.jpeg",
-                    alt: "White sheep"
+                    alt: "White sheep",
                 },
                 {
                     id: "dog_brown",
                     sentence: "This dog is brown.",
                     img: "/static/img/english/dog_brown.jpeg",
-                    alt: "Brown dog"
+                    alt: "Brown dog",
                 },
                 {
                     id: "cat_grey",
                     sentence: "This cat is grey.",
                     img: "/static/img/english/cat_grey.jpeg",
-                    alt: "Grey cat"
+                    alt: "Grey cat",
                 },
                 {
                     id: "car_red",
                     sentence: "This car is red.",
                     img: "/static/img/english/car_red.jpeg",
-                    alt: "Red car"
+                    alt: "Red car",
                 },
                 {
                     id: "car_blue",
                     sentence: "This car is blue.",
                     img: "/static/img/english/car_blue.jpeg",
-                    alt: "Blue car"
-                }
-            ]
+                    alt: "Blue car",
+                },
+            ],
         },
         4: {
             type: "sentence_image",
@@ -100,58 +100,58 @@ document.addEventListener("DOMContentLoaded", () => {
                     id: "cow_red_black",
                     sentence: "This cow is red and black.",
                     img: "/static/img/english/cow_red_black.jpeg",
-                    alt: "Red and black cow"
+                    alt: "Red and black cow",
                 },
                 {
                     id: "sheep_white_black",
                     sentence: "This sheep is white and black.",
                     img: "/static/img/english/sheep_white_black.jpeg",
-                    alt: "White and black sheep"
+                    alt: "White and black sheep",
                 },
                 {
                     id: "dog_brown_white",
                     sentence: "This dog is brown and white.",
                     img: "/static/img/english/dog_brown_white.jpeg",
-                    alt: "Brown and white dog"
+                    alt: "Brown and white dog",
                 },
                 {
                     id: "cat_grey_white",
                     sentence: "This cat is grey and white.",
                     img: "/static/img/english/cat_grey_white.jpeg",
-                    alt: "Grey and white cat"
+                    alt: "Grey and white cat",
                 },
                 {
                     id: "car_blue_yellow",
                     sentence: "This car is blue and yellow.",
                     img: "/static/img/english/car_blue_yellow.jpeg",
-                    alt: "Blue and yellow car"
+                    alt: "Blue and yellow car",
                 },
                 {
                     id: "car_orange_green",
                     sentence: "This car is orange and green.",
                     img: "/static/img/english/car_orange_green.jpeg",
-                    alt: "Orange and green car"
-                }
-            ]
+                    alt: "Orange and green car",
+                },
+            ],
         },
         5: {
             type: "composite", // frases ↔ cuadro con 3 colores
             description: "Nivel 5: Une la frase con el cuadro que contiene esos tres colores.",
             baseColors: BASE_COLORS,
-            count: 5
-        }
+            count: 5,
+        },
     };
 
     // === Referencias al DOM ===
     const livesSpan = document.getElementById("eg-lives");
     const scoreSpan = document.getElementById("eg-score");
     const levelSpan = document.getElementById("eg-level");
-    const timeSpan  = document.getElementById("eg-time");
+    const timeSpan = document.getElementById("eg-time");
 
     const descriptionP = document.getElementById("eg-description");
     const targetsTitle = document.getElementById("eg-targets-title");
 
-    const wordsContainer   = document.getElementById("eg-words");
+    const wordsContainer = document.getElementById("eg-words");
     const targetsContainer = document.getElementById("eg-targets");
 
     const messageP = document.getElementById("eg-message");
@@ -163,9 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === Sonidos ===
     const soundCorrect = new Audio("/static/sounds/correct.wav");
-    const soundWrong   = new Audio("/static/sounds/wrong.wav");
-    const soundWin     = new Audio("/static/sounds/end.wav");
-    const soundLose    = new Audio("/static/sounds/lose.wav"); // opcional
+    const soundWrong = new Audio("/static/sounds/wrong.wav");
+    const soundWin = new Audio("/static/sounds/end.wav");
+    const soundLose = new Audio("/static/sounds/lose.wav"); // opcional
 
     function safePlay(audio) {
         if (!audio) return;
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         livesSpan.textContent = lives;
         scoreSpan.textContent = score;
         levelSpan.textContent = currentLevel;
-        timeSpan.textContent  = time;
+        timeSpan.textContent = time;
     }
 
     function stopTimer() {
@@ -212,10 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
         while (currentIndex !== 0) {
             randomIndex = Math.floor(Math.random() * currentIndex);
             currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [
-                array[randomIndex],
-                array[currentIndex]
-            ];
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
         }
         return array;
     }
@@ -232,20 +229,20 @@ document.addEventListener("DOMContentLoaded", () => {
             const shuffled = shuffleArray([...baseColors]);
             const trio = shuffled.slice(0, 3); // 3 colores distintos
 
-            const sortedIds = trio.map(c => c.id).sort();
+            const sortedIds = trio.map((c) => c.id).sort();
             const id = sortedIds.join("_");
             if (usedIds.has(id)) continue; // evitar combos repetidos
 
             usedIds.add(id);
-            const colors = trio.map(c => c.color);
-            const words  = trio.map(c => c.word);
+            const colors = trio.map((c) => c.color);
+            const words = trio.map((c) => c.word);
 
             const sentence = `This color contains ${words[0]}, ${words[1]} and ${words[2]}.`;
 
             results.push({
                 id,
                 sentence,
-                colors
+                colors,
             });
         }
         return results;
@@ -266,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         descriptionP.textContent = levelCfg.description;
 
-        wordsContainer.innerHTML   = "";
+        wordsContainer.innerHTML = "";
         targetsContainer.innerHTML = "";
 
         let items;
@@ -280,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (levelCfg.type === "simple") {
             // Palabras (izquierda)
-            items.forEach(item => {
+            items.forEach((item) => {
                 const wordEl = document.createElement("div");
                 wordEl.classList.add("eg-word");
                 wordEl.textContent = item.word;
@@ -292,16 +289,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Cuadrados de color (derecha)
             const targets = shuffleArray([...items]);
-            targets.forEach(item => {
+            targets.forEach((item) => {
                 const targetEl = document.createElement("div");
                 targetEl.classList.add("eg-target", "eg-target-color");
                 targetEl.dataset.id = item.id;
                 targetEl.style.backgroundColor = item.color;
-                if (
-                    item.id === "white" ||
-                    item.id === "beige" ||
-                    item.id === "lightblue"
-                ) {
+                if (item.id === "white" || item.id === "beige" || item.id === "lightblue") {
                     targetEl.classList.add("eg-target-light");
                 }
                 targetEl.addEventListener("dragover", onDragOver);
@@ -310,7 +303,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         } else if (levelCfg.type === "sentence_image") {
             // Frases (izquierda)
-            items.forEach(item => {
+            items.forEach((item) => {
                 const wordEl = document.createElement("div");
                 wordEl.classList.add("eg-word");
                 wordEl.textContent = item.sentence;
@@ -322,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Imágenes (derecha)
             const targets = shuffleArray([...items]);
-            targets.forEach(item => {
+            targets.forEach((item) => {
                 const targetEl = document.createElement("div");
                 targetEl.classList.add("eg-target", "eg-target-image");
                 targetEl.dataset.id = item.id;
@@ -338,7 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         } else if (levelCfg.type === "composite") {
             // Frases (izquierda)
-            items.forEach(item => {
+            items.forEach((item) => {
                 const wordEl = document.createElement("div");
                 wordEl.classList.add("eg-word");
                 wordEl.textContent = item.sentence;
@@ -350,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Cuadros combinados (derecha)
             const targets = shuffleArray([...items]);
-            targets.forEach(item => {
+            targets.forEach((item) => {
                 const targetEl = document.createElement("div");
                 targetEl.classList.add("eg-target", "eg-target-composite");
                 targetEl.dataset.id = item.id;
@@ -428,7 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // 🔹 Si hay usuario logueado, guardamos puntuación
                 if (currentUser && currentUser.logged_in) {
-                    saveEnglishColorsScore().catch(err =>
+                    saveEnglishColorsScore().catch((err) =>
                         console.error("Error guardando puntuación:", err)
                     );
                 }
@@ -448,9 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "😢 Te has quedado sin vidas. Pulsa “Empezar nivel” para intentarlo de nuevo.",
                     "error"
                 );
-                document
-                    .querySelectorAll(".eg-word")
-                    .forEach(el => (el.draggable = false));
+                document.querySelectorAll(".eg-word").forEach((el) => (el.draggable = false));
             }
         }
     }
@@ -458,7 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("dragend", () => {
         document
             .querySelectorAll(".eg-word.dragging")
-            .forEach(el => el.classList.remove("dragging"));
+            .forEach((el) => el.classList.remove("dragging"));
     });
 
     // === Gestión del panel de usuario ===
@@ -476,12 +467,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (stats) {
             spanBestScoreGlobal.textContent = stats.best_global ?? 0;
-            spanTotalScore.textContent      = stats.total_score ?? 0;
-            spanBestScoreLevel.textContent  = stats.best_level ?? 0;
+            spanTotalScore.textContent = stats.total_score ?? 0;
+            spanBestScoreLevel.textContent = stats.best_level ?? 0;
         } else {
             spanBestScoreGlobal.textContent ||= "0";
-            spanTotalScore.textContent      ||= "0";
-            spanBestScoreLevel.textContent  ||= "0";
+            spanTotalScore.textContent ||= "0";
+            spanBestScoreLevel.textContent ||= "0";
         }
     }
 
@@ -553,13 +544,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = {
             level: currentLevel,
             score: score,
-            duration_sec: time
+            duration_sec: time,
         };
 
         const resp = await fetch(`${API_BASE}/api/english-colors/save-score`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
         });
 
         if (!resp.ok) {
@@ -572,7 +563,7 @@ document.addEventListener("DOMContentLoaded", () => {
             updateUserPanel({
                 best_global: data.best_global,
                 total_score: data.total_score,
-                best_level: data.best_level
+                best_level: data.best_level,
             });
             // Actualizar ranking tras nueva puntuación
             fetchRanking();
@@ -602,18 +593,12 @@ document.addEventListener("DOMContentLoaded", () => {
         updateHUD();
         renderBoard();
         startTimer();
-        setMessage(
-            "¡Empieza! Arrastra cada palabra / frase hasta su pareja correcta.",
-            "info"
-        );
+        setMessage("¡Empieza! Arrastra cada palabra / frase hasta su pareja correcta.", "info");
     });
 
     // === Inicialización ===
     updateHUD();
-    setMessage(
-        'Selecciona un nivel y pulsa "Empezar nivel" para jugar.',
-        "info"
-    );
+    setMessage('Selecciona un nivel y pulsa "Empezar nivel" para jugar.', "info");
 
     // Cargar usuario y ranking al entrar en la página
     fetchCurrentUser();

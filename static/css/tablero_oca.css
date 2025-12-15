@@ -549,3 +549,66 @@
         width: 60%;
     }
 }
+
+/* =========================================================
+   🌐 TABLERO ONLINE — estilos añadidos
+   (panel crear / unirse a partida)
+   ========================================================= */
+
+#onlinePanel {
+    margin-top: 20px;
+}
+
+#onlinePanel .config-block {
+    margin-bottom: 12px;
+}
+
+#onlinePanel input[type="text"] {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    min-width: 180px;
+}
+
+#onlinePanel button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Código de partida y player id */
+#onlinePanel span {
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Botón online destacado */
+.btn-primary {
+    background-color: #ff6600;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #e65c00;
+}
+
+/* Responsive pequeño */
+@media (max-width: 480px) {
+    #onlinePanel .config-block {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #onlinePanel input[type="text"] {
+        width: 100%;
+    }
+
+    #onlinePanel button {
+        width: 100%;
+    }
+}

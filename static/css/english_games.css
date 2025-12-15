@@ -36,8 +36,11 @@
     background: rgba(0, 0, 0, 0.4);
     cursor: pointer;
     font-size: 0.95rem;
-    transition: transform 0.1s ease, box-shadow 0.1s ease,
-        background 0.15s ease, border-color 0.15s ease;
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
 }
 
 .english-nav .eg-mode-btn.active {
@@ -97,8 +100,11 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: grab;
     user-select: none;
-    transition: transform 0.1s ease, box-shadow 0.1s ease,
-        background 0.15s ease, border-color 0.15s ease;
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
 }
 
 .eg-word.dragging {
@@ -128,8 +134,11 @@
     justify-content: center;
     font-weight: 600;
     font-size: 1rem;
-    transition: transform 0.1s ease, box-shadow 0.1s ease,
-        border-color 0.15s ease, background 0.15s ease;
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        border-color 0.15s ease,
+        background 0.15s ease;
 }
 
 /* Objetivos de colores */
@@ -226,7 +235,6 @@
     border-radius: 0.5rem;
 }
 
-
 /* Selector de nivel */
 .english-levels {
     margin-top: 1rem;
@@ -261,7 +269,6 @@
 .eg-target-composite {
     border-style: solid;
 }
-
 
 .english-ranking {
     margin-top: 2rem;

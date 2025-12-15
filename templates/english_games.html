@@ -1,21 +1,11 @@
-{% extends "base.html" %}
-
-{% block title %}English Games - Colores{% endblock %}
-
-{% block extra_css %}
-<link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='css/english_games.css') }}"
->
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}English Games - Colores{% endblock %} {% block extra_css
+%}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/english_games.css') }}" />
+{% endblock %} {% block content %}
 <div class="english-game-container">
     <header class="english-header">
         <h1>🎨 English Colors</h1>
-        <p id="eg-description">
-            Arrastra la palabra en inglés hasta su pareja correcta.
-        </p>
+        <p id="eg-description">Arrastra la palabra en inglés hasta su pareja correcta.</p>
     </header>
 
     <!-- 🔹 Panel de usuario -->
@@ -35,10 +25,12 @@
                 🏆 Mejor puntuación global (todos los niveles):
                 <span id="currentUserBestScore">0</span>
             </p>
-            <p>📈 Puntuación acumulada:
+            <p>
+                📈 Puntuación acumulada:
                 <span id="currentUserTotalScore">0</span>
             </p>
-            <p>🎚 Mejor puntuación en este nivel:
+            <p>
+                🎚 Mejor puntuación en este nivel:
                 <span id="currentUserLevelBestScore">0</span>
             </p>
         </div>
@@ -58,18 +50,10 @@
 
     <!-- HUD: info de partida -->
     <section class="english-hud">
-        <div class="hud-item">
-            ❤️ Vidas: <span id="eg-lives">3</span>
-        </div>
-        <div class="hud-item">
-            ⭐ Puntuación: <span id="eg-score">0</span>
-        </div>
-        <div class="hud-item">
-            📚 Nivel: <span id="eg-level">1</span>
-        </div>
-        <div class="hud-item">
-            ⏱ Tiempo: <span id="eg-time">0</span>s
-        </div>
+        <div class="hud-item">❤️ Vidas: <span id="eg-lives">3</span></div>
+        <div class="hud-item">⭐ Puntuación: <span id="eg-score">0</span></div>
+        <div class="hud-item">📚 Nivel: <span id="eg-level">1</span></div>
+        <div class="hud-item">⏱ Tiempo: <span id="eg-time">0</span>s</div>
     </section>
 
     <!-- Área principal del juego -->
@@ -93,9 +77,7 @@
 
     <!-- Zona de controles y mensajes -->
     <section class="english-controls">
-        <button id="eg-start-btn" class="btn-primary">
-            Empezar nivel
-        </button>
+        <button id="eg-start-btn" class="btn-primary">Empezar nivel</button>
 
         <p id="eg-message" class="english-message">
             Pulsa <strong>“Empezar nivel”</strong> para jugar.
@@ -105,9 +87,7 @@
     <!-- 🔹 Ranking del juego -->
     <section class="english-ranking">
         <h2>🏆 Ranking English Colors</h2>
-        <p class="ranking-hint">
-            Se muestran las mejores puntuaciones de todos los jugadores.
-        </p>
+        <p class="ranking-hint">Se muestran las mejores puntuaciones de todos los jugadores.</p>
         <table class="ranking-table">
             <thead>
                 <tr>
@@ -123,8 +103,6 @@
         </table>
     </section>
 </div>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{{ url_for('static', filename='js/english_games.js') }}"></script>
 {% endblock %}

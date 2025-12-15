@@ -16,6 +16,10 @@ def juego_mate():
 def tablero_oca():
     return render_template("tablero_oca.html")
 
+@main_bp.route("/tablero-oca-online")
+def tablero_oca_online():
+    return render_template("tablero_oca_online.html")
+
 @main_bp.route("/puzzle-mate")
 def puzzle_mate():
     return render_template("puzzle_mate.html")
