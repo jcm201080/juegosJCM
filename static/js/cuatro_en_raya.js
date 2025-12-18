@@ -36,9 +36,8 @@
   }
 
   function checkWinner(grid) {
-    // grid[r][c] -> "R" o "Y" o ""
     const dirs = [
-      [0,1], [1,0], [1,1], [1,-1]
+      [0, 1], [1, 0], [1, 1], [1, -1]
     ];
 
     for (let r = 0; r < ROWS; r++) {
@@ -47,17 +46,15 @@
         if (!p) continue;
 
         for (const [dr, dc] of dirs) {
-          const cells = [[r,c]];
+          const cells = [[r, c]];
           for (let k = 1; k < 4; k++) {
-            const rr = r + dr*k;
-            const cc = c + dc*k;
+            const rr = r + dr * k;
+            const cc = c + dc * k;
             if (rr < 0 || rr >= ROWS || cc < 0 || cc >= COLS) break;
             if (grid[rr][cc] !== p) break;
-            cells.push([rr,cc]);
+            cells.push([rr, cc]);
           }
-          if (cells.length === 4) {
-            return { winner: p, cells };
-          }
+          if (cells.length === 4) return { winner: p, cells };
         }
       }
     }
@@ -65,7 +62,6 @@
   }
 
   function isDraw(grid) {
-    // si la fila 0 no tiene huecos -> lleno
     return grid[0].every(v => v);
   }
 
@@ -87,7 +83,7 @@
     const playAgainBtn = document.getElementById("c4-play-again");
 
     let grid = Array.from({ length: ROWS }, () => Array(COLS).fill(""));
-    let turn = "R"; // R=rojo, Y=amarillo
+    let turn = "R";
     let locked = false;
 
     function setTurn() {
@@ -136,7 +132,6 @@
 
     function dropDisc(col) {
       if (locked) return false;
-      // desde abajo hacia arriba
       for (let r = ROWS - 1; r >= 0; r--) {
         if (!grid[r][col]) {
           grid[r][col] = turn;
@@ -147,7 +142,7 @@
     }
 
     function markWinCells(winCells) {
-      winCells.forEach(([r,c]) => {
+      winCells.forEach(([r, c]) => {
         const cell = boardEl.querySelector(`.c4-cell[data-r="${r}"][data-c="${c}"]`);
         if (cell) cell.classList.add("win");
       });
@@ -171,15 +166,17 @@
     }
 
     function cpuMove() {
-      // CPU básica: elige una columna al azar donde quepa
       const valid = [];
       for (let c = 0; c < COLS; c++) if (!grid[0][c]) valid.push(c);
       if (valid.length === 0) return;
+
       const col = valid[Math.floor(Math.random() * valid.length)];
       dropDisc(col);
+
       const w = checkWinner(grid);
       if (w) return endGame(w);
       if (isDraw(grid)) return endGame(null);
+
       turn = "R";
       paint();
     }
@@ -197,7 +194,6 @@
         turn = (turn === "R") ? "Y" : "R";
         paint();
       } else {
-        // vs CPU: jugador es Rojo (R), CPU es Amarillo (Y)
         turn = "Y";
         paint();
         setTimeout(cpuMove, 250);
@@ -205,7 +201,6 @@
     }
 
     function wireEvents() {
-      // clicks en botones de columna
       if (colsEl) {
         colsEl.querySelectorAll(".c4-col-btn").forEach((btn) => {
           btn.addEventListener("click", () => {
@@ -216,7 +211,6 @@
         });
       }
 
-      // click directo sobre el tablero (calcula columna por data-c)
       boardEl.addEventListener("click", (ev) => {
         if (locked) return;
         const cell = ev.target.closest(".c4-cell");
@@ -246,4 +240,7 @@
     reset();
   }
 
-  window.initConnect4 = ini
+  // ✅ Esto es lo que te falta:
+  window.initConnect4 = initConnect4;
+  document.addEventListener("DOMContentLoaded", initConnect4);
+})();
