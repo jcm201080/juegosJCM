@@ -420,7 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
                 // 🔹 Si hay usuario logueado, guardamos puntuación
-                if (currentUser && currentUser.logged_in) {
+                if (window.JCM_USER && window.JCM_USER.id) {
                     saveEnglishColorsScore().catch((err) =>
                         console.error("Error guardando puntuación:", err)
                     );
@@ -454,12 +454,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === Gestión del panel de usuario ===
     function updateUserPanel(stats = null) {
-        if (!currentUser || !currentUser.logged_in) {
+        // Sin usuario
+        if (!currentUser) {
             userGuestDiv?.classList.remove("hidden");
             userLoggedDiv?.classList.add("hidden");
             return;
         }
 
+        // Con usuario
         userGuestDiv?.classList.add("hidden");
         userLoggedDiv?.classList.remove("hidden");
 
@@ -476,18 +478,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    async function fetchCurrentUser() {
-        try {
-            const resp = await fetch(`${API_BASE}/api/current-user`);
-            if (!resp.ok) throw new Error("HTTP " + resp.status);
-            const data = await resp.json();
-            currentUser = data;
-        } catch (err) {
-            console.error("Error obteniendo usuario actual:", err);
-            currentUser = null;
-        }
+    // ✅ Sin endpoint /api/current-user: sincronizamos con auth.js
+    function syncUserFromAuth() {
+        currentUser = window.JCM_USER ? { ...window.JCM_USER } : null;
         updateUserPanel();
     }
+
+    // Si cambia el usuario (login/logout), refrescamos
+    window.addEventListener("jcm:user-changed", (ev) => {
+        const user = ev.detail?.user || null;
+        currentUser = user ? { ...user } : null;
+        updateUserPanel();
+    });
 
     // === Ranking del juego ===
     async function fetchRanking() {
@@ -549,6 +551,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const resp = await fetch(`${API_BASE}/api/english-colors/save-score`, {
             method: "POST",
+            credentials: "include", // ✅ CLAVE para que viaje la cookie de sesión
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         });
@@ -600,7 +603,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateHUD();
     setMessage('Selecciona un nivel y pulsa "Empezar nivel" para jugar.', "info");
 
-    // Cargar usuario y ranking al entrar en la página
-    fetchCurrentUser();
+    // Sincronizar usuario y cargar ranking al entrar
+    syncUserFromAuth();
     fetchRanking();
 });

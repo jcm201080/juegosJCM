@@ -12,7 +12,12 @@ from routes.english_games_routes import english_games_bp
 from routes.oca_online_apy import oca_api
 
 app = Flask(__name__)
-CORS(app)
+
+# ✅ CLAVE PARA SESIONES (OBLIGATORIO)
+app.config["SECRET_KEY"] = "jcma4812"
+
+# ✅ Permitir cookies/sesión en fetch(credentials:"include")
+CORS(app, supports_credentials=True)
 
 # Inicializar base de datos
 with app.app_context():
@@ -25,6 +30,7 @@ app.register_blueprint(game_bp)
 app.register_blueprint(puzzle_bp)
 app.register_blueprint(english_games_bp)
 app.register_blueprint(oca_api)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

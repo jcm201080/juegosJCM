@@ -24,6 +24,10 @@ def tablero_oca_online():
 def puzzle_mate():
     return render_template("puzzle_mate.html")
 
+@main_bp.route("/juegos-linea")
+def juegos_linea():
+    return render_template("juego_linea.html")
+
 @main_bp.route("/historial")
 def historial():
     return render_template("historial.html")

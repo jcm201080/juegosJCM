@@ -1,0 +1,301 @@
+/* static/css/juegos_en_linea.css */
+/* ⚠️ No tocamos body: estilos encapsulados */
+
+.online-games-container {
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+  padding: 18px 0 40px;
+}
+
+.online-header {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+  margin-bottom: 18px;
+}
+
+.online-header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+}
+
+.online-subtitle {
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.35;
+}
+
+.online-game-card {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.online-game-card-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.online-game-card-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.online-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.online-label {
+  opacity: 0.9;
+}
+
+.online-select {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+  outline: none;
+}
+
+.online-select:focus {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Layout general de cada juego */
+.online-game-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .online-game-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.online-board-wrap {
+  position: relative;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.online-side {
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.online-status p {
+  margin: 0 0 8px;
+}
+
+.online-help h3 {
+  margin: 10px 0 8px;
+  font-size: 1.05rem;
+}
+
+.online-help ul {
+  margin: 0;
+  padding-left: 18px;
+  opacity: 0.95;
+}
+
+.online-message {
+  margin: 12px 2px 0;
+  opacity: 0.9;
+}
+
+/* ===========================================================
+   TRES EN RAYA (3x3)
+=========================================================== */
+
+.ttt-board {
+  width: min(420px, 86vw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ttt-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+}
+/* Colores por ficha (por si algo pisa el color general) */
+.ttt-cell.is-x {
+  color: rgba(255,255,255,0.92);
+}
+
+.ttt-cell.is-o {
+  color: rgba(255,255,255,0.92);
+}
+
+
+.ttt-cell:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ttt-cell:active {
+  transform: translateY(0px) scale(0.99);
+}
+
+.ttt-cell.disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.ttt-cell.win {
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ===========================================================
+   CUATRO EN RAYA (7x6)
+=========================================================== */
+
+.c4-wrap {
+  padding-top: 10px;
+}
+
+/* fila superior de columnas "clicables" (opcional UX) */
+.c4-columns {
+  width: min(560px, 92vw);
+  margin: 0 auto 10px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.c4-col-btn {
+  height: 38px;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.c4-col-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.c4-board {
+  width: min(560px, 92vw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+
+  padding: 14px;
+  border-radius: 18px;
+
+  /* Azul tipo tablero */
+  background: rgba(25, 90, 200, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* agujeros */
+.c4-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+
+  /* “hueco” */
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 6px rgba(0, 0, 0, 0.22);
+}
+
+/* ficha */
+.c4-disc {
+  width: 86%;
+  height: 86%;
+  border-radius: 999px;
+  transform: scale(0.98);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+/* colores de fichas */
+.c4-disc.red {
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), rgba(231, 76, 60, 0.95) 55%, rgba(180, 30, 20, 0.95));
+}
+
+.c4-disc.yellow {
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), rgba(241, 196, 15, 0.95) 55%, rgba(170, 120, 0, 0.95));
+}
+
+/* celda ganadora */
+.c4-cell.win {
+  outline: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.08);
+}
+
+/* Overlay ganador */
+.online-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 18px;
+}
+
+.online-overlay.hidden {
+  display: none;
+}
+
+.online-overlay-box {
+  width: min(420px, 92vw);
+  border-radius: 18px;
+  padding: 18px 16px;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  text-align: center;
+}
+
+.online-overlay-box h3 {
+  margin: 0 0 6px;
+  font-size: 1.4rem;
+}
+
+.online-overlay-box p {
+  margin: 0 0 12px;
+  opacity: 0.95;
+}

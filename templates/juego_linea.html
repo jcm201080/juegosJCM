@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Juegos en línea{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/juegos_linea.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="online-games-container">
+
+  <header class="online-header">
+    <h1>🌐 Juegos en línea</h1>
+    <p class="online-subtitle">
+      Arriba: <strong>Tres en raya</strong>. Abajo: <strong>Cuatro en raya</strong>.
+      Aquí se viene a ganar… o a echarle la culpa al ratón 😄
+    </p>
+  </header>
+
+  <!-- =========================================================
+       🧩 JUEGO 1: TRES EN RAYA (ARRIBA)
+  ========================================================== -->
+  <section class="online-game-card" id="ttt-section">
+    <div class="online-game-card-header">
+      <h2>⭕❌ Tres en raya</h2>
+
+      <div class="online-controls">
+        <label class="online-label" for="ttt-mode">Modo:</label>
+        <select id="ttt-mode" class="online-select">
+          <option value="local">2 jugadores (local)</option>
+          <option value="cpu">Vs CPU</option>
+          <!-- más adelante: online -->
+        </select>
+
+        <button id="ttt-reset" class="btn-primary">Reiniciar</button>
+      </div>
+    </div>
+
+    <div class="online-game-body">
+      <div class="online-game-layout">
+        <!-- Tablero -->
+        <div class="online-board-wrap">
+          <div id="ttt-board" class="ttt-board" aria-label="Tablero tres en raya">
+            <!-- Se rellena con JS -->
+          </div>
+        </div>
+
+        <!-- Panel lateral -->
+        <aside class="online-side">
+          <div class="online-status">
+            <p><strong>Turno:</strong> <span id="ttt-turn">-</span></p>
+            <p><strong>Estado:</strong> <span id="ttt-status">Listo</span></p>
+          </div>
+
+          <div class="online-help">
+            <h3>Reglas rápidas</h3>
+            <ul>
+              <li>Consigue 3 en línea (horizontal, vertical o diagonal).</li>
+              <li>Si se llena y nadie gana: empate.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <p id="ttt-message" class="online-message">Pulsa “Reiniciar” para empezar.</p>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       🔴🟡 JUEGO 2: CUATRO EN RAYA (ABAJO)
+  ========================================================== -->
+  <section class="online-game-card" id="c4-section">
+    <div class="online-game-card-header">
+      <h2>🔴🟡 Cuatro en raya</h2>
+
+      <div class="online-controls">
+        <label class="online-label" for="c4-mode">Modo:</label>
+        <select id="c4-mode" class="online-select">
+          <option value="local">2 jugadores (local)</option>
+          <option value="cpu">Vs CPU</option>
+          <!-- más adelante: online -->
+        </select>
+
+        <button id="c4-reset" class="btn-primary">Reiniciar</button>
+      </div>
+    </div>
+
+    <div class="online-game-body">
+      <div class="online-game-layout">
+        <!-- Tablero -->
+        <div class="online-board-wrap c4-wrap">
+          <!-- Zona clickable de columnas (opcional para UX, JS lo usará) -->
+          <div id="c4-columns" class="c4-columns" aria-label="Columnas cuatro en raya">
+            <!-- Se rellena con JS -->
+          </div>
+
+          <div id="c4-board" class="c4-board" aria-label="Tablero cuatro en raya">
+            <!-- Se rellena con JS -->
+          </div>
+
+          <!-- Overlay ganador -->
+          <div id="c4-overlay" class="online-overlay hidden">
+            <div class="online-overlay-box">
+              <h3 id="c4-winner-title">¡Victoria!</h3>
+              <p id="c4-winner-text">-</p>
+              <button id="c4-play-again" class="btn-primary">Jugar otra</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel lateral -->
+        <aside class="online-side">
+          <div class="online-status">
+            <p><strong>Turno:</strong> <span id="c4-turn">-</span></p>
+            <p><strong>Estado:</strong> <span id="c4-status">Listo</span></p>
+          </div>
+
+          <div class="online-help">
+            <h3>Reglas rápidas</h3>
+            <ul>
+              <li>Elige una columna: la ficha cae al fondo.</li>
+              <li>Gana quien haga 4 en línea (cualquier dirección).</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <p id="c4-message" class="online-message">Pulsa “Reiniciar” para empezar.</p>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/tres_en_raya.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cuatro_en_raya.js') }}"></script>
+<script src="{{ url_for('static', filename='js/juegos_en_linea.js') }}"></script>
+{% endblock %}
