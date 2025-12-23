@@ -2,127 +2,127 @@
 /* ⚠️ No tocamos body: estilos encapsulados */
 
 .online-games-container {
-  width: min(1100px, 92vw);
-  margin: 0 auto;
-  padding: 18px 0 40px;
+    width: min(1100px, 92vw);
+    margin: 0 auto;
+    padding: 18px 0 40px;
 }
 
 .online-header {
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(6px);
-  margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(6px);
+    margin-bottom: 18px;
 }
 
 .online-header h1 {
-  margin: 0 0 6px;
-  font-size: clamp(1.4rem, 2.2vw, 2rem);
+    margin: 0 0 6px;
+    font-size: clamp(1.4rem, 2.2vw, 2rem);
 }
 
 .online-subtitle {
-  margin: 0;
-  opacity: 0.9;
-  line-height: 1.35;
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.35;
 }
 
 .online-game-card {
-  margin-top: 18px;
-  padding: 16px;
-  border-radius: 16px;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .online-game-card-header {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
 }
 
 .online-game-card-header h2 {
-  margin: 0;
-  font-size: 1.25rem;
+    margin: 0;
+    font-size: 1.25rem;
 }
 
 .online-controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .online-label {
-  opacity: 0.9;
+    opacity: 0.9;
 }
 
 .online-select {
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.25);
-  color: inherit;
-  outline: none;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.25);
+    color: inherit;
+    outline: none;
 }
 
 .online-select:focus {
-  border-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.25);
 }
 
 /* Layout general de cada juego */
 .online-game-layout {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 16px;
-  align-items: start;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+    align-items: start;
 }
 
 @media (max-width: 900px) {
-  .online-game-layout {
-    grid-template-columns: 1fr;
-  }
+    .online-game-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
 .online-board-wrap {
-  position: relative;
-  padding: 14px;
-  border-radius: 16px;
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 
-  /* ✅ CAMBIO CLAVE: no recortar contenido en móvil (última fila) */
-  overflow: visible;
+    /* ✅ CAMBIO CLAVE: no recortar contenido en móvil (última fila) */
+    overflow: visible;
 }
 
 .online-side {
-  padding: 14px;
-  border-radius: 16px;
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .online-status p {
-  margin: 0 0 8px;
+    margin: 0 0 8px;
 }
 
 .online-help h3 {
-  margin: 10px 0 8px;
-  font-size: 1.05rem;
+    margin: 10px 0 8px;
+    font-size: 1.05rem;
 }
 
 .online-help ul {
-  margin: 0;
-  padding-left: 18px;
-  opacity: 0.95;
+    margin: 0;
+    padding-left: 18px;
+    opacity: 0.95;
 }
 
 .online-message {
-  margin: 12px 2px 0;
-  opacity: 0.9;
+    margin: 12px 2px 0;
+    opacity: 0.9;
 }
 
 /* ===========================================================
@@ -130,55 +130,58 @@
 =========================================================== */
 
 .ttt-board {
-  width: min(420px, 86vw);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+    width: min(420px, 86vw);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }
 
 .ttt-cell {
-  aspect-ratio: 1 / 1;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  user-select: none;
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    user-select: none;
 
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease;
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 800;
-  color: rgba(255,255,255,0.92);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition:
+        transform 0.08s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.92);
 }
 /* Colores por ficha (por si algo pisa el color general) */
 .ttt-cell.is-x {
-  color: rgba(255,255,255,0.92);
+    color: rgba(255, 255, 255, 0.92);
 }
 
 .ttt-cell.is-o {
-  color: rgba(255,255,255,0.92);
+    color: rgba(255, 255, 255, 0.92);
 }
 
 .ttt-cell:hover {
-  transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .ttt-cell:active {
-  transform: translateY(0px) scale(0.99);
+    transform: translateY(0px) scale(0.99);
 }
 
 .ttt-cell.disabled {
-  cursor: not-allowed;
-  opacity: 0.85;
+    cursor: not-allowed;
+    opacity: 0.85;
 }
 
 .ttt-cell.win {
-  outline: 2px solid rgba(255, 255, 255, 0.35);
-  background: rgba(255, 255, 255, 0.12);
+    outline: 2px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.12);
 }
 
 /* ===========================================================
@@ -186,119 +189,132 @@
 =========================================================== */
 
 .c4-wrap {
-  padding-top: 10px;
+    padding-top: 10px;
 }
 
 /* fila superior de columnas "clicables" (opcional UX) */
 .c4-columns {
-  width: min(560px, 92vw);
-  margin: 0 auto 10px;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
+    width: min(560px, 92vw);
+    margin: 0 auto 10px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
 }
 
 .c4-col-btn {
-  height: 38px;
-  border-radius: 12px;
-  cursor: pointer;
-  user-select: none;
+    height: 38px;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
 
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: transform 0.08s ease, background 0.15s ease, border-color 0.15s ease;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition:
+        transform 0.08s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
 }
 
 .c4-col-btn:hover {
-  transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .c4-board {
-  width: min(560px, 92vw);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+    width: min(560px, 92vw);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
 
-  padding: 14px;
-  border-radius: 18px;
+    padding: 14px;
+    border-radius: 18px;
 
-  /* Azul tipo tablero */
-  background: rgba(25, 90, 200, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+    /* Azul tipo tablero */
+    background: rgba(25, 90, 200, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* agujeros */
 .c4-cell {
-  aspect-ratio: 1 / 1;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
+    aspect-ratio: 1 / 1;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
 
-  /* “hueco” */
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: inset 0 0 0 6px rgba(0, 0, 0, 0.22);
+    /* “hueco” */
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 0 6px rgba(0, 0, 0, 0.22);
 }
 
 /* ficha */
 .c4-disc {
-  width: 86%;
-  height: 86%;
-  border-radius: 999px;
-  transform: scale(0.98);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+    width: 86%;
+    height: 86%;
+    border-radius: 999px;
+    transform: scale(0.98);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 /* colores de fichas */
 .c4-disc.red {
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), rgba(231, 76, 60, 0.95) 55%, rgba(180, 30, 20, 0.95));
+    background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255, 255, 255, 0.45),
+        rgba(231, 76, 60, 0.95) 55%,
+        rgba(180, 30, 20, 0.95)
+    );
 }
 
 .c4-disc.yellow {
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.45), rgba(241, 196, 15, 0.95) 55%, rgba(170, 120, 0, 0.95));
+    background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255, 255, 255, 0.45),
+        rgba(241, 196, 15, 0.95) 55%,
+        rgba(170, 120, 0, 0.95)
+    );
 }
 
 /* celda ganadora */
 .c4-cell.win {
-  outline: 2px solid rgba(255, 255, 255, 0.35);
-  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.08);
+    outline: 2px solid rgba(255, 255, 255, 0.35);
+    box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.08);
 }
 
 /* Overlay ganador */
 .online-overlay {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(0, 0, 0, 0.55);
-  padding: 18px;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 18px;
 }
 
 .online-overlay.hidden {
-  display: none;
+    display: none;
 }
 
 .online-overlay-box {
-  width: min(420px, 92vw);
-  border-radius: 18px;
-  padding: 18px 16px;
-  background: rgba(0, 0, 0, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  text-align: center;
+    width: min(420px, 92vw);
+    border-radius: 18px;
+    padding: 18px 16px;
+    background: rgba(0, 0, 0, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    text-align: center;
 }
 
 .online-overlay-box h3 {
-  margin: 0 0 6px;
-  font-size: 1.4rem;
+    margin: 0 0 6px;
+    font-size: 1.4rem;
 }
 
 .online-overlay-box p {
-  margin: 0 0 12px;
-  opacity: 0.95;
+    margin: 0 0 12px;
+    opacity: 0.95;
 }
 
 /* ===========================================================
@@ -306,53 +322,53 @@
 =========================================================== */
 
 @media (max-width: 480px) {
-  .online-games-container {
-    width: min(1100px, 94vw);
-    padding: 14px 0 34px;
-  }
+    .online-games-container {
+        width: min(1100px, 94vw);
+        padding: 14px 0 34px;
+    }
 
-  .online-game-card {
-    padding: 12px;
-  }
+    .online-game-card {
+        padding: 12px;
+    }
 
-  .online-board-wrap {
-    padding: 10px;
-  }
+    .online-board-wrap {
+        padding: 10px;
+    }
 
-  .c4-columns {
-    gap: 6px;
-    margin-bottom: 8px;
-  }
+    .c4-columns {
+        gap: 6px;
+        margin-bottom: 8px;
+    }
 
-  .c4-col-btn {
-    height: 32px;
-    border-radius: 10px;
-  }
+    .c4-col-btn {
+        height: 32px;
+        border-radius: 10px;
+    }
 
-  .c4-board {
-    gap: 8px;
-    padding: 10px;
-    border-radius: 16px;
-  }
+    .c4-board {
+        gap: 8px;
+        padding: 10px;
+        border-radius: 16px;
+    }
 }
 
 /* ✅ Evitar recortes en móvil: permitir scroll vertical */
 .home-body {
-  height: auto !important;
-  min-height: 100vh;
-  overflow-y: auto !important;
-  overflow-x: hidden;
+    height: auto !important;
+    min-height: 100vh;
+    overflow-y: auto !important;
+    overflow-x: hidden;
 }
 
 /* ✅ Asegurar que las tarjetas y contenedores no recorten */
 .online-game-card,
 .online-board-wrap {
-  overflow: visible !important;
+    overflow: visible !important;
 }
 
 /* ✅ Un poco de aire abajo para que no quede pegado */
 .online-games-container {
-  padding-bottom: 80px;
+    padding-bottom: 80px;
 }
 
 /* ===========================================================
@@ -360,53 +376,59 @@
    y que se vea proporcionado (usa svh)
 =========================================================== */
 @media (max-width: 480px) {
-  /* Ajusta esto si tienes mucha UI arriba (cabecera + controles) */
-  :root { --c4-ui: 260px; }
+    /* Ajusta esto si tienes mucha UI arriba (cabecera + controles) */
+    :root {
+        --c4-ui: 260px;
+    }
 
-  /* Recortamos un poco paddings para ganar alto */
-  .online-game-card { padding: 12px; }
-  .online-board-wrap { padding: 8px; }
+    /* Recortamos un poco paddings para ganar alto */
+    .online-game-card {
+        padding: 12px;
+    }
+    .online-board-wrap {
+        padding: 8px;
+    }
 
-  /* Tablero: ancho limitado por viewport y por altura disponible */
-  .c4-board {
-    aspect-ratio: 7 / 6;
+    /* Tablero: ancho limitado por viewport y por altura disponible */
+    .c4-board {
+        aspect-ratio: 7 / 6;
 
-    /* 1) por ancho: no pasarnos de la pantalla */
-    width: min(92vw, 420px);
+        /* 1) por ancho: no pasarnos de la pantalla */
+        width: min(92vw, 420px);
 
-    /* 2) por alto: si no cabe, encoge manteniendo proporción */
-    max-height: calc(100svh - var(--c4-ui));
-    height: auto;
+        /* 2) por alto: si no cabe, encoge manteniendo proporción */
+        max-height: calc(100svh - var(--c4-ui));
+        height: auto;
 
-    /* Si el alto manda, que el ancho se ajuste */
-    max-width: calc((100svh - var(--c4-ui)) * 7 / 6);
+        /* Si el alto manda, que el ancho se ajuste */
+        max-width: calc((100svh - var(--c4-ui)) * 7 / 6);
 
-    /* Ajustes visuales para móvil */
-    gap: 6px;
-    padding: 8px;
-    border-radius: 14px;
-    margin: 0 auto;
-  }
+        /* Ajustes visuales para móvil */
+        gap: 6px;
+        padding: 8px;
+        border-radius: 14px;
+        margin: 0 auto;
+    }
 
-  /* Botonera superior alineada al tablero */
-  .c4-columns {
-    width: min(92vw, 420px);
-    max-width: calc((100svh - var(--c4-ui)) * 7 / 6);
-    gap: 6px;
-    margin: 0 auto 8px;
-  }
+    /* Botonera superior alineada al tablero */
+    .c4-columns {
+        width: min(92vw, 420px);
+        max-width: calc((100svh - var(--c4-ui)) * 7 / 6);
+        gap: 6px;
+        margin: 0 auto 8px;
+    }
 
-  .c4-col-btn {
-    height: 30px;
-    border-radius: 10px;
-  }
+    .c4-col-btn {
+        height: 30px;
+        border-radius: 10px;
+    }
 
-  /* Los “agujeros” quedan más limpios cuando el tablero se encoge */
-  .c4-cell {
-    box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.22);
-  }
-  .c4-disc {
-    width: 88%;
-    height: 88%;
-  }
+    /* Los “agujeros” quedan más limpios cuando el tablero se encoge */
+    .c4-cell {
+        box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.22);
+    }
+    .c4-disc {
+        width: 88%;
+        height: 88%;
+    }
 }
