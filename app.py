@@ -10,6 +10,7 @@ from routes.juego_mate_routes import game_bp
 from routes.puzzle_routes import puzzle_bp
 from routes.english_games_routes import english_games_bp
 from routes.oca_online_apy import oca_api
+from routes.chess import chess_routes
 
 app = Flask(__name__)
 
@@ -30,6 +31,7 @@ app.register_blueprint(game_bp)
 app.register_blueprint(puzzle_bp)
 app.register_blueprint(english_games_bp)
 app.register_blueprint(oca_api)
+app.register_blueprint(chess_routes)
 
 
 if __name__ == "__main__":

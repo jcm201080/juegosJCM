@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Ajedrez{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chess.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="game-container chess-container">
+    <h1>♟️ Ajedrez</h1>
+
+    <!-- Panel de estado -->
+    <div class="top-info">
+        <div id="turno">Turno: Blancas</div>
+    </div>
+
+    <hr />
+
+    <!-- Tablero -->
+    <div id="chessboard" class="chessboard"></div>
+
+    <!-- Mensajes / info futura -->
+    <div id="message" class="message"></div>
+</div>
+
+<a href="{{ url_for('main.home') }}" class="back-link">⬅ Volver a Juegos JCM</a>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{{ url_for('static', filename='js/chess/chess.js') }}"></script>
+{% endblock %}

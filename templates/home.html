@@ -30,6 +30,12 @@
         <p>Juega en linea con tus amigos</p>
         <a class="btn-primary" href="{{ url_for('main.juegos_linea') }}">Jugar ahora</a>
     </article>
+
+    <article class="game-card">
+        <h2>♟️ Ajedrez</h2>
+        <p>Juega al clásico juego de estrategia.</p>
+        <a class="btn-primary" href="{{ url_for('chess_routes.chess') }}">Jugar ahora</a>
+    </article>
 </div>
 
 {% endblock %}
