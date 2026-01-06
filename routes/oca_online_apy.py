@@ -62,8 +62,8 @@ def apply_specials(p, state):
         state["message"] = f"{p['name']} cae en cárcel ({num}) y pierde un turno. ⛓️"
         event = "penalizacion"
 
-    # impulso 4 y 22 (+2)
-    elif num in (4, 22):
+    # impulso 5 y 22 (+2)
+    elif num in (5, 22):
         p["pos"] = min(p["pos"] + 2, CASILLA_FINAL)
         state["message"] = f"{p['name']} recibe impulso y avanza +2 (ahora {p['pos']+1}). ⚡"
         event = "premio"

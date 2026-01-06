@@ -1,0 +1,119 @@
+📱 Resumen rápido: PWA, APK y lo que hemos hecho
+🔹 ¿Qué es una PWA?
+
+Una PWA (Progressive Web App) es una web “vitaminada” que:
+
+Se puede instalar en móvil y PC
+
+Tiene icono propio
+
+Se abre en ventana independiente (sin barra del navegador)
+
+Usa service worker para caché y rendimiento
+
+Se actualiza sola (sin reinstalar)
+
+👉 No es solo un acceso directo, es una app web instalada.
+
+🔹 Qué hace una PWA instalada
+
+Cuando el usuario abre la app:
+
+✔ Carga desde HTTPS (Render en tu caso)
+
+✔ Usa el service worker para acelerar
+
+✔ Parece una app nativa
+
+❌ Sigue dependiendo del servidor (backend remoto)
+
+Por eso:
+
+al abrirla “vuelve” a Render → esto es correcto
+
+🔹 Qué NO es una PWA
+
+❌ No copia toda la app al móvil
+
+❌ No es un APK
+
+❌ No necesita Play Store
+
+🧩 Qué archivos necesita una PWA (lo que tú has creado)
+static/pwa/
+├─ manifest.json        → define nombre, iconos, colores, modo app
+├─ service-worker.js    → caché, offline, rendimiento
+└─ icons/
+   ├─ icon-192.png
+   └─ icon-512.png
+
+
+Y en base.html:
+
+enlace al manifest.json
+
+registro del service-worker
+
+🔹 Por qué a veces NO sale el botón “Instalar”
+
+Chrome decide cuándo mostrarlo
+
+En local casi nunca aparece
+
+En producción (HTTPS) aparece más
+
+Aunque no salga, la app sí es instalable desde el menú
+
+👉 Esto no depende del desarrollador, sino del navegador.
+
+📦 ¿Qué es un APK?
+
+Un APK es una app Android nativa:
+
+Se instala como cualquier app
+
+Puede publicarse en Play Store
+
+Puede incluir la PWA “empaquetada”
+
+Muchas apps de la Store son:
+
+PWAs convertidas en APK
+
+🔹 Diferencias rápidas
+PWA	APK
+Gratis	Play Store: 25 $
+Sin tiendas	Store opcional
+Actualiza sola	Requiere versión
+Backend remoto	Puede ser local
+Ideal para web/juegos	Ideal para apps masivas
+🔹 Lo que has hecho tú (importante)
+
+✔ Has creado una PWA correcta y profesional
+✔ Con iconos válidos
+✔ Con service worker activo
+✔ Desplegada en HTTPS (Render)
+✔ Instalable en móvil y PC
+✔ Sin depender de tiendas
+
+👉 Esto es nivel portfolio real, no tutorial.
+
+🔮 Para el futuro (cuando vuelvas)
+
+Si algún día quieres:
+
+📦 APK sin Play Store → se puede
+
+🏪 Play Store → se puede
+
+🔘 Botón “Instalar” propio → se puede
+
+📶 Offline más avanzado → se puede
+
+🧠 Guardar datos localmente → se puede
+
+Y no hay que rehacer nada: se parte de lo que ya tienes.
+
+Si quieres, cuando retomes:
+
+“Retomamos la PWA de Juegos JCM”
