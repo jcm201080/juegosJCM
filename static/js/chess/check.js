@@ -23,8 +23,9 @@ export function isSquareUnderAttack(board, pos, attackerColor) {
             if (
                 (piece === "♘" || piece === "♞") &&
                 ((Math.abs(dr) === 2 && Math.abs(dc) === 1) ||
-                 (Math.abs(dr) === 1 && Math.abs(dc) === 2))
-            ) return true;
+                    (Math.abs(dr) === 1 && Math.abs(dc) === 2))
+            )
+                return true;
 
             // ♖ TORRES / ♕ DAMA (recto)
             if (
@@ -43,11 +44,8 @@ export function isSquareUnderAttack(board, pos, attackerColor) {
             }
 
             // ♔ REY
-            if (
-                (piece === "♔" || piece === "♚") &&
-                Math.abs(dr) <= 1 &&
-                Math.abs(dc) <= 1
-            ) return true;
+            if ((piece === "♔" || piece === "♚") && Math.abs(dr) <= 1 && Math.abs(dc) <= 1)
+                return true;
         }
     }
     return false;

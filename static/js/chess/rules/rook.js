@@ -1,11 +1,11 @@
-export function isValidRookMove(board, from, to, piece) {
+export function isValidRookMove(board, from, to, _piece) {
     // Debe moverse en fila o columna
     if (from.r !== to.r && from.c !== to.c) {
         return { valid: false };
     }
 
-    const stepR = to.r === from.r ? 0 : (to.r > from.r ? 1 : -1);
-    const stepC = to.c === from.c ? 0 : (to.c > from.c ? 1 : -1);
+    const stepR = to.r === from.r ? 0 : to.r > from.r ? 1 : -1;
+    const stepC = to.c === from.c ? 0 : to.c > from.c ? 1 : -1;
 
     let r = from.r + stepR;
     let c = from.c + stepC;

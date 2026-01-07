@@ -3,11 +3,7 @@ export function isValidPawnMove(board, from, to, piece, lastMove) {
     const startRow = piece === "♙" ? 6 : 1;
 
     // movimiento normal
-    if (
-        from.c === to.c &&
-        to.r === from.r + direction &&
-        board[to.r][to.c] === ""
-    ) {
+    if (from.c === to.c && to.r === from.r + direction && board[to.r][to.c] === "") {
         return { valid: true };
     }
 
@@ -23,11 +19,7 @@ export function isValidPawnMove(board, from, to, piece, lastMove) {
     }
 
     // captura diagonal normal
-    if (
-        Math.abs(from.c - to.c) === 1 &&
-        to.r === from.r + direction &&
-        board[to.r][to.c] !== ""
-    ) {
+    if (Math.abs(from.c - to.c) === 1 && to.r === from.r + direction && board[to.r][to.c] !== "") {
         return { valid: true };
     }
 

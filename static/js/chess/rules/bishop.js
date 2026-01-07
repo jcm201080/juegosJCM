@@ -1,4 +1,4 @@
-export function isValidBishopMove(board, from, to, piece) {
+export function isValidBishopMove(board, from, to, _piece) {
     const dr = to.r - from.r;
     const dc = to.c - from.c;
 

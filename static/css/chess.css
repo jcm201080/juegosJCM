@@ -30,8 +30,8 @@
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
 
-    width: min(90vw, 420px);   /* móvil / escritorio */
-    aspect-ratio: 1 / 1;      /* siempre cuadrado */
+    width: min(90vw, 420px); /* móvil / escritorio */
+    aspect-ratio: 1 / 1; /* siempre cuadrado */
 
     border: 3px solid #333;
 }
@@ -72,11 +72,41 @@
 }
 
 /* ===============================
-   CASILLA SELECCIONADA
+   FICHA SELECCIONADA
 ================================ */
 
-.selected {
-    outline: 3px solid red;
+.square {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    cursor: pointer;
+    user-select: none;
+}
+
+.square {
+    transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out;
+}
+
+.square.selected {
+    transform: scale(1.08);
+    z-index: 5;
+}
+
+/* halo visual elegante */
+.square.selected::after {
+    content: "";
+    position: absolute;
+    inset: 8%;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 2px rgba(255, 215, 0, 0.9),
+        0 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
 }
 
 /* ===============================
@@ -97,4 +127,10 @@
     border-radius: 5px;
     text-decoration: none;
     text-align: center;
+}
+/*Boton reiniciar*/
+.chess-boton.small {
+    margin-top: 10px;
+    font-size: 14px;
+    padding: 6px 14px;
 }

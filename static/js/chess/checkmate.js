@@ -50,7 +50,6 @@ export function isCheckmate(board, turn) {
 
             for (let tr = 0; tr < 8; tr++) {
                 for (let tc = 0; tc < 8; tc++) {
-
                     // Movimiento básico válido
                     if (!isLegalMove(board, { r, c }, { r: tr, c: tc }, piece)) {
                         continue;
@@ -68,14 +67,9 @@ export function isCheckmate(board, turn) {
                     board[tr][tc] = piece;
                     board[r][c] = "";
 
-                    const newKingPos =
-                        piece === myKing ? { r: tr, c: tc } : kingPos;
+                    const newKingPos = piece === myKing ? { r: tr, c: tc } : kingPos;
 
-                    const stillInCheck = isSquareUnderAttack(
-                        board,
-                        newKingPos,
-                        enemyColor
-                    );
+                    const stillInCheck = isSquareUnderAttack(board, newKingPos, enemyColor);
 
                     // Revertir
                     board[r][c] = backupFrom;
@@ -109,23 +103,17 @@ export function isCheckmate(board, turn) {
 // VALIDADOR BÁSICO DE MOVES
 // =========================
 function isLegalMove(board, from, to, piece) {
-    if (piece === "♙" || piece === "♟")
-        return isValidPawnMove(board, from, to, piece, null).valid;
+    if (piece === "♙" || piece === "♟") return isValidPawnMove(board, from, to, piece, null).valid;
 
-    if (piece === "♖" || piece === "♜")
-        return isValidRookMove(board, from, to, piece).valid;
+    if (piece === "♖" || piece === "♜") return isValidRookMove(board, from, to, piece).valid;
 
-    if (piece === "♗" || piece === "♝")
-        return isValidBishopMove(board, from, to, piece).valid;
+    if (piece === "♗" || piece === "♝") return isValidBishopMove(board, from, to, piece).valid;
 
-    if (piece === "♘" || piece === "♞")
-        return isValidKnightMove(from, to).valid;
+    if (piece === "♘" || piece === "♞") return isValidKnightMove(from, to).valid;
 
-    if (piece === "♕" || piece === "♛")
-        return isValidQueenMove(board, from, to, piece).valid;
+    if (piece === "♕" || piece === "♛") return isValidQueenMove(board, from, to, piece).valid;
 
-    if (piece === "♔" || piece === "♚")
-        return isValidKingMove(from, to).valid;
+    if (piece === "♔" || piece === "♚") return isValidKingMove(from, to).valid;
 
     return false;
 }
