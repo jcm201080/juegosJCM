@@ -7,7 +7,9 @@ import { isValidBishopMove } from "./rules/bishop.js";
 import { isValidKnightMove } from "./rules/knight.js";
 import { isValidQueenMove } from "./rules/queen.js";
 import { isValidKingMove } from "./rules/king.js";
+
 import { isSquareUnderAttack } from "./check.js";
+import { isCheckmate } from "./checkmate.js";
 
 console.info("♟️ Chess engine loaded");
 
@@ -19,57 +21,123 @@ document.addEventListener("DOMContentLoaded", () => {
     let turn = "white";
     let selected = null;
     let lastMove = null;
+    let gameOver = false;
 
-    // 🔐 Derechos de enroque
+    // =========================
+    // DERECHOS DE ENROQUE
+    // =========================
     const castlingRights = {
-        white: { king: true, rookLeft: true, rookRight: true },
-        black: { king: true, rookLeft: true, rookRight: true }
+        white: { kingMoved: false, rookLeftMoved: false, rookRightMoved: false },
+        black: { kingMoved: false, rookLeftMoved: false, rookRightMoved: false }
     };
 
+    // =========================
+    // ¿Este movimiento deja mi rey en jaque?
+    // =========================
+    function leavesKingInCheck(from, to, piece, color) {
+        const myKing = color === "white" ? "♔" : "♚";
+        const enemyColor = color === "white" ? "black" : "white";
+
+        const bf = board[from.r][from.c];
+        const bt = board[to.r][to.c];
+
+        board[to.r][to.c] = piece;
+        board[from.r][from.c] = "";
+
+        let kingPos = null;
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                if (board[r][c] === myKing) kingPos = { r, c };
+            }
+        }
+
+        const inCheck =
+            kingPos && isSquareUnderAttack(board, kingPos, enemyColor);
+
+        board[from.r][from.c] = bf;
+        board[to.r][to.c] = bt;
+
+        return inCheck;
+    }
+
+    // =========================
+    // COMPROBAR JAQUE / JAQUE MATE
+    // =========================
+    function checkGameState() {
+        const defender = turn;
+        const attacker = defender === "white" ? "black" : "white";
+        const defenderKing = defender === "white" ? "♔" : "♚";
+
+        let kingPos = null;
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                if (board[r][c] === defenderKing) {
+                    kingPos = { r, c };
+                }
+            }
+        }
+
+        if (!kingPos) return;
+
+        if (isSquareUnderAttack(board, kingPos, attacker)) {
+            if (isCheckmate(board, defender)) {
+                messageEl.textContent =
+                    `♚ ¡JAQUE MATE! Ganan ${attacker === "white" ? "Blancas" : "Negras"}`;
+                gameOver = true;
+            } else {
+                messageEl.textContent = "♚ ¡JAQUE!";
+            }
+        } else {
+            if (!gameOver) messageEl.textContent = "";
+        }
+    }
+
+    // =========================
+    // CLICK EN CASILLA
+    // =========================
     function onSquareClick(r, c) {
+        if (gameOver) return;
+
         if (selected) {
             const piece = board[selected.r][selected.c];
             let result = { valid: false };
 
-            // =========================
-            // 1️⃣ VALIDACIÓN DE MOVIMIENTO
-            // =========================
-            if (piece === "♙" || piece === "♟") {
+            // VALIDACIÓN POR PIEZA
+            if (piece === "♙" || piece === "♟")
                 result = isValidPawnMove(board, selected, { r, c }, piece, lastMove);
-            } else if (piece === "♖" || piece === "♜") {
+            else if (piece === "♖" || piece === "♜")
                 result = isValidRookMove(board, selected, { r, c }, piece);
-            } else if (piece === "♗" || piece === "♝") {
+            else if (piece === "♗" || piece === "♝")
                 result = isValidBishopMove(board, selected, { r, c }, piece);
-            } else if (piece === "♘" || piece === "♞") {
+            else if (piece === "♘" || piece === "♞")
                 result = isValidKnightMove(selected, { r, c });
-            } else if (piece === "♕" || piece === "♛") {
+            else if (piece === "♕" || piece === "♛")
                 result = isValidQueenMove(board, selected, { r, c }, piece);
-            } else if (piece === "♔" || piece === "♚") {
-                result = isValidKingMove(selected, { r, c });
-
-                // 👑 ENROQUE (sin jaque todavía)
+            else if (piece === "♔" || piece === "♚") {
                 const color = piece === "♔" ? "white" : "black";
                 const homeRow = color === "white" ? 7 : 0;
 
+                result = isValidKingMove(selected, { r, c });
+
+                // ENROQUE
                 if (
                     selected.r === homeRow &&
                     selected.c === 4 &&
                     r === homeRow &&
                     Math.abs(c - 4) === 2 &&
-                    castlingRights[color].king
+                    !castlingRights[color].kingMoved
                 ) {
                     if (
                         c === 6 &&
-                        castlingRights[color].rookRight &&
+                        !castlingRights[color].rookRightMoved &&
                         board[homeRow][5] === "" &&
                         board[homeRow][6] === ""
                     ) {
                         result = { valid: true, castling: "short" };
                     }
-
                     if (
                         c === 2 &&
-                        castlingRights[color].rookLeft &&
+                        !castlingRights[color].rookLeftMoved &&
                         board[homeRow][1] === "" &&
                         board[homeRow][2] === "" &&
                         board[homeRow][3] === ""
@@ -79,134 +147,67 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // =========================
-            // 2️⃣ BLOQUEAR CAPTURA PROPIA
-            // =========================
+            // BLOQUEAR CAPTURA PROPIA
             const target = board[r][c];
-            if (target && canSelectPiece(target, turn)) {
-                result = { valid: false };
+            if (target && canSelectPiece(target, turn)) result.valid = false;
+
+            // BLOQUEAR JAQUE PROPIO
+            if (
+                result.valid &&
+                leavesKingInCheck(selected, { r, c }, piece, turn)
+            ) {
+                result.valid = false;
+                messageEl.textContent = "⛔ Tu rey quedaría en jaque.";
             }
 
-            // =========================
-            // 3️⃣ BLOQUEAR SI DEJA TU REY EN JAQUE
-            // =========================
+            // EJECUTAR MOVIMIENTO
             if (result.valid) {
-                const myKing = turn === "white" ? "♔" : "♚";
-                const enemyColor = turn === "white" ? "black" : "white";
-
-                // Simular movimiento
-                const backupFrom = board[selected.r][selected.c];
-                const backupTo = board[r][c];
-
                 board[r][c] = piece;
                 board[selected.r][selected.c] = "";
 
-                // Buscar mi rey
-                let kingPos = null;
-                for (let i = 0; i < 8; i++) {
-                    for (let j = 0; j < 8; j++) {
-                        if (board[i][j] === myKing) {
-                            kingPos = { r: i, c: j };
-                        }
+                // Ejecutar enroque
+                if (result.castling) {
+                    const row = selected.r;
+                    if (result.castling === "short") {
+                        board[row][5] = board[row][7];
+                        board[row][7] = "";
+                    }
+                    if (result.castling === "long") {
+                        board[row][3] = board[row][0];
+                        board[row][0] = "";
                     }
                 }
 
-                const illegal =
-                    kingPos && isSquareUnderAttack(board, kingPos, enemyColor);
-
-                // Revertir simulación
-                board[selected.r][selected.c] = backupFrom;
-                board[r][c] = backupTo;
-
-                if (illegal) {
-                    result = { valid: false };
-                    messageEl.textContent =
-                        "⛔ Movimiento ilegal: tu rey queda en jaque.";
-                }
-            }
-
-            // =========================
-            // 4️⃣ EJECUTAR MOVIMIENTO
-            // =========================
-            if (result.valid) {
-                board[r][c] = piece;
-                board[selected.r][selected.c] = "";
-
-                // ♟️ PROMOCIÓN
+                // Promoción
                 if (piece === "♙" && r === 0) board[r][c] = "♕";
                 if (piece === "♟" && r === 7) board[r][c] = "♛";
 
-                // 👑 Enroque
-                if (result.castling) {
-                    if (result.castling === "short") {
-                        board[r][5] = board[r][7];
-                        board[r][7] = "";
-                    }
-                    if (result.castling === "long") {
-                        board[r][3] = board[r][0];
-                        board[r][0] = "";
-                    }
-                }
-
-                // Invalidar derechos de enroque
-                if (piece === "♔") castlingRights.white.king = false;
-                if (piece === "♚") castlingRights.black.king = false;
-
-                if (piece === "♖" && selected.r === 7 && selected.c === 0)
-                    castlingRights.white.rookLeft = false;
-                if (piece === "♖" && selected.r === 7 && selected.c === 7)
-                    castlingRights.white.rookRight = false;
-                if (piece === "♜" && selected.r === 0 && selected.c === 0)
-                    castlingRights.black.rookLeft = false;
-                if (piece === "♜" && selected.r === 0 && selected.c === 7)
-                    castlingRights.black.rookRight = false;
+                // Invalidar enroques
+                if (piece === "♔") castlingRights.white.kingMoved = true;
+                if (piece === "♚") castlingRights.black.kingMoved = true;
 
                 lastMove = { piece, from: selected, to: { r, c } };
                 selected = null;
+
                 turn = nextTurn(turn);
                 turnoEl.textContent =
                     `Turno: ${turn === "white" ? "Blancas" : "Negras"}`;
-                messageEl.textContent = "";
+
+                renderBoard(board, boardEl, onSquareClick);
+                checkGameState();
             } else {
                 selected = null;
-            }
-
-            renderBoard(board, boardEl, onSquareClick);
-
-            // =========================
-            // 5️⃣ JAQUE VISUAL
-            // =========================
-            const enemyKing = turn === "white" ? "♚" : "♔";
-            let enemyKingPos = null;
-
-            for (let i = 0; i < 8; i++) {
-                for (let j = 0; j < 8; j++) {
-                    if (board[i][j] === enemyKing) {
-                        enemyKingPos = { r: i, c: j };
-                    }
-                }
-            }
-
-            if (
-                enemyKingPos &&
-                isSquareUnderAttack(
-                    board,
-                    enemyKingPos,
-                    turn === "white" ? "white" : "black"
-                )
-            ) {
-                messageEl.textContent = "♚ ¡JAQUE!";
+                renderBoard(board, boardEl, onSquareClick);
             }
 
         } else if (board[r][c]) {
             if (canSelectPiece(board[r][c], turn)) {
                 selected = { r, c };
-                messageEl.textContent = "";
-            } else {
-                messageEl.textContent = "⛔ No es tu turno.";
+                if (!gameOver) messageEl.textContent = "";
             }
         }
     }
 
     renderBoard(board, boardEl, onSquareClick);
+    checkGameState();
 });
