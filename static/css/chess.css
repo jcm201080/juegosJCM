@@ -26,6 +26,7 @@
 ================================ */
 
 #chessboard {
+    margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
@@ -41,6 +42,7 @@
 ================================ */
 
 .square {
+    transition: background-color 0.15s ease, outline 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -95,6 +97,8 @@
 .square.selected {
     transform: scale(1.08);
     z-index: 5;
+    outline: 3px solid gold;
+
 }
 
 /* halo visual elegante */
@@ -130,7 +134,42 @@
 }
 /*Boton reiniciar*/
 .chess-boton.small {
-    margin-top: 10px;
+    margin-top: 40px;
     font-size: 14px;
     padding: 6px 14px;
+}
+
+/* Promoción de peón */
+.promotion-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    z-index: 999;
+}
+
+.promotion-btn {
+    font-size: 40px;
+    padding: 15px 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+}
+promotion-btn:hover {
+    background-color: #f0f0f0;
+}
+
+
+#message {
+    min-height: 24px;          /* reserva espacio */
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #ff4d4d;            /* rojo jaque */
+    text-align: center;
+}
+#message.checkmate {
+    color: #d40000;            /* rojo mate */
 }

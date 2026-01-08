@@ -9,6 +9,22 @@ export const board = [
     ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
 ];
 
+const pieceMap = {
+    "♙": "wp",
+    "♖": "wr",
+    "♘": "wn",
+    "♗": "wb",
+    "♕": "wq",
+    "♔": "wk",
+
+    "♟": "bp",
+    "♜": "br",
+    "♞": "bn",
+    "♝": "bb",
+    "♛": "bq",
+    "♚": "bk",
+};
+
 export function renderBoard(board, boardEl, onSquareClick, selected) {
     boardEl.innerHTML = "";
 
@@ -16,14 +32,18 @@ export function renderBoard(board, boardEl, onSquareClick, selected) {
         for (let c = 0; c < 8; c++) {
             const square = document.createElement("div");
             square.className = `square ${(r + c) % 2 === 0 ? "white" : "black"}`;
-            square.textContent = board[r][c];
 
-            // ♟️ DIFERENCIAR PIEZAS NEGRAS
-            if ("♟♜♞♝♛♚".includes(board[r][c])) {
-                square.classList.add("black-piece");
+            const piece = board[r][c];
+
+            if (piece) {
+                const img = document.createElement("img");
+                img.src = `/static/img/chess/${pieceMap[piece]}.svg`;
+                img.className = "chess-piece";
+                img.draggable = false; // evita arrastres raros
+                square.appendChild(img);
             }
 
-            // ✅ MARCAR CASILLA SELECCIONADA
+            // ✅ CASILLA SELECCIONADA
             if (selected && selected.r === r && selected.c === c) {
                 square.classList.add("selected");
             }
@@ -33,3 +53,4 @@ export function renderBoard(board, boardEl, onSquareClick, selected) {
         }
     }
 }
+

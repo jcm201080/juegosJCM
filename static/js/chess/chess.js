@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const turnoEl = document.getElementById("turno");
     const messageEl = document.getElementById("message");
 
-    // Copia inmutable del tablero inicial (para reiniciar)
     const initialBoard = JSON.parse(JSON.stringify(board));
 
     let turn = "white";
@@ -27,14 +26,52 @@ document.addEventListener("DOMContentLoaded", () => {
     let gameOver = false;
     let checkSoundPlayed = false;
 
-    // SONIDOS
     // =========================
+    // TABLAS POR REPETICIÓN
+    // =========================
+    const positionHistory = {};
+
+    function getPositionKey() {
+        return JSON.stringify({
+            board,
+            turn,
+            castlingRights
+        });
+    }
+
+    function checkThreefoldRepetition() {
+        const key = getPositionKey();
+        positionHistory[key] = (positionHistory[key] || 0) + 1;
+
+        if (positionHistory[key] === 3) {
+            messageEl.textContent = "🤝 Tablas por repetición de posición";
+            gameOver = true;
+
+            soundDraw.currentTime = 0;
+            soundDraw.play();
+        }
+    }
+
+    // =========================
+    // 🔊 SONIDOS
+    // =========================
+    const soundMove = new Audio("/static/sounds/chess/move.wav");
+    const soundCapture = new Audio("/static/sounds/chess/capture.wav");
+    const soundCastle = new Audio("/static/sounds/chess/castle.wav");
+    const soundPromote = new Audio("/static/sounds/chess/promote.wav");
     const soundCheck = new Audio("/static/sounds/wrong.wav");
     const soundCheckmate = new Audio("/static/sounds/muerte.mp3");
+    const soundDraw = new Audio("/static/sounds/muerte.mp3");
 
-    // Evitar acumulaciones raras
-    soundCheck.volume = 0.6;
-    soundCheckmate.volume = 0.8;
+    [
+        soundMove,
+        soundCapture,
+        soundCastle,
+        soundPromote,
+        soundCheck,
+        soundCheckmate,
+        soundDraw
+    ].forEach(s => s.volume = 0.6);
 
     // =========================
     // DERECHOS DE ENROQUE
@@ -72,15 +109,48 @@ document.addEventListener("DOMContentLoaded", () => {
         return inCheck;
     }
 
-    // =========================
-    // ¿El rey puede pasar por estas casillas?
-    // =========================
     function canCastleThrough(board, squares, enemyColor) {
-        return squares.every((pos) => !isSquareUnderAttack(board, pos, enemyColor));
+        return squares.every(pos => !isSquareUnderAttack(board, pos, enemyColor));
     }
 
+    function hasAnyLegalMove(color) {
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                const piece = board[r][c];
+                if (!piece || !canSelectPiece(piece, color)) continue;
+
+                for (let tr = 0; tr < 8; tr++) {
+                    for (let tc = 0; tc < 8; tc++) {
+                        let result = { valid: false };
+
+                        if (piece === "♙" || piece === "♟")
+                            result = isValidPawnMove(board, { r, c }, { r: tr, c: tc }, piece, lastMove);
+                        else if (piece === "♖" || piece === "♜")
+                            result = isValidRookMove(board, { r, c }, { r: tr, c: tc }, piece);
+                        else if (piece === "♗" || piece === "♝")
+                            result = isValidBishopMove(board, { r, c }, { r: tr, c: tc }, piece);
+                        else if (piece === "♘" || piece === "♞")
+                            result = isValidKnightMove({ r, c }, { r: tr, c: tc });
+                        else if (piece === "♕" || piece === "♛")
+                            result = isValidQueenMove(board, { r, c }, { r: tr, c: tc }, piece);
+                        else if (piece === "♔" || piece === "♚")
+                            result = isValidKingMove({ r, c }, { r: tr, c: tc });
+
+                        if (!result.valid) continue;
+
+                        if (!leavesKingInCheck({ r, c }, { r: tr, c: tc }, piece, color)) {
+                            return true; // 👉 hay al menos un movimiento legal
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
     // =========================
-    // COMPROBAR JAQUE / JAQUE MATE
+    // JAQUE / JAQUE MATE
     // =========================
     function checkGameState() {
         const defender = turn;
@@ -90,9 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let kingPos = null;
         for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 8; c++) {
-                if (board[r][c] === defenderKing) {
-                    kingPos = { r, c };
-                }
+                if (board[r][c] === defenderKing) kingPos = { r, c };
             }
         }
 
@@ -102,14 +170,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isCheckmate(board, defender)) {
                 messageEl.textContent = `♚ ¡JAQUE MATE! Ganan ${attacker === "white" ? "Blancas" : "Negras"}`;
                 gameOver = true;
-
-                // 🔊 sonido jaque mate
                 soundCheckmate.currentTime = 0;
                 soundCheckmate.play();
             } else {
                 messageEl.textContent = "♚ ¡JAQUE!";
-
-                // 🔊 sonido jaque (solo una vez por estado)
                 if (!checkSoundPlayed) {
                     soundCheck.currentTime = 0;
                     soundCheck.play();
@@ -117,174 +181,154 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         } else {
+            checkSoundPlayed = false;
+
+            // limpiar mensaje de jaque
             messageEl.textContent = "";
-            checkSoundPlayed = false; // reset cuando sale del jaque
+
+            // 🤝 AHOGADO (STALEMATE)
+            if (!hasAnyLegalMove(defender)) {
+                messageEl.textContent = "🤝 Tablas por ahogado";
+                gameOver = true;
+
+                soundDraw.currentTime = 0;
+                soundDraw.play();
+            }
         }
     }
 
     // =========================
-    // REINICIAR PARTIDA
+    // PROMOCIÓN
+    // =========================
+    function promotePawn(color, callback) {
+        const choices = color === "white"
+            ? ["♕", "♖", "♗", "♘"]
+            : ["♛", "♜", "♝", "♞"];
+
+        const modal = document.createElement("div");
+        modal.className = "promotion-modal";
+
+        choices.forEach(piece => {
+            const btn = document.createElement("button");
+            btn.textContent = piece;
+            btn.className = "promotion-btn";
+            btn.onclick = () => {
+                document.body.removeChild(modal);
+                callback(piece);
+            };
+            modal.appendChild(btn);
+        });
+
+        document.body.appendChild(modal);
+    }
+
+    // =========================
+    // REINICIAR
     // =========================
     function resetGame() {
-        // Restaurar tablero
         for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 8; c++) {
                 board[r][c] = initialBoard[r][c];
             }
         }
 
-        // Estado del juego
         turn = "white";
         selected = null;
         lastMove = null;
         gameOver = false;
+        checkSoundPlayed = false;
 
-        // Derechos de enroque
-        castlingRights.white.kingMoved = false;
-        castlingRights.white.rookLeftMoved = false;
-        castlingRights.white.rookRightMoved = false;
+        Object.values(castlingRights.white).fill(false);
+        Object.values(castlingRights.black).fill(false);
 
-        castlingRights.black.kingMoved = false;
-        castlingRights.black.rookLeftMoved = false;
-        castlingRights.black.rookRightMoved = false;
+        for (const key in positionHistory) delete positionHistory[key];
 
-        // UI
         turnoEl.textContent = "Turno: Blancas";
         messageEl.textContent = "";
 
-        // Repintar tablero
         renderBoard(board, boardEl, onSquareClick, selected);
-        checkSoundPlayed = false;
     }
 
     // =========================
-    // CLICK EN CASILLA
+    // CLICK
     // =========================
     function onSquareClick(r, c) {
         if (gameOver) return;
 
         if (selected) {
             const piece = board[selected.r][selected.c];
+            const target = board[r][c];
+            const isCapture = target !== "";
             let result = { valid: false };
 
-            // VALIDACIÓN POR PIEZA
             if (piece === "♙" || piece === "♟")
                 result = isValidPawnMove(board, selected, { r, c }, piece, lastMove);
             else if (piece === "♖" || piece === "♜")
                 result = isValidRookMove(board, selected, { r, c }, piece);
             else if (piece === "♗" || piece === "♝")
                 result = isValidBishopMove(board, selected, { r, c }, piece);
-            else if (piece === "♘" || piece === "♞") result = isValidKnightMove(selected, { r, c });
+            else if (piece === "♘" || piece === "♞")
+                result = isValidKnightMove(selected, { r, c });
             else if (piece === "♕" || piece === "♛")
                 result = isValidQueenMove(board, selected, { r, c }, piece);
-            else if (piece === "♔" || piece === "♚") {
-                const color = piece === "♔" ? "white" : "black";
-                const enemyColor = color === "white" ? "black" : "white";
-                const homeRow = color === "white" ? 7 : 0;
-
+            else if (piece === "♔" || piece === "♚")
                 result = isValidKingMove(selected, { r, c });
 
-                // ENROQUE REAL (con amenazas)
-                if (
-                    selected.r === homeRow &&
-                    selected.c === 4 &&
-                    r === homeRow &&
-                    Math.abs(c - 4) === 2 &&
-                    !castlingRights[color].kingMoved
-                ) {
-                    // ENROQUE CORTO
-                    if (
-                        c === 6 &&
-                        !castlingRights[color].rookRightMoved &&
-                        board[homeRow][5] === "" &&
-                        board[homeRow][6] === ""
-                    ) {
-                        const kingPath = [
-                            { r: homeRow, c: 4 },
-                            { r: homeRow, c: 5 },
-                            { r: homeRow, c: 6 },
-                        ];
-
-                        if (canCastleThrough(board, kingPath, enemyColor)) {
-                            result = { valid: true, castling: "short" };
-                        }
-                    }
-
-                    // ENROQUE LARGO
-                    if (
-                        c === 2 &&
-                        !castlingRights[color].rookLeftMoved &&
-                        board[homeRow][1] === "" &&
-                        board[homeRow][2] === "" &&
-                        board[homeRow][3] === ""
-                    ) {
-                        const kingPath = [
-                            { r: homeRow, c: 4 },
-                            { r: homeRow, c: 3 },
-                            { r: homeRow, c: 2 },
-                        ];
-
-                        if (canCastleThrough(board, kingPath, enemyColor)) {
-                            result = { valid: true, castling: "long" };
-                        }
-                    }
-                }
-            }
-
-            // BLOQUEAR CAPTURA PROPIA
-            const target = board[r][c];
             if (target && canSelectPiece(target, turn)) result.valid = false;
-
-            // BLOQUEAR JAQUE PROPIO
-            if (result.valid && leavesKingInCheck(selected, { r, c }, piece, turn)) {
+            if (result.valid && leavesKingInCheck(selected, { r, c }, piece, turn))
                 result.valid = false;
-                messageEl.textContent = "⛔ Tu rey quedaría en jaque.";
-            }
 
-            // EJECUTAR MOVIMIENTO
             if (result.valid) {
                 board[r][c] = piece;
                 board[selected.r][selected.c] = "";
 
-                // Ejecutar enroque
                 if (result.castling) {
-                    const row = selected.r;
-                    if (result.castling === "short") {
-                        board[row][5] = board[row][7];
-                        board[row][7] = "";
-                    }
-                    if (result.castling === "long") {
-                        board[row][3] = board[row][0];
-                        board[row][0] = "";
-                    }
+                    soundCastle.currentTime = 0;
+                    soundCastle.play();
+                } else if (isCapture) {
+                    soundCapture.currentTime = 0;
+                    soundCapture.play();
+                } else {
+                    soundMove.currentTime = 0;
+                    soundMove.play();
                 }
 
-                // Promoción
-                if (piece === "♙" && r === 0) board[r][c] = "♕";
-                if (piece === "♟" && r === 7) board[r][c] = "♛";
+                const isPromotion =
+                    (piece === "♙" && r === 0) || (piece === "♟" && r === 7);
 
-                // Invalidar enroques
-                if (piece === "♔") castlingRights.white.kingMoved = true;
-                if (piece === "♚") castlingRights.black.kingMoved = true;
+                if (isPromotion) {
+                    promotePawn(turn, (newPiece) => {
+                        board[r][c] = newPiece;
+                        soundPromote.currentTime = 0;
+                        soundPromote.play();
+
+                        lastMove = { piece: newPiece, from: selected, to: { r, c } };
+                        selected = null;
+                        turn = nextTurn(turn);
+                        turnoEl.textContent = `Turno: ${turn === "white" ? "Blancas" : "Negras"}`;
+
+                        renderBoard(board, boardEl, onSquareClick, selected);
+                        checkGameState();
+                        checkThreefoldRepetition();
+                    });
+                    return;
+                }
 
                 lastMove = { piece, from: selected, to: { r, c } };
                 selected = null;
-
                 turn = nextTurn(turn);
                 turnoEl.textContent = `Turno: ${turn === "white" ? "Blancas" : "Negras"}`;
 
                 renderBoard(board, boardEl, onSquareClick, selected);
                 checkGameState();
+                checkThreefoldRepetition();
             } else {
                 selected = null;
                 renderBoard(board, boardEl, onSquareClick, selected);
             }
-        } else if (board[r][c]) {
-            if (canSelectPiece(board[r][c], turn)) {
-                selected = { r, c };
-                if (!gameOver) messageEl.textContent = "";
-                renderBoard(board, boardEl, onSquareClick, selected);
-            }
+        } else if (board[r][c] && canSelectPiece(board[r][c], turn)) {
+            selected = { r, c };
+            renderBoard(board, boardEl, onSquareClick, selected);
         }
     }
 
