@@ -173,3 +173,13 @@ promotion-btn:hover {
 #message.checkmate {
     color: #d40000;            /* rojo mate */
 }
+
+
+/* Tablero online */
+.chessboard.flipped {
+    transform: rotate(180deg);
+}
+
+.chessboard.flipped .square {
+    transform: rotate(180deg);
+}
