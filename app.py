@@ -20,10 +20,8 @@ import os
 load_dotenv()
 
 
-app = Flask(
-    __name__,
-    static_url_path="/juegos/static"
-)
+app = Flask(__name__)
+
 
 
 # ✅ CLAVE PARA SESIONES
