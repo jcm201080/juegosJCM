@@ -48,14 +48,16 @@ CORS(app, supports_credentials=True)
 # with app.app_context():
 #    init_db()
 
-# Registrar blueprints
-app.register_blueprint(main_bp)
-app.register_blueprint(auth_bp)
-app.register_blueprint(game_bp)
-app.register_blueprint(puzzle_bp)
-app.register_blueprint(english_games_bp)
-app.register_blueprint(oca_api)
-app.register_blueprint(chess_routes)
+
+# Registrar blueprints (TODOS bajo /juegos)
+app.register_blueprint(main_bp, url_prefix="/juegos")
+app.register_blueprint(auth_bp, url_prefix="/juegos")
+app.register_blueprint(game_bp, url_prefix="/juegos")
+app.register_blueprint(puzzle_bp, url_prefix="/juegos")
+app.register_blueprint(english_games_bp, url_prefix="/juegos")
+app.register_blueprint(oca_api, url_prefix="/juegos")
+app.register_blueprint(chess_routes, url_prefix="/juegos")
+
 
 if __name__ == "__main__":
     socketio.run(
