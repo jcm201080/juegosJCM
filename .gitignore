@@ -1,22 +1,43 @@
+# ======================
 # Python
+# ======================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.env
 .venv/
 venv/
 
-# Node
-node_modules/
+# ======================
+# Entorno / secretos
+# ======================
+.env
 
-# OS / editor
+# ======================
+# Bases de datos
+# ======================
+*.db
+
+# ======================
+# Node (solo si se usa en dev)
+# ======================
+node_modules/
+package-lock.json
+
+# ======================
+# OS / Editor
+# ======================
 .DS_Store
 Thumbs.db
 .vscode/
 
+# ======================
 # Logs
+# ======================
 *.log
 
+# ======================
+# Excepciones
+# ======================
 # NO ignorar imágenes del ajedrez
 !static/img/chess/*.svg

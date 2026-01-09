@@ -32,7 +32,7 @@ const soundPromote = new Audio("/static/sounds/chess/promote.wav");
 const soundCheck = new Audio("/static/sounds/wrong.wav");
 const soundCheckmate = new Audio("/static/sounds/muerte.mp3");
 
-[soundMove, soundCapture, soundCastle, soundPromote, soundCheck].forEach(s => s.volume = 0.6);
+[soundMove, soundCapture, soundCastle, soundPromote, soundCheck].forEach((s) => (s.volume = 0.6));
 soundCheckmate.volume = 0.8;
 
 // =========================
@@ -232,12 +232,10 @@ function onSquareClick(r, c) {
         result = isValidRookMove(board, selected, { r, c }, piece);
     else if (piece === "♗" || piece === "♝")
         result = isValidBishopMove(board, selected, { r, c }, piece);
-    else if (piece === "♘" || piece === "♞")
-        result = isValidKnightMove(selected, { r, c });
+    else if (piece === "♘" || piece === "♞") result = isValidKnightMove(selected, { r, c });
     else if (piece === "♕" || piece === "♛")
         result = isValidQueenMove(board, selected, { r, c }, piece);
-    else if (piece === "♔" || piece === "♚")
-        result = isValidKingMove(selected, { r, c });
+    else if (piece === "♔" || piece === "♚") result = isValidKingMove(selected, { r, c });
 
     if (target && canSelectPiece(target, myRole)) {
         selected = null;

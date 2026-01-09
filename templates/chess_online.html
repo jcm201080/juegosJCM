@@ -1,20 +1,12 @@
-{% extends "base.html" %}
-
-{% block title %}Ajedrez Online{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/chess.css') }}">
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Ajedrez Online{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chess.css') }}" />
+{% endblock %} {% block content %}
 <div class="game-container chess-container">
     <h1>🌐 Ajedrez Online</h1>
 
     <!-- Selector de modo -->
     <div class="modo-links">
-        <a class="btn-primary" href="{{ url_for('chess_routes.chess') }}">
-            ♟️ Ajedrez (local)
-        </a>
+        <a class="btn-primary" href="{{ url_for('chess_routes.chess') }}"> ♟️ Ajedrez (local) </a>
 
         <a class="btn-secondary" href="{{ url_for('chess_routes.chess_online') }}">
             🌐 Ajedrez Online
@@ -32,14 +24,10 @@
     <div id="message" class="message"></div>
 
     <div class="top-info">
-        <a href="{{ url_for('main.home') }}" class="chess-boton">
-            ⬅ Volver a Juegos JCM
-        </a>
+        <a href="{{ url_for('main.home') }}" class="chess-boton"> ⬅ Volver a Juegos JCM </a>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <!-- Socket.IO -->
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 

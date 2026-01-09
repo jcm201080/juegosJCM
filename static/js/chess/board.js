@@ -53,4 +53,3 @@ export function renderBoard(board, boardEl, onSquareClick, selected) {
         }
     }
 }
-

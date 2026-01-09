@@ -14,13 +14,25 @@ from routes.oca_online_apy import oca_api
 from routes.chess import chess_routes
 from routes.chess_socket import register_chess_sockets
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+
 app = Flask(__name__)
 
 # ✅ CLAVE PARA SESIONES
-app.config["SECRET_KEY"] = "jcma4812"
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key")
+
 
 # ✅ Socket.IO (PRIMERO se crea)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode="threading"
+)
+
 
 # ✅ Registrar sockets del ajedrez (DESPUÉS)
 register_chess_sockets(socketio)
@@ -29,8 +41,8 @@ register_chess_sockets(socketio)
 CORS(app, supports_credentials=True)
 
 # Inicializar base de datos
-with app.app_context():
-    init_db()
+# with app.app_context():
+#    init_db()
 
 # Registrar blueprints
 app.register_blueprint(main_bp)
@@ -42,4 +54,15 @@ app.register_blueprint(oca_api)
 app.register_blueprint(chess_routes)
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(
+        app,
+        host="0.0.0.0",
+        port=5000,
+        debug=False,
+        allow_unsafe_werkzeug=True
+    )
+
+
+
+
+

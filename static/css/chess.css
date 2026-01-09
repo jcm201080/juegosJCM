@@ -42,7 +42,9 @@
 ================================ */
 
 .square {
-    transition: background-color 0.15s ease, outline 0.15s ease;
+    transition:
+        background-color 0.15s ease,
+        outline 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,7 +100,6 @@
     transform: scale(1.08);
     z-index: 5;
     outline: 3px solid gold;
-
 }
 
 /* halo visual elegante */
@@ -162,18 +163,16 @@ promotion-btn:hover {
     background-color: #f0f0f0;
 }
 
-
 #message {
-    min-height: 24px;          /* reserva espacio */
+    min-height: 24px; /* reserva espacio */
     margin-bottom: 10px;
     font-weight: bold;
-    color: #ff4d4d;            /* rojo jaque */
+    color: #ff4d4d; /* rojo jaque */
     text-align: center;
 }
 #message.checkmate {
-    color: #d40000;            /* rojo mate */
+    color: #d40000; /* rojo mate */
 }
-
 
 /* Tablero online */
 .chessboard.flipped {

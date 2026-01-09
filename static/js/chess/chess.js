@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return JSON.stringify({
             board,
             turn,
-            castlingRights
+            castlingRights,
         });
     }
 
@@ -70,8 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
         soundPromote,
         soundCheck,
         soundCheckmate,
-        soundDraw
-    ].forEach(s => s.volume = 0.6);
+        soundDraw,
+    ].forEach((s) => (s.volume = 0.6));
 
     // =========================
     // DERECHOS DE ENROQUE
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function canCastleThrough(board, squares, enemyColor) {
-        return squares.every(pos => !isSquareUnderAttack(board, pos, enemyColor));
+        return squares.every((pos) => !isSquareUnderAttack(board, pos, enemyColor));
     }
 
     function hasAnyLegalMove(color) {
@@ -124,7 +124,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         let result = { valid: false };
 
                         if (piece === "♙" || piece === "♟")
-                            result = isValidPawnMove(board, { r, c }, { r: tr, c: tc }, piece, lastMove);
+                            result = isValidPawnMove(
+                                board,
+                                { r, c },
+                                { r: tr, c: tc },
+                                piece,
+                                lastMove
+                            );
                         else if (piece === "♖" || piece === "♜")
                             result = isValidRookMove(board, { r, c }, { r: tr, c: tc }, piece);
                         else if (piece === "♗" || piece === "♝")
@@ -147,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return false;
     }
-
 
     // =========================
     // JAQUE / JAQUE MATE
@@ -201,14 +206,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // PROMOCIÓN
     // =========================
     function promotePawn(color, callback) {
-        const choices = color === "white"
-            ? ["♕", "♖", "♗", "♘"]
-            : ["♛", "♜", "♝", "♞"];
+        const choices = color === "white" ? ["♕", "♖", "♗", "♘"] : ["♛", "♜", "♝", "♞"];
 
         const modal = document.createElement("div");
         modal.className = "promotion-modal";
 
-        choices.forEach(piece => {
+        choices.forEach((piece) => {
             const btn = document.createElement("button");
             btn.textContent = piece;
             btn.className = "promotion-btn";
@@ -267,12 +270,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 result = isValidRookMove(board, selected, { r, c }, piece);
             else if (piece === "♗" || piece === "♝")
                 result = isValidBishopMove(board, selected, { r, c }, piece);
-            else if (piece === "♘" || piece === "♞")
-                result = isValidKnightMove(selected, { r, c });
+            else if (piece === "♘" || piece === "♞") result = isValidKnightMove(selected, { r, c });
             else if (piece === "♕" || piece === "♛")
                 result = isValidQueenMove(board, selected, { r, c }, piece);
-            else if (piece === "♔" || piece === "♚")
-                result = isValidKingMove(selected, { r, c });
+            else if (piece === "♔" || piece === "♚") result = isValidKingMove(selected, { r, c });
 
             if (target && canSelectPiece(target, turn)) result.valid = false;
             if (result.valid && leavesKingInCheck(selected, { r, c }, piece, turn))
@@ -293,8 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     soundMove.play();
                 }
 
-                const isPromotion =
-                    (piece === "♙" && r === 0) || (piece === "♟" && r === 7);
+                const isPromotion = (piece === "♙" && r === 0) || (piece === "♟" && r === 7);
 
                 if (isPromotion) {
                     promotePawn(turn, (newPiece) => {
