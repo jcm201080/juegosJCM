@@ -12,7 +12,10 @@ import { isValidKingMove } from "./rules/king.js";
 import { isSquareUnderAttack } from "./check.js";
 import { isCheckmate } from "./checkmate.js";
 
-const socket = io();
+const socket = io({
+    path: "/juegos/socket.io"
+});
+
 
 // =========================
 // UI

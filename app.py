@@ -20,7 +20,11 @@ import os
 load_dotenv()
 
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path="/juegos/static"
+)
+
 
 # ✅ CLAVE PARA SESIONES
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key")
@@ -30,8 +34,10 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key")
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
-    async_mode="threading"
+    async_mode="threading",
+    path="/juegos/socket.io"
 )
+
 
 
 # ✅ Registrar sockets del ajedrez (DESPUÉS)

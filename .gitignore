@@ -41,3 +41,7 @@ Thumbs.db
 # ======================
 # NO ignorar imágenes del ajedrez
 !static/img/chess/*.svg
+
+
+# IONOS
+IONOS.docx
