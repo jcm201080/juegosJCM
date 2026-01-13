@@ -32,8 +32,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key")
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
-    async_mode="threading",
-    path="/juegos/socket.io"
+    async_mode="threading"
 )
 
 
@@ -50,13 +49,14 @@ CORS(app, supports_credentials=True)
 
 
 # Registrar blueprints (TODOS bajo /juegos)
-app.register_blueprint(main_bp, url_prefix="/juegos")
-app.register_blueprint(auth_bp, url_prefix="/juegos")
-app.register_blueprint(game_bp, url_prefix="/juegos")
-app.register_blueprint(puzzle_bp, url_prefix="/juegos")
-app.register_blueprint(english_games_bp, url_prefix="/juegos")
-app.register_blueprint(oca_api, url_prefix="/juegos")
-app.register_blueprint(chess_routes, url_prefix="/juegos")
+app.register_blueprint(main_bp)
+app.register_blueprint(auth_bp)
+app.register_blueprint(game_bp)
+app.register_blueprint(puzzle_bp)
+app.register_blueprint(english_games_bp)
+app.register_blueprint(oca_api)
+app.register_blueprint(chess_routes)
+
 
 
 if __name__ == "__main__":
