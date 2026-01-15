@@ -1,11 +1,9 @@
-# routes/chess_socket.py
-from flask_socketio import emit
 from flask import request
+from flask_socketio import emit
 
-players = {
-    "white": None,
-    "black": None
-}
+# 🔗 Importamos el mapa sid → room
+from routes.chess_rooms import sid_to_room
+
 
 def register_chess_sockets(socketio):
 
@@ -14,25 +12,7 @@ def register_chess_sockets(socketio):
     # =========================
     @socketio.on("connect")
     def on_connect():
-        print("🔌 Chess socket conectado")
-
-        role = None
-
-        if players["white"] is None:
-            players["white"] = request.sid
-            role = "white"
-        elif players["black"] is None:
-            players["black"] = request.sid
-            role = "black"
-        else:
-            role = "spectator"
-
-        emit("role_assigned", {"role": role})
-
-        if players["white"] and players["black"]:
-            socketio.emit("game_start")
-
-        print(f"♟️ Rol asignado: {role}")
+        print("🔌 Chess socket conectado:", request.sid)
 
     # =========================
     # ❌ DESCONEXIÓN
@@ -40,41 +20,74 @@ def register_chess_sockets(socketio):
     @socketio.on("disconnect")
     def on_disconnect():
         sid = request.sid
+        room = sid_to_room.get(sid)
+
         print("❌ Chess socket desconectado:", sid)
 
-        for color in ["white", "black"]:
-            if players[color] == sid:
-                players[color] = None
-                socketio.emit("player_left", {"color": color})
-                break
+        if room:
+            emit("player_left", room=room)
 
     # =========================
-    # ♟️ MOVIMIENTO ONLINE
+    # ♟️ MOVIMIENTO (AÚN GLOBAL)
     # =========================
     @socketio.on("move")
     def on_move(data):
         sid = request.sid
+        room = sid_to_room.get(sid)
 
-        if players["white"] == sid:
-            color = "white"
-        elif players["black"] == sid:
-            color = "black"
-        else:
-            return  # espectador no mueve
+        if not room:
+            return
 
-        print(f"♟️ Movimiento recibido de {color}: {data}")
-
-        socketio.emit("move", {
+        emit("move", {
             "from": data["from"],
-            "to": data["to"],
-            "color": color
-        })
+            "to": data["to"]
+        }, room=room)
 
     # =========================
-    # 🔄 RESET DE PARTIDA
+    # 🤝 TABLAS
     # =========================
-    @socketio.on("reset_game")
-    def on_reset_game():
-        print("🔄 Partida reiniciada por un jugador")
+    @socketio.on("offer_draw")
+    def on_offer_draw():
+        sid = request.sid
+        room = sid_to_room.get(sid)
 
-        socketio.emit("game_reset")
+        if not room:
+            return
+
+        emit("draw_offered", room=room, skip_sid=sid)
+
+    @socketio.on("accept_draw")
+    def on_accept_draw():
+        sid = request.sid
+        room = sid_to_room.get(sid)
+
+        if not room:
+            return
+
+        emit("draw_accepted", room=room)
+
+    @socketio.on("reject_draw")
+    def on_reject_draw():
+        sid = request.sid
+        room = sid_to_room.get(sid)
+
+        if not room:
+            return
+
+        emit("draw_rejected", room=room, skip_sid=sid)
+
+    # =========================
+    # 🏳️ RENDICIÓN
+    # =========================
+    @socketio.on("resign")
+    def on_resign():
+        sid = request.sid
+
+        color = "white" if sid == rooms[room]["white"] else "black"
+
+        socketio.emit(
+            "player_resigned",
+            {"color": color},
+            room=room
+        )
+

@@ -23,6 +23,20 @@
     <!-- ÚNICO estado del juego -->
     <div id="message" class="message"></div>
 
+    <button id="resignBtn">🏳️ Rendirse</button>
+
+    <button id="offerDrawBtn">🤝 Ofrecer tablas</button>
+    <button id="acceptDrawBtn" hidden>✅ Aceptar tablas</button>
+    <button id="rejectDrawBtn" hidden>❌ Rechazar</button>
+    <button id="createRoomBtn">Crear sala</button>
+
+    <input id="roomCode" placeholder="Código">
+
+    <button id="joinRoomBtn">Unirse</button>
+
+
+
+
     <div class="top-info">
         <a href="{{ url_for('main.home') }}" class="chess-boton"> ⬅ Volver a Juegos JCM </a>
     </div>

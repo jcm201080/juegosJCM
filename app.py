@@ -13,6 +13,7 @@ from routes.english_games_routes import english_games_bp
 from routes.oca_online_apy import oca_api
 from routes.chess import chess_routes
 from routes.chess_socket import register_chess_sockets
+from routes.chess_rooms import register_chess_rooms
 
 from dotenv import load_dotenv
 import os
@@ -21,6 +22,9 @@ load_dotenv()
 
 
 app = Flask(__name__)
+
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
 
@@ -39,6 +43,7 @@ socketio = SocketIO(
 
 # ✅ Registrar sockets del ajedrez (DESPUÉS)
 register_chess_sockets(socketio)
+register_chess_rooms(socketio)
 
 # ✅ CORS
 CORS(app, supports_credentials=True)
@@ -59,12 +64,13 @@ app.register_blueprint(chess_routes)
 
 
 
+
 if __name__ == "__main__":
     socketio.run(
         app,
         host="0.0.0.0",
         port=5000,
-        debug=False,
+        debug=True,
         allow_unsafe_werkzeug=True
     )
 

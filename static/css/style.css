@@ -365,8 +365,16 @@
 .footer a {
     color: #ffd700;
     text-decoration: none;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
+
 
 .footer:hover {
     opacity: 1;
 }
+
+.footer a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
