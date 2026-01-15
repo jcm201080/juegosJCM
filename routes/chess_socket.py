@@ -54,7 +54,8 @@ def register_chess_sockets(socketio):
         if not room:
             return
 
-        emit("draw_offered", room=room, skip_sid=sid)
+        emit("draw_offered", room=room)
+
 
     @socketio.on("accept_draw")
     def on_accept_draw():
@@ -82,12 +83,15 @@ def register_chess_sockets(socketio):
     @socketio.on("resign")
     def on_resign():
         sid = request.sid
+        room = sid_to_room.get(sid)
 
-        color = "white" if sid == rooms[room]["white"] else "black"
+        if not room:
+            return
 
-        socketio.emit(
+        emit(
             "player_resigned",
-            {"color": color},
+            {"sid": sid},
             room=room
         )
+
 
