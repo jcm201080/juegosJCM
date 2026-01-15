@@ -1,3 +1,5 @@
+/* global io */
+
 import { board as initialBoard, renderBoard } from "./board.js";
 
 import { canSelectPiece, nextTurn } from "./turn.js";
