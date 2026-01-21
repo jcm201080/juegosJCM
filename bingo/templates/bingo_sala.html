@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Sala Bingo{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="bingo-sala">
+    <h1>🎱 Sala de Bingo</h1>
+    <p>Código de sala: <strong>{{ codigo }}</strong></p>
+
+    <div id="estado">
+        Esperando jugadores...
+    </div>
+
+    <p id="ultima-bola"></p>
+
+    <!-- Botón solo para el host -->
+    <button id="newBallBtn" class="btn-primary" style="display:none;">
+        🎱 Sacar bola
+    </button>
+
+    <div id="carton" class="carton"></div>
+
+
+    <button id="resetBtn" class="btn-secondary">
+        🔄 Salir de la sala
+    </button>
+
+
+    <!-- Aquí se pintan los cartones -->
+    <div id="carton-container"></div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="/static/js/bingo/sala.js"></script>
+{% endblock %}

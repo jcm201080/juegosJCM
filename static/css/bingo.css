@@ -1,0 +1,118 @@
+/* =====================================================
+   BINGO – CONTENEDORES PRINCIPALES
+   ===================================================== */
+
+.bingo-lobby,
+.bingo-sala {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Lobby específico */
+.bingo-lobby {
+    text-align: center;
+}
+
+/* Sala específica */
+.bingo-sala {
+    text-align: left;
+}
+
+.bingo-sala h1 {
+    margin-bottom: 1rem;
+}
+
+#estado {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+/* =====================================================
+   BINGO – TARJETAS / BLOQUES
+   ===================================================== */
+
+.bingo-card {
+    background: var(--card-bg, #eaf2ff);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-radius: 16px;
+}
+
+/* =====================================================
+   BINGO – CARTÓN
+   ===================================================== */
+
+.carton {
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+.fila {
+    display: flex;
+}
+
+/* =====================================================
+   BINGO – CELDAS
+   ===================================================== */
+
+.celda {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.celda.marcada {
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+}
+
+
+
+/* =====================================================
+   BINGO – ANIMACIONES Para más adelante
+   ===================================================== */
+
+.celda.marcada {
+    animation: pop 0.2s ease-in-out;
+}
+
+@keyframes pop {
+    from { transform: scale(1.1); }
+    to   { transform: scale(1); }
+}
+
+
+/* =====================================================
+   BINGO – CARTÓN – Versión Mejorada
+   ===================================================== */
+
+   .carton {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-top: 20px;
+    max-width: 320px;
+}
+
+.carton .celda {
+    background: #222;
+    border-radius: 6px;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.carton .celda.marcada {
+    background: #4caf50;
+    color: #000;
+    font-weight: bold;
+}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Bingo Online{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="bingo-lobby">
+    <h1>🎱 Bingo Online</h1>
+
+    <form method="post" class="bingo-card">
+        <button class="btn-primary">Crear sala</button>
+    </form>
+
+    <div class="bingo-card">
+        <h3>Unirse a una sala</h3>
+        <input type="text" id="codigoSala" placeholder="Código de sala">
+        <button class="btn-secondary" onclick="unirseSala()">Entrar</button>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/bingo/lobby.js') }}"></script>
+{% endblock %}
