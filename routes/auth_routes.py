@@ -34,6 +34,7 @@ def register():
 
         # ✅ Dejar logueado tras registro
         session["user_id"] = user_id
+        session["username"] = username
         session.permanent = True  # opcional
 
         cur.execute(
@@ -84,6 +85,7 @@ def login():
 
     # ✅ Guardar sesión (esto es lo clave)
     session["user_id"] = row["id"]
+    session["username"] = row["username"]
     session.permanent = True  # opcional
 
     user = {
@@ -99,7 +101,7 @@ def login():
 # (Opcional pero MUY útil) Logout para limpiar sesión
 @auth_bp.route("/api/logout", methods=["POST"])
 def logout():
-    session.pop("user_id", None)
+    session.clear()
     return jsonify({"success": True})
 
 

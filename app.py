@@ -3,6 +3,11 @@
 # =========================
 import os
 from dotenv import load_dotenv
+from bingo.routes.bingo_routes import bingo_routes
+
+
+
+
 
 load_dotenv()
 IS_PROD = os.environ.get("FLASK_ENV") == "production"
@@ -38,6 +43,10 @@ from routes.chess import chess_routes
 from routes.chess_socket import register_chess_sockets
 from routes.chess_rooms import register_chess_rooms
 
+# Sockets bingo
+from bingo.sockets.bingo_socket import register_bingo_sockets
+
+
 
 # =========================
 # 🚀 Crear app
@@ -63,7 +72,7 @@ socketio = SocketIO(
 # =========================
 register_chess_sockets(socketio)
 register_chess_rooms(socketio)
-
+register_bingo_sockets(socketio)
 
 # =========================
 # 🌍 CORS
@@ -81,6 +90,7 @@ app.register_blueprint(puzzle_bp)
 app.register_blueprint(english_games_bp)
 app.register_blueprint(oca_api)
 app.register_blueprint(chess_routes)
+app.register_blueprint(bingo_routes)
 
 
 # =========================

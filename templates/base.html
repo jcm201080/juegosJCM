@@ -1,25 +1,24 @@
 <!-- templates/base.html -->
 <!doctype html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <title>{% block title %}Juegos JCM{% endblock %}</title>
+    <title>{% block title %}Juegos JCM{% endblock %}</title>
 
-        <link
-            rel="icon"
-            type="image/x-icon"
-            href="{{ url_for('static', filename='img/favicon.png') }}"
-        />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="icon"
+          type="image/x-icon"
+          href="{{ url_for('static', filename='img/favicon.png') }}" />
 
-        {% block extra_css %}{% endblock %}
-    </head>
-    <link rel="manifest" href="{{ url_for('static', filename='pwa/manifest.json') }}" />
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}" />
 
+    <link rel="manifest"
+          href="{{ url_for('static', filename='pwa/manifest.json') }}" />
 
-
+    {% block extra_css %}{% endblock %}
+</head>
 
     {#
     <script>
@@ -155,6 +154,8 @@
                 </div>
             </div>
         </div>
+        <!-- Socket.IO CLIENTE (GLOBAL) -->
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
         <!-- JS global de auth -->
         <script src="{{ url_for('static', filename='js/auth.js') }}"></script>

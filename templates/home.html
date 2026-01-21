@@ -1,41 +1,61 @@
 {% extends "base.html" %} {% block title %}Juegos JCM{% endblock %} {% block content %}
 
 <div class="games-grid">
+
+    {# Juego de cálculo rápido #}
     <article class="game-card">
         <h2>🧮 Juego de Cálculo Rápido</h2>
         <p>Entrena sumas, restas...</p>
         <a class="btn-primary" href="{{ url_for('main.juego_mate') }}">Jugar ahora</a>
     </article>
 
+    {# Juego de tablero #}  
     <article class="game-card">
         <h2>🎲 Juego de Tablero</h2>
         <p>Recorrido con casillas especiales...</p>
         <a class="btn-primary" href="{{ url_for('main.tablero_oca') }}">Jugar ahora</a>
     </article>
 
+    {# Puzzle de imágenes #}
     <article class="game-card">
         <h2>🧩 Puzzle de Imágenes</h2>
         <p>Resuelve puzzles deslizantes...</p>
         <a class="btn-primary" href="{{ url_for('main.puzzle_mate') }}">Jugar ahora</a>
     </article>
 
+    {# Engles Games #}
     <article class="game-card">
         <h2>📘 English Game</h2>
         <p>Practica vocabulario y frases en inglés.</p>
         <a class="btn-primary" href="{{ url_for('english_games.english_games') }}">Jugar ahora</a>
     </article>
 
+    {# juegos en linea #}
     <article class="game-card">
         <h2>❌⭕ Juegos en línea</h2>
         <p>Juega en linea con tus amigos</p>
         <a class="btn-primary" href="{{ url_for('main.juegos_linea') }}">Jugar ahora</a>
     </article>
 
+    {# ajedrez #}
     <article class="game-card">
         <h2>♟️ Ajedrez</h2>
         <p>Juega al clásico juego de estrategia.</p>
         <a class="btn-primary" href="{{ url_for('chess_routes.chess') }}">Jugar ahora</a>
     </article>
+
+    {% if session.get("username") == "jcm" %}
+        <article class="game-card">
+            <h2>🎱 Bingo Online</h2>
+            <p>Juega al bingo en tiempo real con tus amigos.</p>
+            <a class="btn-primary" href="{{ url_for('bingo_routes.bingo_lobby') }}">
+                Jugar ahora
+            </a>
+        </article>
+    {% endif %}
+
+
+
 </div>
 
 {% endblock %}

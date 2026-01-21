@@ -285,6 +285,8 @@ document.addEventListener("DOMContentLoaded", () => {
         } finally {
             clearUser();
             closeModal();
+
+            window.location.reload(); 
         }
     }
 
