@@ -57,6 +57,15 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key")
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
+# =========================
+# 🗄️ Ajuste de cookies
+# =========================
+app.config.update(
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=False,  # ⚠️ True SOLO si usas HTTPS real
+)
+
+
 
 # =========================
 # 🔌 Socket.IO
