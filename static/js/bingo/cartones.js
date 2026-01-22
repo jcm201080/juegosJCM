@@ -78,3 +78,16 @@ function intentarMarcar(celdaDiv, numero) {
 export function getNumerosMarcados() {
     return Array.from(numerosMarcados);
 }
+
+
+export function marcarAutomaticos() {
+    document.querySelectorAll(".celda").forEach(celda => {
+        const numero = celda.dataset.numero;
+        if (!numero) return;
+
+        if (bolasCantadas.includes(Number(numero))) {
+            celda.classList.add("marcada");
+            numerosMarcados.add(Number(numero));
+        }
+    });
+}

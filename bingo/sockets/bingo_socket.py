@@ -96,6 +96,21 @@ def register_bingo_sockets(socketio):
             room=codigo
         )
 
+        # 🔄 Reenviar estado de la sala (DESBLOQUEA botones en cliente)
+        for jugador_sid in sala["jugadores"]:
+            emit(
+                "lista_jugadores",
+                {
+                    "jugadores": list(sala["jugadores"].values()),
+                    "host": jugador_sid == sala["host"],
+                    "en_partida": sala["en_partida"],
+                    "actuales": len(sala["jugadores"]),
+                    "max": 8
+                },
+                room=jugador_sid
+            )
+ 
+
 
     @socketio.on("disconnect")
     def desconectar():

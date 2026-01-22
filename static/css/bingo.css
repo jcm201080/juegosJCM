@@ -9,12 +9,10 @@
     padding: 2rem 1rem;
 }
 
-/* Lobby específico */
 .bingo-lobby {
     text-align: center;
 }
 
-/* Sala específica */
 .bingo-sala {
     text-align: left;
 }
@@ -28,91 +26,119 @@
     font-size: 1.1rem;
 }
 
-/* =====================================================
-   BINGO – TARJETAS / BLOQUES
-   ===================================================== */
-
-.bingo-card {
-    background: var(--card-bg, #eaf2ff);
-    padding: 1.5rem;
-    margin: 1rem 0;
-    border-radius: 16px;
-}
 
 /* =====================================================
    BINGO – CARTÓN
    ===================================================== */
 
 .carton {
-    display: inline-block;
-    margin-top: 1rem;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    gap: 6px;
+    max-width: 320px;
+    margin: 20px auto;
 }
 
-.fila {
-    display: flex;
+.carton .fila {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
 }
+
 
 /* =====================================================
    BINGO – CELDAS
    ===================================================== */
 
-.celda {
-    width: 50px;
-    height: 50px;
-    border: 1px solid #333;
+.carton .celda {
+    background: #1f1f1f;
+    border-radius: 8px;
+    height: 48px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    user-select: none;
-}
 
-.celda.marcada {
-    background-color: #4caf50;
-    color: white;
+    font-size: 16px;
     font-weight: bold;
-}
+    color: #fff;
 
-
-
-/* =====================================================
-   BINGO – ANIMACIONES Para más adelante
-   ===================================================== */
-
-.celda.marcada {
-    animation: pop 0.2s ease-in-out;
-}
-
-@keyframes pop {
-    from { transform: scale(1.1); }
-    to   { transform: scale(1); }
-}
-
-
-/* =====================================================
-   BINGO – CARTÓN – Versión Mejorada
-   ===================================================== */
-
-   .carton {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-    margin-top: 20px;
-    max-width: 320px;
-}
-
-.carton .celda {
-    background: #222;
-    border-radius: 6px;
-    padding: 12px 0;
-    text-align: center;
-    font-size: 1.1rem;
+    box-shadow: inset 0 0 0 2px #333;
     cursor: pointer;
     user-select: none;
+
+    transition: background 0.2s ease, transform 0.1s ease;
 }
+
+.carton .celda:hover {
+    transform: scale(1.05);
+}
+
+
+/* =====================================================
+   BINGO – MARCADA / FREE
+   ===================================================== */
 
 .carton .celda.marcada {
     background: #4caf50;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+    animation: pop 0.2s ease-in-out;
+}
+
+.carton .celda[data-numero="FREE"] {
+    background: #fbc02d;
     color: #000;
+}
+
+
+/* =====================================================
+   BINGO – ANIMACIONES
+   ===================================================== */
+
+@keyframes pop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+
+/* =====================================================
+   BINGO – ÚLTIMA BOLA
+   ===================================================== */
+
+#ultima-bola {
+    font-size: 1.3rem;
+    margin-top: 10px;
+}
+
+#ultima-bola.flash {
+    animation: pop 0.4s ease;
+}
+
+
+/* =====================================================
+   BINGO – HISTORIAL DE BOLAS
+   ===================================================== */
+
+.historial-bolas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.bola-historial {
+    background: #2b2b2b;
+    border-radius: 8px;
+    padding: 8px 0;
+    text-align: center;
     font-weight: bold;
+    color: #fff;
+    box-shadow: inset 0 0 0 2px #444;
+}
+
+.bola-historial.ultima {
+    background: #7c5cff;
+    box-shadow: 0 0 12px rgba(124, 92, 255, 0.8);
 }

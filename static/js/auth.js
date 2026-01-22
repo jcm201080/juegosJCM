@@ -258,6 +258,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 setUser(data.user);
 
+                // 🔄 Recargar la página para que Flask renderice el Bingo
+                setTimeout(() => {
+                    window.location.reload();
+                }, 300);
+
+
                 loginMessage.textContent = "Sesión iniciada.";
                 loginMessage.classList.add("ok");
 
