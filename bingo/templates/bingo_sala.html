@@ -8,6 +8,19 @@
 
 {% block content %}
 <section class="bingo-sala">
+    <div id="nombreModal" class="nombre-modal">
+        <h3>🎱 Nombre para el bingo</h3>
+
+        <input
+            type="text"
+            id="nombreInput"
+            placeholder="Escribe tu nombre"
+            maxlength="20"
+        />
+
+        <button id="entrarBingoBtn">Entrar</button>
+    </div>
+
     <h1>🎱 Sala de Bingo</h1>
     <p>Código de sala: <strong>{{ codigo }}</strong></p>
 
@@ -30,6 +43,22 @@
     <button id="newBallBtn" class="btn-primary" style="display:none;">
         🎱 Sacar bola
     </button>
+    <div class="auto-controls">
+        <button id="autoPlayBtn" class="btn-auto">
+            ▶ Auto
+        </button>
+
+        <button id="pauseAutoBtn" class="btn-auto pause" style="display:none;">
+            ⏸ Pausa
+        </button>
+
+        <span id="autoCountdown" class="auto-countdown" style="display:none;">
+            ⏳ 20s
+        </span>
+    </div>
+
+
+
     <p id="ultima-bola"></p>
 
     <div class="historial-bolas">

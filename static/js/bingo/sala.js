@@ -1,9 +1,39 @@
-import {
-    renderCarton,
-    setBolasCantadas
-} from "./cartones.js";
+import { renderCarton, setBolasCantadas } from "./cartones.js";
+import { initAutoPlay } from "./autoplay.js";
 
 const socket = io();
+
+// =======================
+// Datos de la sala
+// =======================
+const codigo = document.querySelector("strong").innerText;
+
+let nombre = null;
+
+const nombreModal = document.getElementById("nombreModal");
+const nombreInput = document.getElementById("nombreInput");
+const entrarBtn = document.getElementById("entrarBingoBtn");
+
+entrarBtn.addEventListener("click", () => {
+    nombre = nombreInput.value.trim();
+
+    if (!nombre) {
+        alert("Escribe un nombre 😉");
+        return;
+    }
+
+    nombreModal.style.display = "none";
+
+    // 👉 AHORA sí entramos en la sala
+    socket.emit("join_bingo", { codigo, nombre });
+});
+
+
+// =======================
+// Inicializar autoplay
+// =======================
+initAutoPlay({ socket, codigo });
+
 
 // =======================
 // Conexión
@@ -16,16 +46,9 @@ socket.on("disconnect", () => {
     console.log("❌ Socket desconectado");
 });
 
-// =======================
-// Datos de la sala
-// =======================
-const codigo = document.querySelector("strong").innerText;
-
-let nombre = prompt("Tu nombre para el bingo:");
-if (!nombre) nombre = "Jugador";
 
 // =======================
-// Botón sacar bola (solo host)
+// Botón sacar bola (manual)
 // =======================
 const newBallBtn = document.getElementById("newBallBtn");
 
@@ -36,7 +59,7 @@ if (newBallBtn) {
 }
 
 // =======================
-// Botón iniciar partida (solo host)
+// Botón iniciar partida
 // =======================
 const startGameBtn = document.getElementById("startGameBtn");
 
@@ -47,26 +70,18 @@ if (startGameBtn) {
     });
 }
 
-//  =======================
-// Partida iniciada
-// =======================
-
-socket.on("game_started", () => {
-    console.log("🎬 Partida iniciada");
-});
 
 
-// =======================
-// Unirse a la sala
-// =======================
-socket.emit("join_bingo", { codigo, nombre });
 
 // =======================
 // Estado jugadores
 // =======================
 socket.on("lista_jugadores", data => {
     const estado = document.getElementById("estado");
-    const btn = document.getElementById("newBallBtn");
+
+    const autoBtn = document.getElementById("autoPlayBtn");
+    const pauseBtn = document.getElementById("pauseAutoBtn");
+    const countdown = document.getElementById("autoCountdown");
 
     estado.innerHTML = `
         <p>
@@ -75,29 +90,40 @@ socket.on("lista_jugadores", data => {
         </p>
     `;
 
-    // Botón iniciar partida SOLO host
+    // ───────── INICIAR PARTIDA (solo host) ─────────
     if (data.host && data.actuales >= 2 && !data.en_partida) {
         startGameBtn.style.display = "inline-block";
     } else {
         startGameBtn.style.display = "none";
     }
 
-    // Botón sacar bola SOLO cuando la partida ha empezado
+    // ───────── SACAR BOLA (solo host y partida iniciada) ─────────
     if (data.host && data.en_partida) {
-        btn.style.display = "inline-block";
-        btn.disabled = false;
+        newBallBtn.style.display = "inline-block";
+        newBallBtn.disabled = false;
     } else {
-        btn.style.display = "none";
+        newBallBtn.style.display = "none";
+    }
+
+    // ───────── AUTOPLAY ─────────
+    if (data.host && data.en_partida) {
+        // El host ve el botón Auto (Pausa lo gestiona autoplay.js)
+        autoBtn.style.display = "inline-block";
+    } else {
+        // Los jugadores NO host no ven controles
+        autoBtn.style.display = "none";
+        pauseBtn.style.display = "none";
+        countdown.style.display = "none";
     }
 });
 
 
+
 // =======================
-// Sala llena
+// Partida iniciada
 // =======================
-socket.on("sala_llena", () => {
-    alert("La sala está llena");
-    window.location.href = "/bingo";
+socket.on("game_started", () => {
+    console.log("🎬 Partida iniciada");
 });
 
 // =======================
@@ -113,11 +139,12 @@ socket.on("send_carton", data => {
 socket.on("bola_cantada", data => {
     setBolasCantadas(data.historial);
     mostrarBola(data.bola);
-    renderHistorial(data.historial); // 👈 ESTO ES LO QUE FALTABA
+    renderHistorial(data.historial);
 });
 
-
-//mostrar historial de bolas
+// =======================
+// Historial de bolas
+// =======================
 function renderHistorial(bolas) {
     const contenedor = document.querySelector(".historial-bolas");
     if (!contenedor) return;
@@ -128,7 +155,6 @@ function renderHistorial(bolas) {
         const span = document.createElement("span");
         span.classList.add("bola-historial");
 
-        // ⭐ última bola destacada
         if (index === bolas.length - 1) {
             span.classList.add("ultima");
         }
@@ -138,21 +164,18 @@ function renderHistorial(bolas) {
     });
 }
 
-
-
-
-// UI simple para mostrar la última bola
+// =======================
+// Última bola visual
+// =======================
 function mostrarBola(bola) {
     const ultimaBola = document.getElementById("ultima-bola");
     if (!ultimaBola) return;
 
     ultimaBola.innerHTML = `🎱 <strong>Bola actual:</strong> ${bola}`;
     ultimaBola.classList.remove("flash");
-    void ultimaBola.offsetWidth; // truco para reiniciar animación
+    void ultimaBola.offsetWidth;
     ultimaBola.classList.add("flash");
 }
-
-
 
 // =======================
 // Salir de la sala
@@ -165,9 +188,6 @@ if (resetBtn) {
     });
 }
 
-// =======================
-// Confirmaciones
-// =======================
 socket.on("salida_ok", () => {
     window.location.href = "/bingo";
 });
