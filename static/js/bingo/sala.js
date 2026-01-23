@@ -3,6 +3,89 @@ import { initAutoPlay } from "./autoplay.js";
 
 const socket = io();
 
+//========================
+//vidas
+//========================
+function renderVidas(vidas) {
+    const cont = document.getElementById("vidas-container");
+    if (!cont) return;
+
+    cont.innerHTML = "";
+
+    if (vidas <= 0) {
+        cont.innerHTML = `<span class="dead">💀 Sin vidas</span>`;
+        return;
+    }
+
+    for (let i = 0; i < vidas; i++) {
+        const span = document.createElement("span");
+        span.className = "heart";
+        span.textContent = "❤️";
+        cont.appendChild(span);
+    }
+}
+
+
+
+// =======================
+// 🔊 Sonidos arcade (Web Audio API)
+// =======================
+let audioCtx;
+
+function getAudioCtx() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+}
+
+// 🎯 Sonido LÍNEA (beep corto)
+function playLineaSound() {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = "square";          // 👈 arcade total
+    osc.frequency.value = 880;    // tono agudo
+
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.25);
+}
+
+// 🏆 Sonido BINGO (fanfarria arcade)
+function playBingoSound() {
+    const ctx = getAudioCtx();
+
+    const notas = [523, 659, 784, 1046]; // do-mi-sol-do 🎶
+    let t = ctx.currentTime;
+
+    notas.forEach(freq => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "square";
+        osc.frequency.value = freq;
+
+        gain.gain.setValueAtTime(0.35, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(t);
+        osc.stop(t + 0.25);
+
+        t += 0.18;
+    });
+}
+
+
 // =======================
 // Datos de la sala
 // =======================
@@ -40,11 +123,11 @@ initAutoPlay({ socket, codigo });
 // Conexión
 // =======================
 socket.on("connect", () => {
-    console.log("✅ Socket conectado:", socket.id);
-
-    // ✅ AHORA sí entramos en la sala
     socket.emit("join_bingo", { codigo });
 });
+
+
+
 
 
 
@@ -171,7 +254,9 @@ socket.on("game_started", () => {
 // =======================
 socket.on("send_carton", data => {
     renderCarton(data.carton);
+    renderVidas(3); // ❤️ vidas iniciales
 });
+
 
 // =======================
 // Bola cantada
@@ -260,12 +345,16 @@ socket.on("sala_cerrada", () => {
 // FEEDBACK LINEA / BINGO
 // =======================
 socket.on("linea_valida", () => {
+    playLineaSound();
     showToast("🎯 ¡LÍNEA!");
 });
 
 socket.on("bingo_valido", () => {
+    playBingoSound();
     showToast("🏆 ¡BINGO!");
 });
+
+
 
 socket.on("linea_invalida", () => {
     showToast("❌ Línea incorrecta");
@@ -276,3 +365,23 @@ socket.on("bingo_invalido", () => {
 });
 
 
+
+
+// =======================
+// ❤️ VIDAS (Socket.IO)
+// =======================
+socket.on("vidas_actualizadas", data => {
+    renderVidas(data.vidas);
+    showToast(`❤️ Vidas restantes: ${data.vidas}`, "warning");
+});
+
+socket.on("sin_vidas", () => {
+    renderVidas(0);
+    showToast("☠️ Te has quedado sin vidas", "error");
+
+    const btnLinea = document.getElementById("btnLinea");
+    const btnBingo = document.getElementById("btnBingo");
+
+    if (btnLinea) btnLinea.disabled = true;
+    if (btnBingo) btnBingo.disabled = true;
+});

@@ -2,6 +2,9 @@ from flask import Blueprint, render_template, request, redirect, url_for
 import random
 import string
 
+codigos_validos = set()
+
+
 bingo_routes = Blueprint(
     "bingo_routes",
     __name__,
@@ -15,9 +18,11 @@ def generar_codigo_sala(longitud=4):
 def bingo_lobby():
     if request.method == "POST":
         codigo = generar_codigo_sala()
+        codigos_validos.add(codigo)
         return redirect(url_for("bingo_routes.bingo_sala", codigo=codigo))
 
     return render_template("bingo_lobby.html")
+
 
 @bingo_routes.route("/bingo/<codigo>")
 def bingo_sala(codigo):
