@@ -44,15 +44,15 @@
         <a class="btn-primary" href="{{ url_for('chess_routes.chess') }}">Jugar ahora</a>
     </article>
 
-    {% if session.get("username") == "jcm" %}
-        <article class="game-card">
-            <h2>🎱 Bingo Online</h2>
-            <p>Juega al bingo en tiempo real con tus amigos.</p>
-            <a class="btn-primary" href="{{ url_for('bingo_routes.bingo_lobby') }}">
-                Jugar ahora
-            </a>
-        </article>
-    {% endif %}
+    <article class="game-card">
+        <h2>🎱 Bingo Online</h2>
+        <p>Juega al bingo en tiempo real con otros jugadores.</p>
+        <a class="btn-primary" href="{{ url_for('bingo_routes.bingo_lobby') }}">
+            Entrar al bingo
+        </a>
+    </article>
+
+
 
 
 

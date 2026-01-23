@@ -8,25 +8,26 @@ const socket = io();
 // =======================
 const codigo = document.querySelector("strong").innerText;
 
-let nombre = null;
 
-const nombreModal = document.getElementById("nombreModal");
-const nombreInput = document.getElementById("nombreInput");
-const entrarBtn = document.getElementById("entrarBingoBtn");
 
-entrarBtn.addEventListener("click", () => {
-    nombre = nombreInput.value.trim();
+//Eventos y lógica de la sala de bingo:CANTAR bingo y linea
 
-    if (!nombre) {
-        alert("Escribe un nombre 😉");
-        return;
-    }
+const btnLinea = document.getElementById("btnLinea");
+const btnBingo = document.getElementById("btnBingo");
 
-    nombreModal.style.display = "none";
+if (btnLinea) {
+    btnLinea.addEventListener("click", () => {
+        socket.emit("cantar_linea", { codigo });
+    });
+}
 
-    // 👉 AHORA sí entramos en la sala
-    socket.emit("join_bingo", { codigo, nombre });
-});
+if (btnBingo) {
+    btnBingo.addEventListener("click", () => {
+        socket.emit("cantar_bingo", { codigo });
+    });
+}
+
+
 
 
 // =======================
@@ -40,11 +41,18 @@ initAutoPlay({ socket, codigo });
 // =======================
 socket.on("connect", () => {
     console.log("✅ Socket conectado:", socket.id);
+
+    // ✅ AHORA sí entramos en la sala
+    socket.emit("join_bingo", { codigo });
 });
+
+
 
 socket.on("disconnect", () => {
     console.log("❌ Socket desconectado");
 });
+
+
 
 
 // =======================
@@ -83,6 +91,9 @@ socket.on("lista_jugadores", data => {
     const pauseBtn = document.getElementById("pauseAutoBtn");
     const countdown = document.getElementById("autoCountdown");
 
+    const btnLinea = document.getElementById("btnLinea");
+    const btnBingo = document.getElementById("btnBingo");
+
     estado.innerHTML = `
         <p>
             Esperando jugadores…
@@ -114,6 +125,24 @@ socket.on("lista_jugadores", data => {
         autoBtn.style.display = "none";
         pauseBtn.style.display = "none";
         countdown.style.display = "none";
+    }
+
+    // 🔒 Línea
+    if (data.linea_cantada) {
+        btnLinea.disabled = true;
+        btnLinea.classList.add("disabled");
+    } else {
+        btnLinea.disabled = false;
+        btnLinea.classList.remove("disabled");
+    }
+
+    // 🏆 Bingo
+    if (data.bingo_cantado) {
+        btnBingo.disabled = true;
+        btnBingo.classList.add("disabled");
+    } else {
+        btnBingo.disabled = false;
+        btnBingo.classList.remove("disabled");
     }
 });
 
@@ -195,4 +224,24 @@ socket.on("salida_ok", () => {
 socket.on("sala_cerrada", () => {
     alert("El host ha cerrado la sala");
     window.location.href = "/bingo";
+});
+
+
+// =======================
+// FEEDBACK LINEA / BINGO
+// =======================
+socket.on("linea_valida", () => {
+    alert("🎯 ¡LÍNEA!");
+});
+
+socket.on("bingo_valido", () => {
+    alert("🏆 ¡BINGO!");
+});
+
+socket.on("linea_invalida", () => {
+    alert("❌ Línea incorrecta");
+});
+
+socket.on("bingo_invalido", () => {
+    alert("❌ Bingo incorrecto");
 });

@@ -1,8 +1,10 @@
 # routes/auth_routes.py
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, redirect, url_for
 from db import get_connection
 import hashlib
 import sqlite3
+
+from functools import wraps
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -125,3 +127,18 @@ def me():
         return jsonify({"logged_in": False}), 200
 
     return jsonify({"logged_in": True, "user": dict(row)}), 200
+
+
+
+# =========================
+#     LOGIN REQUERIDO
+# =========================
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if "username" not in session:
+            return redirect(url_for("main.home"))
+        return f(*args, **kwargs)
+    return decorated
+

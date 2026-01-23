@@ -6,6 +6,10 @@ import time
 from bingo.logic.cartones import generar_carton
 from bingo.logic.bolas import BomboBingo
 
+# Importar validaciones BINGO Y LINEA
+from bingo.logic.validaciones import comprobar_linea, comprobar_bingo
+
+
 
 # =========================
 # ESTADO EN MEMORIA
@@ -37,13 +41,15 @@ def register_bingo_sockets(socketio):
     @socketio.on("join_bingo")
     def join_bingo(data):
         codigo = data["codigo"]
-        nombre = data["nombre"]
         sid = request.sid
+
+        nombre = data.get("nombre", "Jugador")
 
         if codigo not in salas_bingo:
             salas_bingo[codigo] = {
                 "host": sid,
                 "jugadores": {},
+                "cartones": {},
                 "en_partida": False,
                 "bombo": BomboBingo(),
                 "auto": {
@@ -70,10 +76,13 @@ def register_bingo_sockets(socketio):
                     "host": jugador_sid == sala["host"],
                     "en_partida": sala["en_partida"],
                     "actuales": len(sala["jugadores"]),
-                    "max": 8
+                    "max": 8,
+                    "linea_cantada": sala.get("linea_cantada", False),
+                    "bingo_cantado": sala.get("bingo_cantado", False),
                 },
                 room=jugador_sid
             )
+
 
     # -------------------------
     # INICIAR PARTIDA
@@ -87,17 +96,36 @@ def register_bingo_sockets(socketio):
         if not sala or sala["host"] != sid:
             return
 
+        # 🎬 Marcar partida iniciada
         sala["en_partida"] = True
 
+        # 🔁 RESET de estado de la partida
+        sala["linea_cantada"] = False
+        sala["bingo_cantado"] = False
+        sala["auto"]["activo"] = False
+        sala["bombo"] = BomboBingo()
+
+        # 🧹 Reiniciamos cartones
+        sala["cartones"] = {}
+
+        # 🎟️ Repartir cartones
         for jugador_sid in sala["jugadores"]:
+            carton = generar_carton()
+
+            # ✅ Guardamos el cartón en el servidor
+            sala["cartones"][jugador_sid] = carton
+
+            # 📤 Enviamos el cartón al jugador
             emit(
                 "send_carton",
-                {"carton": generar_carton()},
+                {"carton": carton},
                 room=jugador_sid
             )
 
+        # 📢 Avisamos a todos que empieza la partida
         emit("game_started", room=codigo)
 
+        # 🔄 Actualizamos estado de jugadores
         for jugador_sid in sala["jugadores"]:
             emit(
                 "lista_jugadores",
@@ -106,10 +134,13 @@ def register_bingo_sockets(socketio):
                     "host": jugador_sid == sala["host"],
                     "en_partida": True,
                     "actuales": len(sala["jugadores"]),
-                    "max": 8
+                    "max": 8,
+                    "linea_cantada": sala.get("linea_cantada", False),
+                    "bingo_cantado": sala.get("bingo_cantado", False),
                 },
                 room=jugador_sid
             )
+
 
     # -------------------------
     # SACAR BOLA MANUAL (HOST)
@@ -247,7 +278,9 @@ def register_bingo_sockets(socketio):
                 "actuales": len(sala["jugadores"]),
                 "max": 8,
                 "host": False,
-                "en_partida": sala["en_partida"]
+                "en_partida": sala["en_partida"],
+                "linea_cantada": sala.get("linea_cantada", False),
+                "bingo_cantado": sala.get("bingo_cantado", False),
             },
             room=codigo
         )
@@ -277,8 +310,101 @@ def register_bingo_sockets(socketio):
                         {
                             "jugadores": list(sala["jugadores"].values()),
                             "host": False,
-                            "en_partida": sala["en_partida"]
+                            "en_partida": sala["en_partida"],
+                            "linea_cantada": sala.get("linea_cantada", False),
+                            "bingo_cantado": sala.get("bingo_cantado", False),
                         },
                         room=codigo
                     )
                 break
+
+
+    # -------------------------
+    # COMPROBAR LINEA
+    # -------------------------
+    @socketio.on("cantar_linea")
+    def cantar_linea(data):
+        codigo = data["codigo"]
+        sid = request.sid
+
+        sala = salas_bingo.get(codigo)
+        if not sala or sala.get("linea_cantada", False):
+            emit("linea_invalida", room=sid)
+            return
+
+        carton = sala["cartones"].get(sid)
+        if not carton:
+            return
+
+        bolas = sala["bombo"].historial
+
+        if comprobar_linea(carton, bolas):
+            sala["linea_cantada"] = True
+
+            emit("linea_valida", room=codigo)
+
+            # 🔄 Forzar actualización de estado
+            for jugador_sid in sala["jugadores"]:
+                emit(
+                    "lista_jugadores",
+                    {
+                        "jugadores": list(sala["jugadores"].values()),
+                        "host": jugador_sid == sala["host"],
+                        "en_partida": sala["en_partida"],
+                        "actuales": len(sala["jugadores"]),
+                        "max": 8,
+                        "linea_cantada": True,
+                        "bingo_cantado": sala["bingo_cantado"],
+                    },
+                    room=jugador_sid
+                )
+
+        else:
+            emit("linea_invalida", room=sid)
+
+
+    # -------------------------
+    # COMPROBAR BINGO   
+    # -------------------------
+    @socketio.on("cantar_bingo")
+    def cantar_bingo(data):
+        codigo = data["codigo"]
+        sid = request.sid
+
+        sala = salas_bingo.get(codigo)
+        if not sala or sala.get("bingo_cantado", False):
+            emit("bingo_invalido", room=sid)
+            return
+
+        carton = sala["cartones"].get(sid)
+        if not carton:
+            return
+
+        bolas = sala["bombo"].historial
+
+        if comprobar_bingo(carton, bolas):
+            sala["bingo_cantado"] = True
+            sala["en_partida"] = False
+            sala["auto"]["activo"] = False
+
+            emit("bingo_valido", room=codigo)
+
+            # 🔄 Forzar actualización de estado tras bingo
+            for jugador_sid in sala["jugadores"]:
+                emit(
+                    "lista_jugadores",
+                    {
+                        "jugadores": list(sala["jugadores"].values()),
+                        "host": jugador_sid == sala["host"],
+                        "en_partida": sala["en_partida"],
+                        "actuales": len(sala["jugadores"]),
+                        "max": 8,
+                        "linea_cantada": sala.get("linea_cantada", False),
+                        "bingo_cantado": True,
+                    },
+                    room=jugador_sid
+    )
+
+        else:
+            emit("bingo_invalido", room=sid)
+

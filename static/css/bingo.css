@@ -14,7 +14,7 @@
 }
 
 .bingo-sala {
-    text-align: left;
+    text-align: center; /* 🔑 CLAVE */
 }
 
 .bingo-sala h1 {
@@ -22,7 +22,7 @@
 }
 
 #estado {
-    margin-top: 1rem;
+    margin: 0.5rem 0 1.2rem;
     font-size: 1.1rem;
 }
 
@@ -36,7 +36,7 @@
     grid-template-rows: repeat(5, 1fr);
     gap: 6px;
     max-width: 320px;
-    margin: 20px auto;
+    margin: 24px auto;
 }
 
 .carton .fila {
@@ -109,7 +109,7 @@
 
 #ultima-bola {
     font-size: 1.3rem;
-    margin-top: 10px;
+    margin: 10px 0;
 }
 
 #ultima-bola.flash {
@@ -121,12 +121,14 @@
    BINGO – HISTORIAL DE BOLAS
    ===================================================== */
 
-.historial-bolas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
-    gap: 8px;
-    margin: 12px 0;
+.historial-bolas h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.75;
+    margin-bottom: 6px;
+    text-align: center;
 }
+
 
 .bola-historial {
     background: #2b2b2b;
@@ -144,15 +146,16 @@
 }
 
 
-/* =======================
+/* =====================================================
    AUTOPLAY CONTROLS
-   ======================= */
+   ===================================================== */
 
 .auto-controls {
     display: flex;
+    justify-content: center; /* 🔑 */
     align-items: center;
     gap: 10px;
-    margin: 12px 0;
+    margin: 16px 0;
 }
 
 .btn-auto {
@@ -185,16 +188,17 @@
 
 
 /* =====================================================
-   BINGO – MODAL DE NOMBRE
+   BINGO – BOTONES INFERIORES
    ===================================================== */
-.nombre-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
+
+.bingo-validaciones {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    gap: 10px;
-    z-index: 1000;
+    gap: 12px;
+    margin: 24px 0 16px;
+}
+
+#resetBtn {
+    display: block;
+    margin: 10px auto 0; /* 🔑 separado */
 }

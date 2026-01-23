@@ -8,19 +8,6 @@
 
 {% block content %}
 <section class="bingo-sala">
-    <div id="nombreModal" class="nombre-modal">
-        <h3>🎱 Nombre para el bingo</h3>
-
-        <input
-            type="text"
-            id="nombreInput"
-            placeholder="Escribe tu nombre"
-            maxlength="20"
-        />
-
-        <button id="entrarBingoBtn">Entrar</button>
-    </div>
-
     <h1>🎱 Sala de Bingo</h1>
     <p>Código de sala: <strong>{{ codigo }}</strong></p>
 
@@ -69,15 +56,22 @@
 
 
     <div id="carton" class="carton"></div>
+    
+
+
+    <!-- Aquí se pintan los cartones -->
+    <div id="carton-container"></div>
+
+    <div class="bingo-validaciones">
+        <button id="btnLinea" class="btn-linea">🎯 Cantar línea</button>
+        <button id="btnBingo" class="btn-bingo">🏆 Cantar bingo</button>
+    </div>
 
 
     <button id="resetBtn" class="btn-secondary">
         🔄 Salir de la sala
     </button>
 
-
-    <!-- Aquí se pintan los cartones -->
-    <div id="carton-container"></div>
 </section>
 
 {% endblock %}
