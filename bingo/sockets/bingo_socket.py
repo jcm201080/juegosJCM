@@ -167,15 +167,17 @@ def register_bingo_sockets(socketio):
             room=codigo
         )
 
+    
     # -------------------------
     # AUTOPLAY START (HOST)
     # -------------------------
     @socketio.on("start_autoplay")
     def start_autoplay(data):
         codigo = data["codigo"]
+        intervalo = int(data.get("interval", 20))  # 👈 VIENE DEL SELECT
         sid = request.sid
-        sala = salas_bingo.get(codigo)
 
+        sala = salas_bingo.get(codigo)
         if not sala:
             return
 
@@ -191,13 +193,15 @@ def register_bingo_sockets(socketio):
         if sala["auto"]["activo"]:
             return
 
+        # ✅ GUARDAMOS EL INTERVALO REAL
         sala["auto"]["activo"] = True
-        intervalo = sala["auto"]["intervalo"]
+        sala["auto"]["intervalo"] = intervalo
 
         def autoplay_loop():
             while sala["auto"]["activo"]:
+
                 # ⏳ cuenta atrás
-                for i in range(intervalo, 0, -1):
+                for i in range(sala["auto"]["intervalo"], 0, -1):
                     if not sala["auto"]["activo"]:
                         return
 
@@ -206,7 +210,7 @@ def register_bingo_sockets(socketio):
                         {"seconds": i},
                         room=codigo
                     )
-                    socketio.sleep(1)   # ✅ SIEMPRE socketio.sleep
+                    socketio.sleep(1)
 
                 # 🎱 sacar bola (MISMA lógica que manual)
                 bola = sala["bombo"].sacar_bola()
@@ -223,8 +227,9 @@ def register_bingo_sockets(socketio):
                     room=codigo
                 )
 
-        # ✅ ESTO ES LA CLAVE
+        # 🚀 loop en background
         socketio.start_background_task(autoplay_loop)
+
 
 
        # -------------------------

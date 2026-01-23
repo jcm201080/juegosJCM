@@ -7,12 +7,18 @@ export function initAutoPlay({ socket, codigo }) {
     const autoBtn = document.getElementById("autoPlayBtn");
     const pauseBtn = document.getElementById("pauseAutoBtn");
     const countdown = document.getElementById("autoCountdown");
+    const intervalSelect = document.getElementById("intervalSelect");
 
-    if (!autoBtn || !pauseBtn || !countdown) return;
+    if (!autoBtn || !pauseBtn || !countdown || !intervalSelect) return;
 
-    // ▶️ Iniciar autoplay (solo avisa al servidor)
+    // ▶️ Iniciar autoplay
     autoBtn.addEventListener("click", () => {
-        socket.emit("start_autoplay", { codigo });
+        const interval = parseInt(intervalSelect.value);
+
+        socket.emit("start_autoplay", {
+            codigo,
+            interval
+        });
 
         autoBtn.style.display = "none";
         pauseBtn.style.display = "inline-block";
@@ -28,12 +34,12 @@ export function initAutoPlay({ socket, codigo }) {
         countdown.style.display = "none";
     });
 
-    // ⏳ Contador sincronizado (para TODOS)
+    // ⏳ Contador sincronizado
     socket.on("autoplay_tick", data => {
         countdown.textContent = `⏳ ${data.seconds}s`;
     });
 
-    // 🛑 Pausa forzada (ej. host sale)
+    // 🛑 Pausa forzada
     socket.on("autoplay_paused", () => {
         pauseBtn.style.display = "none";
         autoBtn.style.display = "inline-block";

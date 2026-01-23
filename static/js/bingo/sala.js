@@ -94,6 +94,8 @@ socket.on("lista_jugadores", data => {
     const btnLinea = document.getElementById("btnLinea");
     const btnBingo = document.getElementById("btnBingo");
 
+    const intervalSelect = document.getElementById("intervalSelect");
+
     estado.innerHTML = `
         <p>
             Esperando jugadores…
@@ -118,14 +120,23 @@ socket.on("lista_jugadores", data => {
 
     // ───────── AUTOPLAY ─────────
     if (data.host && data.en_partida) {
-        // El host ve el botón Auto (Pausa lo gestiona autoplay.js)
+
+        if (!window.__autoplayInit) {
+            initAutoPlay({ socket, codigo });
+            window.__autoplayInit = true;
+        }
+
         autoBtn.style.display = "inline-block";
+        intervalSelect.style.display = "inline-block";
+
     } else {
-        // Los jugadores NO host no ven controles
         autoBtn.style.display = "none";
         pauseBtn.style.display = "none";
-        countdown.style.display = "none";
+        intervalSelect.style.display = "none";
+        countdown.style.display = "none"; // 👈 INVITADO NO VE NADA
     }
+
+
 
     // 🔒 Línea
     if (data.linea_cantada) {
@@ -207,6 +218,24 @@ function mostrarBola(bola) {
 }
 
 // =======================
+// Toast de notificaciones
+// =======================
+
+function showToast(message, type = "error", duration = 2500) {
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.className = `toast show ${type}`;
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        toast.classList.add("hidden");
+    }, duration);
+}
+
+
+// =======================
 // Salir de la sala
 // =======================
 const resetBtn = document.getElementById("resetBtn");
@@ -231,17 +260,19 @@ socket.on("sala_cerrada", () => {
 // FEEDBACK LINEA / BINGO
 // =======================
 socket.on("linea_valida", () => {
-    alert("🎯 ¡LÍNEA!");
+    showToast("🎯 ¡LÍNEA!");
 });
 
 socket.on("bingo_valido", () => {
-    alert("🏆 ¡BINGO!");
+    showToast("🏆 ¡BINGO!");
 });
 
 socket.on("linea_invalida", () => {
-    alert("❌ Línea incorrecta");
+    showToast("❌ Línea incorrecta");
 });
 
 socket.on("bingo_invalido", () => {
-    alert("❌ Bingo incorrecto");
+    showToast("❌ Bingo incorrecto");
 });
+
+

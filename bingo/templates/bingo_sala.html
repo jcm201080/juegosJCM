@@ -31,6 +31,20 @@
         🎱 Sacar bola
     </button>
     <div class="auto-controls">
+
+        <label for="intervalSelect">⏱ Intervalo:</label>
+
+        <select id="intervalSelect" class="interval-select">
+            <option value="1">1 s</option>
+            <option value="5">5 s</option>
+            <option value="10">10 s</option>
+            <option value="15">15 s</option>
+            <option value="20" selected>20 s</option>
+            <option value="25">25 s</option>
+            <option value="30">30 s</option>
+            <option value="35">35 s</option>
+            <option value="40">40 s</option>
+        </select>
         <button id="autoPlayBtn" class="btn-auto">
             ▶ Auto
         </button>
@@ -71,6 +85,9 @@
     <button id="resetBtn" class="btn-secondary">
         🔄 Salir de la sala
     </button>
+
+    <div id="toast" class="toast hidden"></div>
+
 
 </section>
 
