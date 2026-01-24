@@ -11,6 +11,15 @@ window.__SALA_JS_OK__ = true;
 const socket = io();
 
 // =======================
+// Nombre del jugador (preparado para login)
+// =======================
+const playerName =
+    window.USERNAME ||
+    localStorage.getItem("bingo_nombre") ||
+    "Invitado";
+
+
+// =======================
 // Cartón recibido
 // =======================
 function renderCartones(cartones) {
@@ -163,7 +172,8 @@ socket.on("connect", () => {
 
     socket.emit("join_bingo", {
         codigo,
-        cartones: parseInt(numCartones)
+        cartones: parseInt(numCartones),
+        nombre: playerName
     });
 });
 
@@ -414,19 +424,42 @@ socket.on("sala_cerrada", () => {
     window.location.href = "/bingo";
 });
 
+// =======================
+// AVISO CENTRAL (LÍNEA / BINGO)
+// =======================
+function mostrarAvisoCantar(texto, tipo = "linea") {
+    const aviso = document.getElementById("aviso-cantar");
+    if (!aviso) return;
+
+    aviso.textContent = texto;
+    aviso.className = `aviso-cantar ${tipo}`;
+
+    setTimeout(() => {
+        aviso.classList.add("hidden");
+    }, 2500); // ⏱️ tiempo visible
+}
+
 
 // =======================
 // FEEDBACK LINEA / BINGO
 // =======================
-socket.on("linea_valida", () => {
+socket.on("linea_valida", data => {
+    const jugador = data?.jugador || "un jugador";
+
     playLineaSound();
-    showToast("🎯 ¡LÍNEA!");
+    mostrarAvisoCantar(`🎯 LÍNEA de ${jugador}`, "linea");
+    showToast(`🎯 Línea válida (${jugador})`);
 });
 
-socket.on("bingo_valido", () => {
+socket.on("bingo_valido", data => {
+    const jugador = data?.jugador || "un jugador";
+
     playBingoSound();
-    showToast("🏆 ¡BINGO!");
+    mostrarAvisoCantar(`🏆 BINGO de ${jugador}`, "bingo");
+    showToast(`🏆 Bingo válido (${jugador})`);
 });
+
+
 
 
 

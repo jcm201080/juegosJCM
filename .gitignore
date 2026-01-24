@@ -45,3 +45,11 @@ Thumbs.db
 
 # IONOS
 IONOS.docx
+
+config.py
+
+
+__pycache__/
+*.pyc
+papelera/
+*.docx

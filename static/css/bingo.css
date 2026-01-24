@@ -9,10 +9,7 @@
     padding: 2rem 1rem;
 }
 
-.bingo-lobby {
-    text-align: center;
-}
-
+.bingo-lobby,
 .bingo-sala {
     text-align: center;
 }
@@ -28,31 +25,65 @@
 
 
 /* =====================================================
-   BINGO – CARTONES
+   BINGO – CARTONES (GRID)
    ===================================================== */
 
 #carton-container {
+    margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
 }
 
+
+/* =====================================================
+   CARTÓN – WRAPPER (SEPARACIÓN VISUAL)
+   ===================================================== */
+
 .carton-wrapper {
-    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 10px 8px 14px;
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.45),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    position: relative;
+}
+
+.carton-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(124, 92, 255, 0.6),
+        transparent
+    );
 }
 
 .carton-wrapper h4 {
     text-align: center;
-    margin-bottom: 6px;
-    opacity: 0.8;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    opacity: 0.9;
 }
+
+
+/* =====================================================
+   CARTÓN – TABLERO
+   ===================================================== */
 
 .carton {
     display: grid;
     grid-template-rows: repeat(5, 1fr);
     gap: 6px;
     max-width: 320px;
-    margin: 24px auto;
+    margin: 16px auto;
 }
 
 .carton .fila {
@@ -99,6 +130,45 @@
 .carton .celda[data-numero="FREE"] {
     background: #fbc02d;
     color: #000;
+}
+
+
+/* =====================================================
+   CANTAR LÍNEA / BINGO
+   ===================================================== */
+
+.bingo-validaciones {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    margin: 26px 0 42px;
+    flex-wrap: wrap;
+}
+
+.bingo-validaciones button {
+    min-width: 170px;
+    padding: 14px 22px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bingo-validaciones button:hover {
+    transform: scale(1.06);
+}
+
+.btn-linea {
+    background: linear-gradient(135deg, #00c853, #2ecc71);
+    box-shadow: 0 0 14px rgba(46, 204, 113, 0.6);
+}
+
+.btn-bingo {
+    background: linear-gradient(135deg, #ff9800, #ff5722);
+    box-shadow: 0 0 16px rgba(255, 152, 0, 0.7);
 }
 
 
@@ -215,6 +285,50 @@
 
 
 /* =====================================================
+   BOTÓN SALIR
+   ===================================================== */
+
+#resetBtn {
+    margin-top: 32px;
+    opacity: 0.85;
+}
+
+#resetBtn:hover {
+    opacity: 1;
+}
+
+
+/* =====================================================
+   AVISO CANTAR (OVERLAY)
+   ===================================================== */
+
+.aviso-cantar {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    z-index: 9999;
+    animation: avisoIn 0.3s ease;
+}
+
+.aviso-cantar.linea { color: #2ecc71; }
+.aviso-cantar.bingo { color: #ff9800; }
+
+.aviso-cantar.hidden { display: none; }
+
+@keyframes avisoIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+
+/* =====================================================
    RESPONSIVE – MÓVIL
    ===================================================== */
 
@@ -223,6 +337,13 @@
     #carton-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+    }
+
+    .carton-wrapper {
+        padding: 8px 6px 12px;
+        box-shadow:
+            0 4px 14px rgba(0, 0, 0, 0.6),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
     .carton {
@@ -238,15 +359,6 @@
         height: 36px;
         font-size: 13px;
         border-radius: 6px;
-    }
-
-    .carton-wrapper {
-        margin-bottom: 10px;
-    }
-
-    .carton-wrapper h4 {
-        margin: 4px 0;
-        font-size: 0.9rem;
     }
 
     #ultima-bola {
