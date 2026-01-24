@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Sala Bingo{% endblock %}
 
-
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
 {% endblock %}
@@ -11,9 +10,14 @@
     <h1>🎱 Sala de Bingo</h1>
     <p>Código de sala: <strong>{{ codigo }}</strong></p>
 
+    <!-- ✅ Variable global accesible desde sala.js -->
+    <script>
+        window.CODIGO = "{{ codigo }}";
+    </script>
+
     <div id="estado">
         Esperando jugadores...
-    </div>    
+    </div>
 
     <div id="cartones-select">
         <label>🎟️ Cartones:</label>
@@ -25,7 +29,6 @@
         </select>
     </div>
 
-
     <button
         id="startGameBtn"
         class="btn-primary"
@@ -34,13 +37,12 @@
         ▶️ Iniciar partida
     </button>
 
-
     <!-- Botón solo para el host -->
     <button id="newBallBtn" class="btn-primary" style="display:none;">
         🎱 Sacar bola
     </button>
-    <div class="auto-controls">
 
+    <div class="auto-controls">
         <label for="intervalSelect">⏱ Intervalo:</label>
 
         <select id="intervalSelect" class="interval-select">
@@ -54,6 +56,7 @@
             <option value="35">35 s</option>
             <option value="40">40 s</option>
         </select>
+
         <button id="autoPlayBtn" class="btn-auto">
             ▶ Auto
         </button>
@@ -66,21 +69,15 @@
             ⏳ 20s
         </span>
     </div>
-    
 
     <div class="historial-bolas">
-        <h3>Bolas: </h3>
+        <h3>Bolas:</h3>
         <div id="bolas-container"></div>
     </div>
 
-    
     <div id="vidas-container" class="vidas"></div>
 
     <p id="ultima-bola"></p>
-
-    <div id="carton" class="carton"></div>
-    
-
 
     <!-- Aquí se pintan los cartones -->
     <div id="carton-container"></div>
@@ -90,21 +87,15 @@
         <button id="btnBingo" class="btn-bingo">🏆 Cantar bingo</button>
     </div>
 
-
     <button id="resetBtn" class="btn-secondary">
         🔄 Salir de la sala
     </button>
 
     <div id="toast" class="toast hidden"></div>
-
     <div id="aviso-cantar" class="aviso-cantar hidden"></div>
-
-
-
 </section>
-
 {% endblock %}
 
 {% block extra_js %}
-<script type="module" src="/static/js/bingo/sala.js"></script>
+<script type="module" src="{{ url_for('static', filename='js/bingo/sala.js') }}"></script>
 {% endblock %}

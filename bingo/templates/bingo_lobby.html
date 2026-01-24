@@ -9,7 +9,17 @@
 <section class="bingo-lobby">
     <h1>🎱 Bingo Online</h1>
 
-    <form method="post" class="bingo-card">
+    <div class="bingo-card">
+        <h3>Tu nombre</h3>
+        <input
+            type="text"
+            id="nombreJugador"
+            placeholder="Escribe tu nombre"
+            maxlength="20"
+        >
+    </div>
+
+    <form method="post" class="bingo-card" onsubmit="guardarNombre()">
         <button class="btn-primary">Crear sala</button>
     </form>
 
@@ -19,6 +29,21 @@
         <button class="btn-secondary" onclick="unirseSala()">Entrar</button>
     </div>
 </section>
+
+<script>
+function guardarNombre() {
+    const nombre = document.getElementById("nombreJugador").value.trim() || "Jugador";
+    localStorage.setItem("bingo_nombre", nombre);
+}
+
+function unirseSala() {
+    const codigo = document.getElementById("codigoSala").value.trim().toUpperCase();
+    if (!codigo) return;
+
+    guardarNombre();
+    window.location.href = `/bingo/${codigo}`;
+}
+</script>
 
 <script src="{{ url_for('static', filename='js/bingo/lobby.js') }}"></script>
 {% endblock %}

@@ -14,9 +14,8 @@ const socket = io();
 // Nombre del jugador (preparado para login)
 // =======================
 const playerName =
-    window.USERNAME ||
-    localStorage.getItem("bingo_nombre") ||
-    "Invitado";
+    localStorage.getItem("bingo_nombre") || "Invitado";
+
 
 
 // =======================
@@ -134,7 +133,8 @@ function playBingoSound() {
 // =======================
 // Datos de la sala
 // =======================
-const codigo = document.querySelector("strong").innerText;
+const codigo = CODIGO;
+
 
 
 
@@ -158,10 +158,7 @@ if (btnBingo) {
 
 
 
-// =======================
-// Inicializar autoplay
-// =======================
-initAutoPlay({ socket, codigo });
+
 
 
 // =======================
@@ -444,7 +441,7 @@ function mostrarAvisoCantar(texto, tipo = "linea") {
 // FEEDBACK LINEA / BINGO
 // =======================
 socket.on("linea_valida", data => {
-    const jugador = data?.jugador || "un jugador";
+    const jugador = data?.nombre || "un jugador";
 
     playLineaSound();
     mostrarAvisoCantar(`🎯 LÍNEA de ${jugador}`, "linea");
@@ -452,12 +449,13 @@ socket.on("linea_valida", data => {
 });
 
 socket.on("bingo_valido", data => {
-    const jugador = data?.jugador || "un jugador";
+    const jugador = data?.nombre || "un jugador";
 
     playBingoSound();
     mostrarAvisoCantar(`🏆 BINGO de ${jugador}`, "bingo");
     showToast(`🏆 Bingo válido (${jugador})`);
 });
+
 
 
 
