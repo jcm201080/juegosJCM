@@ -10,15 +10,14 @@ let numerosMarcados = new Set();
 // =======================
 
 export function setBolasCantadas(bolas) {
-    bolasCantadas = bolas;
+    bolasCantadas = bolas.map(Number);
 }
 
-export function renderCarton(carton) {
-    const container = document.getElementById("carton-container");
-    container.innerHTML = ""; // limpiar si existía
+// 👇 renderiza UN cartón en el contenedor que se le pase
+export function renderCarton(carton, container) {
+    if (!container) return;
 
-    const contenedor = document.createElement("div");
-    contenedor.classList.add("carton");
+    container.innerHTML = ""; // 🔑 limpiamos SOLO este cartón
 
     carton.forEach(fila => {
         const filaDiv = document.createElement("div");
@@ -36,18 +35,23 @@ export function renderCarton(carton) {
                 celdaDiv.textContent = numero;
                 celdaDiv.dataset.numero = numero;
 
+                // 🔁 marcar al hacer click (solo si ha salido)
                 celdaDiv.addEventListener("click", () => {
                     intentarMarcar(celdaDiv, numero);
                 });
+
+                // ✅ marcar automáticamente si la bola ya salió
+                if (bolasCantadas.includes(numero)) {
+                    celdaDiv.classList.add("marcada");
+                    numerosMarcados.add(numero);
+                }
             }
 
             filaDiv.appendChild(celdaDiv);
         });
 
-        contenedor.appendChild(filaDiv);
+        container.appendChild(filaDiv);
     });
-
-    container.appendChild(contenedor);
 }
 
 // =======================
@@ -56,14 +60,10 @@ export function renderCarton(carton) {
 
 function intentarMarcar(celdaDiv, numero) {
     // ❌ Si la bola no ha salido, no se marca
-    if (!bolasCantadas.includes(numero)) {
-        return;
-    }
+    if (!bolasCantadas.includes(numero)) return;
 
-    // Toggle visual
     celdaDiv.classList.toggle("marcada");
 
-    // Mantener estado local
     if (numerosMarcados.has(numero)) {
         numerosMarcados.delete(numero);
     } else {
@@ -72,22 +72,22 @@ function intentarMarcar(celdaDiv, numero) {
 }
 
 // =======================
-// Utilidades futuras
+// Utilidades
 // =======================
 
 export function getNumerosMarcados() {
     return Array.from(numerosMarcados);
 }
 
-
+// 🔄 Marcar automáticamente en TODOS los cartones
 export function marcarAutomaticos() {
     document.querySelectorAll(".celda").forEach(celda => {
-        const numero = celda.dataset.numero;
+        const numero = Number(celda.dataset.numero);
         if (!numero) return;
 
-        if (bolasCantadas.includes(Number(numero))) {
+        if (bolasCantadas.includes(numero)) {
             celda.classList.add("marcada");
-            numerosMarcados.add(Number(numero));
+            numerosMarcados.add(numero);
         }
     });
 }

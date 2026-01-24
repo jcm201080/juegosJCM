@@ -1,7 +1,43 @@
+
+
+
 import { renderCarton, setBolasCantadas } from "./cartones.js";
 import { initAutoPlay } from "./autoplay.js";
 
+console.log("🔥 sala.js CARGADO");
+window.__SALA_JS_OK__ = true;
+
+
 const socket = io();
+
+// =======================
+// Cartón recibido
+// =======================
+function renderCartones(cartones) {
+    const container = document.getElementById("carton-container");
+    if (!container) return;
+
+    container.innerHTML = ""; // limpiar cartones anteriores
+
+    cartones.forEach((carton, index) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "carton-wrapper";
+
+        const title = document.createElement("h4");
+        title.textContent = `Cartón ${index + 1}`;
+
+        const cartonDiv = document.createElement("div");
+        cartonDiv.className = "carton";
+
+        wrapper.appendChild(title);
+        wrapper.appendChild(cartonDiv);
+        container.appendChild(wrapper);
+
+        // 👇 reutilizamos TU función existente
+        renderCarton(carton, cartonDiv);
+    });
+}
+
 
 //========================
 //vidas
@@ -123,7 +159,12 @@ initAutoPlay({ socket, codigo });
 // Conexión
 // =======================
 socket.on("connect", () => {
-    socket.emit("join_bingo", { codigo });
+    const numCartones = document.getElementById("numCartones")?.value || 1;
+
+    socket.emit("join_bingo", {
+        codigo,
+        cartones: parseInt(numCartones)
+    });
 });
 
 
@@ -156,9 +197,18 @@ const startGameBtn = document.getElementById("startGameBtn");
 
 if (startGameBtn) {
     startGameBtn.addEventListener("click", () => {
-        socket.emit("start_game", { codigo });
-        startGameBtn.style.display = "none";
+    const numCartones = parseInt(
+        document.getElementById("numCartones")?.value || 1
+    );
+
+    socket.emit("start_game", {
+        codigo,
+        cartones: numCartones
     });
+
+    startGameBtn.style.display = "none";
+});
+
 }
 
 
@@ -168,6 +218,8 @@ if (startGameBtn) {
 // Estado jugadores
 // =======================
 socket.on("lista_jugadores", data => {
+    console.log("📦 lista_jugadores recibido:", data);
+    
     const estado = document.getElementById("estado");
 
     const autoBtn = document.getElementById("autoPlayBtn");
@@ -179,19 +231,38 @@ socket.on("lista_jugadores", data => {
 
     const intervalSelect = document.getElementById("intervalSelect");
 
+    const validaciones = document.querySelector(".bingo-validaciones");
+
     estado.innerHTML = `
         <p>
             Esperando jugadores…
             <strong>(${data.actuales}/${data.max})</strong>
+            <br>
+            <small>Mínimo para empezar: ${data.min}</small>
         </p>
     `;
 
+    
+
+    if (data.en_partida) {
+        validaciones.style.display = "flex";
+    } else {
+        validaciones.style.display = "none";
+    }
+
+
+
     // ───────── INICIAR PARTIDA (solo host) ─────────
-    if (data.host && data.actuales >= 2 && !data.en_partida) {
+    if (
+        data.host &&
+        data.actuales >= data.min &&
+        !data.en_partida
+    ) {
         startGameBtn.style.display = "inline-block";
     } else {
         startGameBtn.style.display = "none";
     }
+
 
     // ───────── SACAR BOLA (solo host y partida iniciada) ─────────
     if (data.host && data.en_partida) {
@@ -221,8 +292,8 @@ socket.on("lista_jugadores", data => {
 
 
 
-    // 🔒 Línea
-    if (data.linea_cantada) {
+    // 🎯 Línea
+    if (!data.en_partida || data.linea_cantada) {
         btnLinea.disabled = true;
         btnLinea.classList.add("disabled");
     } else {
@@ -231,13 +302,14 @@ socket.on("lista_jugadores", data => {
     }
 
     // 🏆 Bingo
-    if (data.bingo_cantado) {
+    if (!data.en_partida || data.bingo_cantado) {
         btnBingo.disabled = true;
         btnBingo.classList.add("disabled");
     } else {
         btnBingo.disabled = false;
         btnBingo.classList.remove("disabled");
     }
+
 });
 
 
@@ -253,9 +325,11 @@ socket.on("game_started", () => {
 // Cartón recibido
 // =======================
 socket.on("send_carton", data => {
-    renderCarton(data.carton);
-    renderVidas(3); // ❤️ vidas iniciales
+    console.log("🎟️ Cartones recibidos:", data.cartones);
+    renderCartones(data.cartones);
+    renderVidas(3);
 });
+
 
 
 // =======================

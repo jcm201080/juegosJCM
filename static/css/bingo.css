@@ -45,6 +45,24 @@
     gap: 6px;
 }
 
+/*cartones varios*/
+.carton-wrapper {
+    margin-bottom: 20px;
+}
+
+.carton-wrapper h4 {
+    text-align: center;
+    margin-bottom: 6px;
+    opacity: 0.8;
+}
+
+#carton-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+
 
 /* =====================================================
    BINGO – CELDAS
