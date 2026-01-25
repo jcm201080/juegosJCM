@@ -7,7 +7,22 @@
 
 {% block content %}
 <section class="bingo-sala">
-    <h1>🎱 Sala de Bingo</h1>
+    <h1 class="bingo-title">
+        <video
+            src="{{ url_for('static', filename='img/bingo.mp4') }}"
+            autoplay
+            loop
+            muted
+            playsinline
+            class="bingo-icon"
+        ></video>
+        Sala de Bingo
+    </h1>
+
+    <p class="bingo-player">
+        🎟️ Jugador: <strong>{{ session.username }}</strong>
+    </p>
+
     <p>Código de sala: <strong>{{ codigo }}</strong></p>
 
     <!-- ✅ Variable global accesible desde sala.js -->
@@ -15,59 +30,62 @@
         window.CODIGO = "{{ codigo }}";
     </script>
 
-    <div id="estado">
-        Esperando jugadores...
+    <div id="estado-espera">
+        <div id="estado">Esperando jugadores...</div>
     </div>
 
-    <div id="cartones-select">
-        <label>🎟️ Cartones:</label>
-        <select id="numCartones">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-        </select>
-    </div>
+    <div id="controles-host">
 
-    <button
-        id="startGameBtn"
-        class="btn-primary"
-        style="display: none;"
-    >
-        ▶️ Iniciar partida
-    </button>
+        <div id="cartones-select">
+            <label>🎟️ Cartones:</label>
+            <select id="numCartones">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
 
-    <!-- Botón solo para el host -->
-    <button id="newBallBtn" class="btn-primary" style="display:none;">
-        🎱 Sacar bola
-    </button>
-
-    <div class="auto-controls">
-        <label for="intervalSelect">⏱ Intervalo:</label>
-
-        <select id="intervalSelect" class="interval-select">
-            <option value="1">1 s</option>
-            <option value="5">5 s</option>
-            <option value="10">10 s</option>
-            <option value="15">15 s</option>
-            <option value="20" selected>20 s</option>
-            <option value="25">25 s</option>
-            <option value="30">30 s</option>
-            <option value="35">35 s</option>
-            <option value="40">40 s</option>
-        </select>
-
-        <button id="autoPlayBtn" class="btn-auto">
-            ▶ Auto
+        <button
+            id="startGameBtn"
+            class="btn-primary"
+            style="display: none;"
+        >
+            ▶️ Iniciar partida
         </button>
 
-        <button id="pauseAutoBtn" class="btn-auto pause" style="display:none;">
-            ⏸ Pausa
+        <!-- Botón solo para el host -->
+        <button id="newBallBtn" class="btn-primary" style="display:none;">
+            🎱 Sacar bola
         </button>
 
-        <span id="autoCountdown" class="auto-countdown" style="display:none;">
-            ⏳ 20s
-        </span>
+        <div class="auto-controls">
+            <label for="intervalSelect">⏱ Intervalo:</label>
+
+            <select id="intervalSelect" class="interval-select">
+                <option value="1">1 s</option>
+                <option value="5">5 s</option>
+                <option value="10">10 s</option>
+                <option value="15">15 s</option>
+                <option value="20" selected>20 s</option>
+                <option value="25">25 s</option>
+                <option value="30">30 s</option>
+                <option value="35">35 s</option>
+                <option value="40">40 s</option>
+            </select>
+
+            <button id="autoPlayBtn" class="btn-auto">
+                ▶ Auto
+            </button>
+
+            <button id="pauseAutoBtn" class="btn-auto pause" style="display:none;">
+                ⏸ Pausa
+            </button>
+
+            <span id="autoCountdown" class="auto-countdown" style="display:none;">
+                ⏳ 20s
+            </span>
+        </div>
     </div>
 
     <div class="historial-bolas">

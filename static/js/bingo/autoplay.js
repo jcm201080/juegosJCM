@@ -3,7 +3,6 @@
  * El tiempo y las bolas las controla el servidor
  */
 export function initAutoPlay({ socket, codigo }) {
-
     const autoBtn = document.getElementById("autoPlayBtn");
     const pauseBtn = document.getElementById("pauseAutoBtn");
     const countdown = document.getElementById("autoCountdown");
@@ -17,7 +16,7 @@ export function initAutoPlay({ socket, codigo }) {
 
         socket.emit("start_autoplay", {
             codigo,
-            interval
+            interval,
         });
 
         autoBtn.style.display = "none";
@@ -35,7 +34,7 @@ export function initAutoPlay({ socket, codigo }) {
     });
 
     // ⏳ Contador sincronizado
-    socket.on("autoplay_tick", data => {
+    socket.on("autoplay_tick", (data) => {
         countdown.textContent = `⏳ ${data.seconds}s`;
     });
 

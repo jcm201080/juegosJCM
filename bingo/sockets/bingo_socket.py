@@ -5,12 +5,15 @@ from bingo.logic.cartones import generar_carton
 from bingo.logic.bolas import BomboBingo
 from bingo.logic.validaciones import comprobar_linea, comprobar_bingo
 from bingo.routes.bingo_routes import codigos_validos
-from config import (
+from config import (  
     BINGO_MAX_PLAYERS,
     BINGO_MIN_PLAYERS,
     BINGO_MAX_CARTONES,
     BINGO_MIN_CARTONES,
 )
+
+
+
 
 # =========================
 # ESTADO EN MEMORIA

@@ -1,24 +1,24 @@
 <!-- templates/base.html -->
 <!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>{% block title %}Juegos JCM{% endblock %}</title>
+        <title>{% block title %}Juegos JCM{% endblock %}</title>
 
-    <link rel="icon"
-          type="image/x-icon"
-          href="{{ url_for('static', filename='img/favicon.png') }}" />
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="{{ url_for('static', filename='img/favicon.png') }}"
+        />
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 
-    <link rel="manifest"
-          href="{{ url_for('static', filename='pwa/manifest.json') }}" />
+        <link rel="manifest" href="{{ url_for('static', filename='pwa/manifest.json') }}" />
 
-    {% block extra_css %}{% endblock %}
-</head>
+        {% block extra_css %}{% endblock %}
+    </head>
 
     {#
     <script>
@@ -83,16 +83,15 @@
         <footer class="footer">
             <p>
                 © 2025 — JCM |
-                <a href="https://github.com/jcm201080"
-                target="_blank"
-                rel="noopener noreferrer">🐙 GitHub</a>
+                <a href="https://github.com/jcm201080" target="_blank" rel="noopener noreferrer"
+                    >🐙 GitHub</a
+                >
                 ·
-                <a href="https://jesuscmweb.com"
-                target="_blank"
-                rel="noopener noreferrer">🌐 jesuscmweb.com</a>
+                <a href="https://jesuscmweb.com" target="_blank" rel="noopener noreferrer"
+                    >🌐 jesuscmweb.com</a
+                >
             </p>
         </footer>
-
 
         <!-- 🔐 MODAL GLOBAL DE AUTENTICACIÓN -->
         <div id="authModal" class="auth-modal hidden">
@@ -100,6 +99,11 @@
 
             <div class="auth-modal-content auth-card">
                 <button id="closeAuthBtn" class="auth-close-btn">✕</button>
+
+                <!-- 🔒 MENSAJE LOGIN REQUERIDO -->
+                <div id="loginHint" class="login-hint hidden">
+                    🔒 Necesitas iniciar sesión para jugar
+                </div>
 
                 <!-- Invitado -->
                 <div id="auth-guest">
@@ -150,7 +154,10 @@
                         🏆 Mejor puntuación global: <span id="currentBestScore">0</span><br />
                         ⭐ Puntuación total: <span id="currentTotalScore">0</span>
                     </p>
-                    <button id="logoutBtn" class="btn-secondary">Cerrar sesión</button>
+
+                    <button id="goGamesBtn" class="btn-primary">🎮 Ir a los juegos</button>
+
+                    <button id="logoutBtn" class="btn-link-danger">Cerrar sesión</button>
                 </div>
             </div>
         </div>

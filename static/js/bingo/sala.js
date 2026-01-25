@@ -1,5 +1,4 @@
-
-
+/* global io */
 
 import { renderCarton, setBolasCantadas } from "./cartones.js";
 import { initAutoPlay } from "./autoplay.js";
@@ -7,16 +6,35 @@ import { initAutoPlay } from "./autoplay.js";
 console.log("🔥 sala.js CARGADO");
 window.__SALA_JS_OK__ = true;
 
-
 const socket = io();
 
 // =======================
 // Nombre del jugador (preparado para login)
 // =======================
-const playerName =
-    localStorage.getItem("bingo_nombre") || "Invitado";
+const playerName = localStorage.getItem("bingo_nombre") || "Invitado";
 
+// =======================
+// Sonido bolas
+// =======================
+const ballSound = new Audio("/static/sounds/bingo_ball.mp3");
+ballSound.volume = 0.4; // suave, no molesto
 
+// Intentar desbloquear audio al interactuar
+let audioUnlocked = false;
+
+function unlockAudio() {
+    if (audioUnlocked) return;
+    ballSound
+        .play()
+        .then(() => {
+            ballSound.pause();
+            ballSound.currentTime = 0;
+            audioUnlocked = true;
+        })
+        .catch(() => {});
+}
+
+document.addEventListener("click", unlockAudio, { once: true });
 
 // =======================
 // Cartón recibido
@@ -46,7 +64,6 @@ function renderCartones(cartones) {
     });
 }
 
-
 //========================
 //vidas
 //========================
@@ -69,8 +86,6 @@ function renderVidas(vidas) {
     }
 }
 
-
-
 // =======================
 // 🔊 Sonidos arcade (Web Audio API)
 // =======================
@@ -89,8 +104,8 @@ function playLineaSound() {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = "square";          // 👈 arcade total
-    osc.frequency.value = 880;    // tono agudo
+    osc.type = "square"; // 👈 arcade total
+    osc.frequency.value = 880; // tono agudo
 
     gain.gain.setValueAtTime(0.3, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
@@ -109,7 +124,7 @@ function playBingoSound() {
     const notas = [523, 659, 784, 1046]; // do-mi-sol-do 🎶
     let t = ctx.currentTime;
 
-    notas.forEach(freq => {
+    notas.forEach((freq) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
 
@@ -129,14 +144,10 @@ function playBingoSound() {
     });
 }
 
-
 // =======================
 // Datos de la sala
 // =======================
-const codigo = CODIGO;
-
-
-
+const codigo = window.CODIGO;
 
 //Eventos y lógica de la sala de bingo:CANTAR bingo y linea
 
@@ -155,36 +166,22 @@ if (btnBingo) {
     });
 }
 
-
-
-
-
-
-
 // =======================
 // Conexión
 // =======================
 socket.on("connect", () => {
-    const numCartones = document.getElementById("numCartones")?.value || 1;
+    const numCartones = parseInt(document.getElementById("numCartones")?.value || 1);
 
     socket.emit("join_bingo", {
         codigo,
-        cartones: parseInt(numCartones),
-        nombre: playerName
+        cartones: numCartones,
+        nombre: playerName,
     });
 });
-
-
-
-
-
 
 socket.on("disconnect", () => {
     console.log("❌ Socket desconectado");
 });
-
-
-
 
 // =======================
 // Botón sacar bola (manual)
@@ -193,6 +190,7 @@ const newBallBtn = document.getElementById("newBallBtn");
 
 if (newBallBtn) {
     newBallBtn.addEventListener("click", () => {
+        unlockAudio();
         socket.emit("new_ball", { codigo });
     });
 }
@@ -204,29 +202,29 @@ const startGameBtn = document.getElementById("startGameBtn");
 
 if (startGameBtn) {
     startGameBtn.addEventListener("click", () => {
-    const numCartones = parseInt(
-        document.getElementById("numCartones")?.value || 1
-    );
+        unlockAudio();
+        const numCartones = parseInt(document.getElementById("numCartones")?.value || 1);
 
-    socket.emit("start_game", {
-        codigo,
-        cartones: numCartones
+        socket.emit("start_game", {
+            codigo,
+            cartones: numCartones,
+        });
+
+        startGameBtn.style.display = "none";
     });
-
-    startGameBtn.style.display = "none";
-});
-
 }
-
-
-
 
 // =======================
 // Estado jugadores
 // =======================
-socket.on("lista_jugadores", data => {
+socket.on("lista_jugadores", (data) => {
     console.log("📦 lista_jugadores recibido:", data);
-    
+
+    const cartonesSelect = document.getElementById("cartones-select");
+
+    const controlesHost = document.getElementById("controles-host");
+
+    const estadoEspera = document.getElementById("estado-espera");
     const estado = document.getElementById("estado");
 
     const autoBtn = document.getElementById("autoPlayBtn");
@@ -237,67 +235,59 @@ socket.on("lista_jugadores", data => {
     const btnBingo = document.getElementById("btnBingo");
 
     const intervalSelect = document.getElementById("intervalSelect");
-
     const validaciones = document.querySelector(".bingo-validaciones");
 
-    estado.innerHTML = `
-        <p>
-            Esperando jugadores…
-            <strong>(${data.actuales}/${data.max})</strong>
-            <br>
-            <small>Mínimo para empezar: ${data.min}</small>
-        </p>
-    `;
+    // ───────── ESTADO DE ESPERA ─────────
+    if (data.en_partida) {
+        estadoEspera?.remove();
+    } else if (estado) {
+        estado.innerHTML = `
+            <p>
+                Esperando jugadores…
+                <strong>(${data.actuales}/${data.max})</strong>
+                <br>
+                <small>Mínimo para empezar: ${data.min}</small>
+            </p>
+        `;
+    }
 
-    
-
+    // ───────── BOTONES LÍNEA / BINGO ─────────
     if (data.en_partida) {
         validaciones.style.display = "flex";
     } else {
         validaciones.style.display = "none";
     }
 
-
-
     // ───────── INICIAR PARTIDA (solo host) ─────────
-    if (
-        data.host &&
-        data.actuales >= data.min &&
-        !data.en_partida
-    ) {
+    if (data.host && data.actuales >= data.min && !data.en_partida) {
         startGameBtn.style.display = "inline-block";
-    } else {
+    } else if (startGameBtn) {
         startGameBtn.style.display = "none";
     }
 
-
     // ───────── SACAR BOLA (solo host y partida iniciada) ─────────
-    if (data.host && data.en_partida) {
+    if (data.host && data.en_partida && newBallBtn) {
         newBallBtn.style.display = "inline-block";
         newBallBtn.disabled = false;
-    } else {
+    } else if (newBallBtn) {
         newBallBtn.style.display = "none";
     }
 
-    // ───────── AUTOPLAY ─────────
+    // ───────── AUTOPLAY (solo host) ─────────
     if (data.host && data.en_partida) {
-
         if (!window.__autoplayInit) {
             initAutoPlay({ socket, codigo });
             window.__autoplayInit = true;
         }
 
-        autoBtn.style.display = "inline-block";
-        intervalSelect.style.display = "inline-block";
-
+        autoBtn && (autoBtn.style.display = "inline-block");
+        intervalSelect && (intervalSelect.style.display = "inline-block");
     } else {
-        autoBtn.style.display = "none";
-        pauseBtn.style.display = "none";
-        intervalSelect.style.display = "none";
-        countdown.style.display = "none"; // 👈 INVITADO NO VE NADA
+        autoBtn && (autoBtn.style.display = "none");
+        pauseBtn && (pauseBtn.style.display = "none");
+        intervalSelect && (intervalSelect.style.display = "none");
+        countdown && (countdown.style.display = "none");
     }
-
-
 
     // 🎯 Línea
     if (!data.en_partida || data.linea_cantada) {
@@ -317,9 +307,17 @@ socket.on("lista_jugadores", data => {
         btnBingo.classList.remove("disabled");
     }
 
+    if (data.host && !data.en_partida) {
+        cartonesSelect && (cartonesSelect.style.display = "block");
+    } else {
+        cartonesSelect && (cartonesSelect.style.display = "none");
+    }
+    if (!data.host && controlesHost) {
+        controlesHost.style.display = "none";
+    } else if (data.host && controlesHost) {
+        controlesHost.style.display = "block";
+    }
 });
-
-
 
 // =======================
 // Partida iniciada
@@ -331,18 +329,21 @@ socket.on("game_started", () => {
 // =======================
 // Cartón recibido
 // =======================
-socket.on("send_carton", data => {
+socket.on("send_carton", (data) => {
     console.log("🎟️ Cartones recibidos:", data.cartones);
     renderCartones(data.cartones);
     renderVidas(3);
 });
 
-
-
 // =======================
 // Bola cantada
 // =======================
-socket.on("bola_cantada", data => {
+socket.on("bola_cantada", (data) => {
+    // sonido bola
+    ballSound.currentTime = 0;
+    ballSound.play().catch(() => {});
+
+    // actualizar UI
     setBolasCantadas(data.historial);
     mostrarBola(data.bola);
     renderHistorial(data.historial);
@@ -400,7 +401,6 @@ function showToast(message, type = "error", duration = 2500) {
     }, duration);
 }
 
-
 // =======================
 // Salir de la sala
 // =======================
@@ -436,11 +436,10 @@ function mostrarAvisoCantar(texto, tipo = "linea") {
     }, 2500); // ⏱️ tiempo visible
 }
 
-
 // =======================
 // FEEDBACK LINEA / BINGO
 // =======================
-socket.on("linea_valida", data => {
+socket.on("linea_valida", (data) => {
     const jugador = data?.nombre || "un jugador";
 
     playLineaSound();
@@ -448,18 +447,13 @@ socket.on("linea_valida", data => {
     showToast(`🎯 Línea válida (${jugador})`);
 });
 
-socket.on("bingo_valido", data => {
+socket.on("bingo_valido", (data) => {
     const jugador = data?.nombre || "un jugador";
 
     playBingoSound();
     mostrarAvisoCantar(`🏆 BINGO de ${jugador}`, "bingo");
     showToast(`🏆 Bingo válido (${jugador})`);
 });
-
-
-
-
-
 
 socket.on("linea_invalida", () => {
     showToast("❌ Línea incorrecta");
@@ -469,13 +463,10 @@ socket.on("bingo_invalido", () => {
     showToast("❌ Bingo incorrecto");
 });
 
-
-
-
 // =======================
 // ❤️ VIDAS (Socket.IO)
 // =======================
-socket.on("vidas_actualizadas", data => {
+socket.on("vidas_actualizadas", (data) => {
     renderVidas(data.vidas);
     showToast(`❤️ Vidas restantes: ${data.vidas}`, "warning");
 });

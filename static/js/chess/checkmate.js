@@ -116,10 +116,8 @@ function isLegalMove(board, from, to, piece) {
     if (piece === "♔" || piece === "♚")
         return isValidKingMove(board, from, to, piece, {
             white: { kingMoved: true, rookLeftMoved: true, rookRightMoved: true },
-            black: { kingMoved: true, rookLeftMoved: true, rookRightMoved: true }
+            black: { kingMoved: true, rookLeftMoved: true, rookRightMoved: true },
         }).valid;
-
-
 
     return false;
 }

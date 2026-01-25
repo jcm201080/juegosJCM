@@ -87,9 +87,21 @@
 <a href="{{ url_for('main.home') }}" class="back-link">⬅ Volver a Juegos JCM</a>
 
 <!-- Sonidos del juego -->
-<audio id="soundCorrect" src="{{ url_for('static', filename='sounds/correct.wav') }}" preload="auto"></audio>
-<audio id="soundWrong" src="{{ url_for('static', filename='sounds/wrong.wav') }}" preload="auto"></audio>
-<audio id="soundEnd" src="{{ url_for('static', filename='sounds/end.wav') }}" preload="auto"></audio>
+<audio
+    id="soundCorrect"
+    src="{{ url_for('static', filename='sounds/correct.wav') }}"
+    preload="auto"
+></audio>
+<audio
+    id="soundWrong"
+    src="{{ url_for('static', filename='sounds/wrong.wav') }}"
+    preload="auto"
+></audio>
+<audio
+    id="soundEnd"
+    src="{{ url_for('static', filename='sounds/end.wav') }}"
+    preload="auto"
+></audio>
 
 {% endblock %} {% block extra_js %}
 <script src="{{ url_for('static', filename='js/juego_mate.js') }}" defer></script>

@@ -101,19 +101,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 result = isValidRookMove(board, selected, { r, c }, piece);
             else if (piece === "♗" || piece === "♝")
                 result = isValidBishopMove(board, selected, { r, c }, piece);
-            else if (piece === "♘" || piece === "♞")
-                result = isValidKnightMove(selected, { r, c });
+            else if (piece === "♘" || piece === "♞") result = isValidKnightMove(selected, { r, c });
             else if (piece === "♕" || piece === "♛")
                 result = isValidQueenMove(board, selected, { r, c }, piece);
             else if (piece === "♔" || piece === "♚")
-                result = isValidKingMove(
-                    board,
-                    selected,
-                    { r, c },
-                    piece,
-                    castlingRights
-                );
-
+                result = isValidKingMove(board, selected, { r, c }, piece, castlingRights);
 
             if (target && canSelectPiece(target, turn)) result.valid = false;
             if (result.valid && leavesKingInCheck(selected, { r, c }, piece, turn))

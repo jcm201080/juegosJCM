@@ -19,11 +19,11 @@ export function renderCarton(carton, container) {
 
     container.innerHTML = ""; // 🔑 limpiamos SOLO este cartón
 
-    carton.forEach(fila => {
+    carton.forEach((fila) => {
         const filaDiv = document.createElement("div");
         filaDiv.classList.add("fila");
 
-        fila.forEach(numero => {
+        fila.forEach((numero) => {
             const celdaDiv = document.createElement("div");
             celdaDiv.classList.add("celda");
 
@@ -81,7 +81,7 @@ export function getNumerosMarcados() {
 
 // 🔄 Marcar automáticamente en TODOS los cartones
 export function marcarAutomaticos() {
-    document.querySelectorAll(".celda").forEach(celda => {
+    document.querySelectorAll(".celda").forEach((celda) => {
         const numero = Number(celda.dataset.numero);
         if (!numero) return;
 

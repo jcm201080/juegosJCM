@@ -1,7 +1,6 @@
 {% extends "base.html" %} {% block title %}Juegos JCM{% endblock %} {% block content %}
 
 <div class="games-grid">
-
     {# Juego de cálculo rápido #}
     <article class="game-card">
         <h2>🧮 Juego de Cálculo Rápido</h2>
@@ -9,7 +8,7 @@
         <a class="btn-primary" href="{{ url_for('main.juego_mate') }}">Jugar ahora</a>
     </article>
 
-    {# Juego de tablero #}  
+    {# Juego de tablero #}
     <article class="game-card">
         <h2>🎲 Juego de Tablero</h2>
         <p>Recorrido con casillas especiales...</p>
@@ -51,11 +50,14 @@
             Entrar al bingo
         </a>
     </article>
-
-
-
-
-
 </div>
 
-{% endblock %}
+{% if force_login %}
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        if (window.openLoginModal) {
+            openLoginModal();
+        }
+    });
+</script>
+{% endif %} {% endblock %}

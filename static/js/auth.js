@@ -6,6 +6,43 @@ const STORAGE_KEY = "jcm_user";
 // Usuario actual disponible para todos los scripts
 window.JCM_USER = null;
 
+// URL de destino tras login (si procede)
+window.JCM_NEXT_URL = null;
+
+// ===============================
+// 🌍 FUNCIONES GLOBALES (APP)
+// ===============================
+
+window.closeLoginModal = function () {
+    const authModal = document.getElementById("authModal");
+    if (!authModal) return;
+
+    authModal.classList.add("hidden");
+
+    // Ocultar mensaje al cerrar
+    const hint = document.getElementById("loginHint");
+    if (hint) hint.classList.add("hidden");
+};
+
+window.openLoginModal = function () {
+    const authModal = document.getElementById("authModal");
+    if (!authModal) return;
+
+    authModal.classList.remove("hidden");
+
+    // Mostrar aviso SOLO si NO hay usuario
+    const hint = document.getElementById("loginHint");
+    if (!window.JCM_USER && hint) {
+        hint.classList.remove("hidden");
+    } else if (hint) {
+        hint.classList.add("hidden");
+    }
+};
+
+function closeModal() {
+    document.querySelector(".modal")?.classList.remove("open");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     // --- ELEMENTOS DE CABECERA ---
     const openAuthBtn = document.getElementById("openAuthBtn");
@@ -33,34 +70,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentTotalScoreSpan = document.getElementById("currentTotalScore");
     const logoutBtn = document.getElementById("logoutBtn");
 
-    // ============================================================
-    // 🪟 FUNCIONES DEL MODAL
-    // ============================================================
-    function openModal() {
-        if (authModal) authModal.classList.remove("hidden");
+    const goGamesBtn = document.getElementById("goGamesBtn");
+
+    if (goGamesBtn) {
+        goGamesBtn.addEventListener("click", () => {
+            window.closeLoginModal();
+
+            if (window.JCM_NEXT_URL) {
+                const target = window.JCM_NEXT_URL;
+                window.JCM_NEXT_URL = null;
+                window.location.href = target;
+            } else {
+                window.location.href = "/";
+            }
+        });
     }
 
-    function closeModal() {
-        if (authModal) authModal.classList.add("hidden");
-
-        // Limpieza de mensajes
-        if (loginMessage) {
-            loginMessage.textContent = "";
-            loginMessage.className = "auth-message";
-        }
-        if (registerMessage) {
-            registerMessage.textContent = "";
-            registerMessage.className = "auth-message";
-        }
-    }
-
-    if (openAuthBtn) openAuthBtn.addEventListener("click", openModal);
-    if (closeAuthBtn) closeAuthBtn.addEventListener("click", closeModal);
+    if (openAuthBtn) openAuthBtn.addEventListener("click", window.openLoginModal);
+    if (closeAuthBtn) closeAuthBtn.addEventListener("click", window.closeLoginModal);
 
     // Cerrar si haces clic en el fondo oscuro
     if (authModal) {
         const backdrop = authModal.querySelector(".auth-modal-backdrop");
-        if (backdrop) backdrop.addEventListener("click", closeModal);
+        if (backdrop) backdrop.addEventListener("click", window.closeLoginModal);
     }
 
     // ============================================================
@@ -160,6 +192,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.logged_in && data.user) {
                 // ✅ Backend confirma sesión -> dejamos el usuario real
                 setUser(data.user);
+                // 👉 Guardar destino si existe
+                if (data.next_url) {
+                    window.JCM_NEXT_URL = data.next_url;
+                }
             } else {
                 // ✅ Backend dice "no hay sesión" -> limpiamos localStorage para evitar falso logueo
                 clearUser();
@@ -258,11 +294,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 setUser(data.user);
 
-                // 🔄 Recargar la página para que Flask renderice el Bingo
+                // 🔄 Redirigir a la página que intentó abrir
                 setTimeout(() => {
-                    window.location.reload();
+                    // 👉 si hay destino pendiente, ir ahí
+                    if (window.JCM_NEXT_URL) {
+                        const target = window.JCM_NEXT_URL;
+                        window.JCM_NEXT_URL = null;
+                        window.location.href = target;
+                    } else {
+                        window.location.reload();
+                    }
                 }, 300);
-
 
                 loginMessage.textContent = "Sesión iniciada.";
                 loginMessage.classList.add("ok");
@@ -292,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
             clearUser();
             closeModal();
 
-            window.location.reload(); 
+            window.location.reload();
         }
     }
 

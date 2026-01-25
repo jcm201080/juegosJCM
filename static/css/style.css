@@ -193,7 +193,6 @@
     transform: scale(1.05);
 }
 
-
 /* Botón principal: morado sólido */
 .btn-primary {
     background: linear-gradient(135deg, #dbe2d9, #797580);
@@ -219,6 +218,21 @@
     background: rgba(124, 58, 237, 0.18);
     color: #f9fafb;
     transform: translateY(-1px);
+}
+
+.btn-link-danger {
+    background: none;
+    border: none;
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.btn-link-danger:hover {
+    opacity: 1;
+    text-decoration: underline;
 }
 
 /* ================================
@@ -356,6 +370,19 @@
     display: none;
 }
 
+/* Hint de login */
+.login-hint {
+    margin-bottom: 1rem;
+    padding: 0.8rem 1.2rem;
+    background: rgba(255, 193, 7, 0.15);
+    border: 1px solid rgba(255, 193, 7, 0.5);
+    color: #ffc107;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 500;
+    z-index: 10;
+}
+
 /* ================================
    📜 Footer
    ================================ */
@@ -373,9 +400,10 @@
 .footer a {
     color: #ffd700;
     text-decoration: none;
-    transition: color 0.2s ease, text-shadow 0.2s ease;
+    transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
 }
-
 
 .footer:hover {
     opacity: 1;
@@ -385,4 +413,3 @@
     color: #ffffff;
     text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
 }
-

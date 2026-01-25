@@ -1,6 +1,11 @@
 # routes/juego_mate_routes.py
 from flask import Blueprint, request, jsonify
 from db import get_connection
+from routes.auth_routes import login_required
+from flask import session
+
+
+
 
 game_bp = Blueprint("game", __name__)
 
@@ -8,9 +13,10 @@ game_bp = Blueprint("game", __name__)
 #   GUARDAR SCORE (juego mate)
 # =========================
 @game_bp.route("/api/score", methods=["POST"])
+@login_required
 def save_score():
     data = request.get_json() or {}
-    user_id = data.get("user_id")
+    user_id = session.get("user_id")
     score = data.get("score")
     level = data.get("level", 1)
 
@@ -149,6 +155,7 @@ def ranking():
 #       HISTORIAL juego mate
 # =========================
 @game_bp.route("/api/history/<int:user_id>", methods=["GET"])
+@login_required
 def user_history(user_id):
     conn = get_connection()
     cur = conn.cursor()

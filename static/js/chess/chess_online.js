@@ -16,8 +16,6 @@ import { isCheckmate } from "./checkmate.js";
 
 const socket = io();
 
-
-
 // =========================
 // UI
 // =========================
@@ -31,8 +29,6 @@ const resignBtn = document.getElementById("resignBtn");
 const offerDrawBtn = document.getElementById("offerDrawBtn");
 const acceptDrawBtn = document.getElementById("acceptDrawBtn");
 const rejectDrawBtn = document.getElementById("rejectDrawBtn");
-
-
 
 // =========================
 // 🔊 SONIDOS
@@ -65,20 +61,17 @@ let inRoom = false;
 
 let drawPending = false;
 
-
-
-
 let castlingRights = {
     white: {
         kingMoved: false,
         rookLeftMoved: false,
-        rookRightMoved: false
+        rookRightMoved: false,
     },
     black: {
         kingMoved: false,
         rookLeftMoved: false,
-        rookRightMoved: false
-    }
+        rookRightMoved: false,
+    },
 };
 
 //Ofrecer tablas
@@ -102,7 +95,6 @@ socket.on("draw_offered", () => {
     rejectDrawBtn.style.display = "inline-block";
 });
 
-
 // Aceptar tablas
 acceptDrawBtn.addEventListener("click", () => {
     socket.emit("accept_draw");
@@ -115,11 +107,6 @@ rejectDrawBtn.addEventListener("click", () => {
     acceptDrawBtn.style.display = "none";
     rejectDrawBtn.style.display = "none";
 });
-
-
-
-
-
 
 //Detectar si esta en jaque antes el movimiento
 function isKingCurrentlyInCheck(board, role) {
@@ -140,7 +127,6 @@ function isKingCurrentlyInCheck(board, role) {
     const attacker = role === "white" ? "black" : "white";
     return isSquareUnderAttack(board, kingPos, attacker);
 }
-
 
 //helpers
 function cloneBoard(board) {
@@ -173,9 +159,6 @@ function kingInCheckAfterMove(board, role) {
     return isSquareUnderAttack(board, kingPos, attacker);
 }
 
-
-
-
 // =========================
 // ESTADO VISUAL
 // =========================
@@ -195,7 +178,6 @@ function updateStatus(text = null) {
     statusEl.textContent = "🟢 Conectado al servidor";
 }
 
-
 // =========================
 // JAQUE / MATE / TABLAS
 // =========================
@@ -204,7 +186,6 @@ function checkGameStateOnline() {
     const attacker = defender === "white" ? "black" : "white";
     const kingSymbol = defender === "white" ? "♔" : "♚";
     console.log("CHECKMATE TEST →", defender, isCheckmate(board, defender));
-
 
     let kingPos = null;
 
@@ -230,7 +211,8 @@ function checkGameStateOnline() {
                     : `♚ JAQUE MATE · Ganan NEGRAS · ${winner}`;
 
             // Sonido único (evita solapamientos)
-            soundCheck.pause(); soundCheck.currentTime = 0;
+            soundCheck.pause();
+            soundCheck.currentTime = 0;
             soundCheckmate.play();
 
             return;
@@ -241,7 +223,6 @@ function checkGameStateOnline() {
     } else if (!gameOver && !drawPending) {
         updateStatus();
     }
-
 }
 
 // =========================
@@ -251,7 +232,6 @@ socket.on("connect", () => {
     connected = true;
     statusEl.textContent = "🟢 Conectado al servidor";
 });
-
 
 socket.on("role_assigned", ({ role }) => {
     myRole = role;
@@ -277,7 +257,6 @@ socket.on("game_start", () => {
     renderBoard(board, boardEl, onSquareClick, null);
 });
 
-
 //rendición
 socket.on("player_resigned", ({ color }) => {
     gameOver = true;
@@ -289,7 +268,6 @@ socket.on("player_resigned", ({ color }) => {
         soundCheckmate.play();
     }
     resignBtn.disabled = true;
-
 });
 
 //Tablas aceptadas
@@ -305,7 +283,6 @@ socket.on("draw_accepted", () => {
     resignBtn.disabled = true;
 });
 
-
 //Tablas rechazadas
 socket.on("draw_rejected", () => {
     drawPending = false;
@@ -317,23 +294,17 @@ socket.on("draw_rejected", () => {
     offerDrawBtn.disabled = false;
 });
 
-
-
-
-
-
 // =========================
 // ♟️ MOVIMIENTO RECIBIDO
 // =========================
 socket.on("move", ({ from, to }) => {
-
     // 🔴 SI HABÍA TABLAS PENDIENTES, SE CANCELAN AL JUGAR
     if (drawPending) {
         drawPending = false;
         acceptDrawBtn.style.display = "none";
         rejectDrawBtn.style.display = "none";
         offerDrawBtn.disabled = false;
-    } 
+    }
     const piece = board[from.r][from.c];
     const target = board[to.r][to.c];
 
@@ -377,8 +348,6 @@ socket.on("move", ({ from, to }) => {
     // ✅ 2️⃣ AHORA comprobar jaque / mate
     renderBoard(board, boardEl, onSquareClick, null);
     checkGameStateOnline();
-
-
 });
 
 //rendición
@@ -387,7 +356,6 @@ resignBtn.addEventListener("click", () => {
 
     socket.emit("resign");
 });
-
 
 // =========================
 // 🔁 REINICIO ONLINE
@@ -421,7 +389,7 @@ socket.on("player_left", () => {
 // 🖱️ CLICK EN TABLERO
 // =========================
 function onSquareClick(r, c) {
-    if (gameOver) return; 
+    if (gameOver) return;
     if (!gameStarted) return;
     if (myRole !== turn) return;
 
@@ -450,8 +418,7 @@ function onSquareClick(r, c) {
         result = isValidRookMove(board, selected, { r, c }, piece);
     else if (piece === "♗" || piece === "♝")
         result = isValidBishopMove(board, selected, { r, c }, piece);
-    else if (piece === "♘" || piece === "♞")
-        result = isValidKnightMove(selected, { r, c });
+    else if (piece === "♘" || piece === "♞") result = isValidKnightMove(selected, { r, c });
     else if (piece === "♕" || piece === "♛")
         result = isValidQueenMove(board, selected, { r, c }, piece);
     else if (piece === "♔" || piece === "♚")
@@ -497,13 +464,11 @@ function onSquareClick(r, c) {
     renderBoard(board, boardEl, onSquareClick, null);
 }
 
-
 // =========================
 // RENDER INICIAL
 // =========================
 renderBoard(board, boardEl, onSquareClick, null);
 updateStatus();
-
 
 // Crear sala
 document.getElementById("createRoomBtn").addEventListener("click", () => {
@@ -542,8 +507,6 @@ socket.on("room_joined", ({ room, role }) => {
         boardEl.classList.remove("flipped");
     }
 });
-
-
 
 socket.on("room_error", ({ msg }) => {
     alert(msg);

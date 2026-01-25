@@ -10,13 +10,10 @@
     <h1>🎱 Bingo Online</h1>
 
     <div class="bingo-card">
-        <h3>Tu nombre</h3>
-        <input
-            type="text"
-            id="nombreJugador"
-            placeholder="Escribe tu nombre"
-            maxlength="20"
-        >
+        <p class="bingo-user">
+            👤 Jugando como <strong>{{ session.username }}</strong>
+        </p>
+
     </div>
 
     <form method="post" class="bingo-card" onsubmit="guardarNombre()">

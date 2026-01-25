@@ -23,7 +23,6 @@
     font-size: 1.1rem;
 }
 
-
 /* =====================================================
    BINGO – CARTONES (GRID)
    ===================================================== */
@@ -34,7 +33,6 @@
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
 }
-
 
 /* =====================================================
    CARTÓN – WRAPPER (SEPARACIÓN VISUAL)
@@ -58,12 +56,7 @@
     right: 12px;
     height: 2px;
     border-radius: 2px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(124, 92, 255, 0.6),
-        transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(124, 92, 255, 0.6), transparent);
 }
 
 .carton-wrapper h4 {
@@ -72,7 +65,6 @@
     font-size: 0.95rem;
     opacity: 0.9;
 }
-
 
 /* =====================================================
    CARTÓN – TABLERO
@@ -91,7 +83,6 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 6px;
 }
-
 
 /* =====================================================
    BINGO – CELDAS
@@ -114,7 +105,9 @@
     cursor: pointer;
     user-select: none;
 
-    transition: background 0.2s ease, transform 0.1s ease;
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
 }
 
 .carton .celda:hover {
@@ -131,7 +124,6 @@
     background: #fbc02d;
     color: #000;
 }
-
 
 /* =====================================================
    CANTAR LÍNEA / BINGO
@@ -154,7 +146,9 @@
     border: none;
     cursor: pointer;
     color: #fff;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
 .bingo-validaciones button:hover {
@@ -171,16 +165,35 @@
     box-shadow: 0 0 16px rgba(255, 152, 0, 0.7);
 }
 
+/* =====================================================
+   TÍTULO BINGO
+   ===================================================== */
+.bingo-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.bingo-icon {
+    width: 40px;
+    height: 40px;
+}
 
 /* =====================================================
    ANIMACIONES
    ===================================================== */
 
 @keyframes pop {
-    0%   { transform: scale(0.6); opacity: 0.5; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0.6);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
-
 
 /* =====================================================
    BOLA ACTUAL
@@ -194,7 +207,6 @@
 #ultima-bola.flash {
     animation: pop 0.4s ease;
 }
-
 
 /* =====================================================
    HISTORIAL DE BOLAS
@@ -227,7 +239,6 @@
     background: #7c5cff;
     box-shadow: 0 0 12px rgba(124, 92, 255, 0.8);
 }
-
 
 /* =====================================================
    AUTOPLAY
@@ -262,7 +273,6 @@
     min-width: 45px;
 }
 
-
 /* =====================================================
    VIDAS
    ===================================================== */
@@ -283,7 +293,6 @@
     color: #c0392b;
 }
 
-
 /* =====================================================
    BOTÓN SALIR
    ===================================================== */
@@ -296,7 +305,6 @@
 #resetBtn:hover {
     opacity: 1;
 }
-
 
 /* =====================================================
    AVISO CANTAR (OVERLAY)
@@ -317,23 +325,33 @@
     animation: avisoIn 0.3s ease;
 }
 
-.aviso-cantar.linea { color: #2ecc71; }
-.aviso-cantar.bingo { color: #ff9800; }
-
-.aviso-cantar.hidden { display: none; }
-
-@keyframes avisoIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to   { opacity: 1; transform: scale(1); }
+.aviso-cantar.linea {
+    color: #2ecc71;
+}
+.aviso-cantar.bingo {
+    color: #ff9800;
 }
 
+.aviso-cantar.hidden {
+    display: none;
+}
+
+@keyframes avisoIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 
 /* =====================================================
    RESPONSIVE – MÓVIL
    ===================================================== */
 
 @media (max-width: 600px) {
-
     #carton-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
@@ -381,7 +399,6 @@
         padding: 5px 0;
     }
 }
-
 
 .aviso-cantar {
     pointer-events: none;

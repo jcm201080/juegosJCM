@@ -6,6 +6,9 @@ import sqlite3
 
 from functools import wraps
 
+
+from functools import wraps
+
 auth_bp = Blueprint("auth", __name__)
 
 def hash_password(password: str) -> str:
@@ -107,6 +110,10 @@ def logout():
     return jsonify({"success": True})
 
 
+
+# =========================
+#        ME
+# =========================
 @auth_bp.route("/api/me", methods=["GET"])
 def me():
     user_id = session.get("user_id")
@@ -123,22 +130,39 @@ def me():
     conn.close()
 
     if not row:
-        session.pop("user_id", None)
+        session.clear()
         return jsonify({"logged_in": False}), 200
 
-    return jsonify({"logged_in": True, "user": dict(row)}), 200
+    next_url = session.pop("next_url", None)
+
+    return jsonify({
+        "logged_in": True,
+        "user": dict(row),
+        "next_url": next_url
+    }), 200
 
 
 
 # =========================
 #     LOGIN REQUERIDO
 # =========================
-
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "username" not in session:
-            return redirect(url_for("main.home"))
+        if "user_id" not in session:
+            # 👉 guardar la página que quería visitar
+            session["next_url"] = request.url
+
+            # HTML normal → redirect + modal
+            if request.accept_mimetypes.accept_html:
+                return redirect(url_for("main.home", login_required=1))
+
+            # API / fetch → JSON
+            return jsonify({"error": "login_required"}), 401
+
         return f(*args, **kwargs)
     return decorated
+
+
+
 

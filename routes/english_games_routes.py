@@ -2,12 +2,14 @@
 
 from flask import Blueprint, render_template, request, jsonify, session
 from db import get_connection
+from routes.auth_routes import login_required
 
 english_games_bp = Blueprint("english_games", __name__)
 
 
 # 🔹 Página del juego
 @english_games_bp.route("/english-games")
+@login_required
 def english_games():
     return render_template("english_games.html")
 

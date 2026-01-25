@@ -1,11 +1,6 @@
-{% extends "base.html" %}
-{% block title %}Ajedrez Online{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block title %}Ajedrez Online{% endblock %} {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chess.css') }}" />
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 
 <div class="game-container chess-container">
     <h1>🌐 Ajedrez Online</h1>
@@ -27,7 +22,6 @@
         </a>
     </div>
 
-
     <!-- Panel de estado -->
     <div class="top-info">
         <div id="turno">Turno: Blancas</div>
@@ -45,19 +39,15 @@
     <button id="rejectDrawBtn" hidden>❌ Rechazar</button>
 
     <button id="createRoomBtn">Crear sala</button>
-    <input id="roomCode" placeholder="Código">
+    <input id="roomCode" placeholder="Código" />
     <button id="joinRoomBtn">Unirse</button>
 
     <div class="top-info">
-        <a href="{{ url_for('main.home') }}" class="chess-boton">
-            ⬅ Volver a Juegos JCM
-        </a>
+        <a href="{{ url_for('main.home') }}" class="chess-boton"> ⬅ Volver a Juegos JCM </a>
     </div>
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script type="module" src="{{ url_for('static', filename='js/chess/chess_online.js') }}"></script>
 {% endblock %}
