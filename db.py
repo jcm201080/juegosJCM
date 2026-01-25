@@ -78,6 +78,20 @@ def init_db():
         """
     )
 
+        # 🔹 NUEVA TABLA: visitas a la web
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS visitas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fecha TEXT DEFAULT CURRENT_TIMESTAMP,
+            ip TEXT,
+            user_agent TEXT,
+            ruta TEXT
+        )
+        """
+    )
+
+
     conn.commit()
     conn.close()
 

@@ -24,7 +24,7 @@ if IS_PROD:
 # =========================
 # 📦 Imports normales
 # =========================
-from flask import Flask
+from flask import Flask, request, session
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
@@ -46,6 +46,9 @@ from routes.chess_rooms import register_chess_rooms
 # Sockets bingo
 from bingo.sockets.bingo_socket import register_bingo_sockets
 
+from utils.visitas import registrar_visita
+
+from routes.admin_routes import admin_bp
 
 
 # =========================
@@ -57,6 +60,8 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-key")
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
+# 🔑 INICIALIZAR BASE DE DATOS 
+init_db()
 # =========================
 # 🗄️ Ajuste de cookies
 # =========================
@@ -64,6 +69,21 @@ app.config.update(
     SESSION_COOKIE_SAMESITE="Lax",
     SESSION_COOKIE_SECURE=False,  # ⚠️ True SOLO si usas HTTPS real
 )
+
+
+#Contar visitas
+
+
+@app.before_request
+def contar_visitas():
+    if request.path.startswith("/static"):
+        return
+
+    if not session.get("visitado"):
+        session["visitado"] = True
+        session["ruta_entrada"] = request.path
+        registrar_visita()
+
 
 
 
@@ -100,6 +120,7 @@ app.register_blueprint(english_games_bp)
 app.register_blueprint(oca_api)
 app.register_blueprint(chess_routes)
 app.register_blueprint(bingo_routes)
+app.register_blueprint(admin_bp)
 
 
 # =========================

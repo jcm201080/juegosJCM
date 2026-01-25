@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}📊 Dashboard Admin{% endblock %}
+
+{% block content %}
+<div class="game-container">
+    <h1>📊 Dashboard de Visitas</h1>
+
+    <p><strong>Total de visitas:</strong> {{ total_visitas }}</p>
+
+    <h2>Visitas por ruta</h2>
+
+    <table style="margin: 0 auto; border-collapse: collapse;">
+        <tr>
+            <th style="padding: 6px 12px;">Ruta</th>
+            <th style="padding: 6px 12px;">Visitas</th>
+        </tr>
+        {% for ruta, total in visitas_por_ruta %}
+        <tr>
+            <td style="padding: 6px 12px;">{{ ruta }}</td>
+            <td style="padding: 6px 12px; text-align: center;">{{ total }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
