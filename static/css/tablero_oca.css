@@ -1,6 +1,27 @@
+/* ================================
+   CONTENEDOR GENERAL DEL TABLERO
+   ================================ */
+
+.tablero-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tablero-container h1 {
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.tablero-container > p {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+
 /* ========== VARIABLES GLOBALES (MÓVIL POR DEFECTO) ========== */
 :root {
-    --size-casilla: 48px; /* tamaño casilla en móvil */
+    --size-casilla: 56px; /* tamaño casilla en móvil */
     --size-ficha: 30px; /* tamaño ficha en móvil */
     --tablero-max-width: 95vmin; /* ancho máx. del tablero en móvil */
 }
@@ -28,7 +49,7 @@
 .panel-nombres,
 .panel-controles,
 .panel-tablero {
-    margin-top: 15px;
+    margin-top: 8px;
     text-align: center;
 }
 
@@ -128,8 +149,8 @@
     display: grid;
     grid-template-columns: repeat(7, var(--size-casilla));
     grid-auto-rows: var(--size-casilla);
-    gap: 5px;
-    margin: 20px auto;
+    gap: 4px;
+    margin: 10px auto;
     width: 100%;
     max-width: var(--tablero-max-width);
     justify-content: center;
@@ -445,23 +466,7 @@
     background-color: #ffaa00;
 }
 
-/* ========== RESPONSIVE PEQUEÑO (MÓVIL MUY ESTRECHO) ========== */
 
-@media (max-width: 600px) {
-    #tablero,
-    .tablero {
-        transform: scale(0.9);
-        transform-origin: center;
-    }
-
-    .reglas {
-        width: 90%;
-    }
-
-    #estadoJuego {
-        font-size: 1rem;
-    }
-}
 
 /* =========================================================
    CONTROLES EN COLUMNA
@@ -610,5 +615,106 @@
 
     #onlinePanel button {
         width: 100%;
+    }
+}
+
+
+/* =========================================================
+   BOTONES SUPERIORES (volver / local / online)
+   ========================================================= */
+
+.modo-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px auto;
+}
+
+.modo-links a:first-child {
+    margin-right: 20px;
+}
+
+.modo-links a {
+    min-width: 160px;
+    text-align: center;
+}
+
+.back-link-top {
+    display: block;
+    width: fit-content;
+    margin: 10px auto 20px;
+}
+
+
+
+
+
+@media (max-width: 360px) {
+    :root {
+        --size-casilla: 52px;
+        --size-ficha: 30px;
+    }
+}
+
+
+/* =========================================================
+   📱 MÓVIL (hasta 600px)
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    /* ----- Títulos y texto superior ----- */
+    .tablero-container h1 {
+        font-size: 1.3rem;
+        margin-bottom: 2px;
+    }
+
+    .tablero-container > p {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+
+    /* ----- Tablero ----- */
+    #tablero,
+    .tablero {
+        transform-origin: center;
+        gap: 4px;
+        margin: 10px auto;
+    }
+
+    /* ----- Casilla salida ----- */
+    .casilla-salida {
+        min-width: 90%;
+        padding: 12px 10px;
+        max-height: none;
+    }
+
+    .casilla-salida .salida-label {
+        font-size: 0.8rem;
+    }
+
+    /* ----- Controles ----- */
+    .panel-controles {
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .panel-controles button {
+        width: 180px;
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    /* ----- Estado del juego ----- */
+    #estadoJuego {
+        font-size: 0.95rem;
+        margin-top: 4px;
+    }
+
+    /* ----- Reglas ----- */
+    .reglas {
+        width: 90%;
     }
 }

@@ -1,129 +1,102 @@
-<!-- templates/tablero_oca_online.html -->
-<!doctype html>
-<html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <title>🌐 Tablero Online — JCM</title>
+{% extends "base.html" %}
 
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/tablero_oca.css') }}" />
+{% block title %}🌐 Tablero Online — JCM{% endblock %}
 
-        <link
-            rel="icon"
-            href="{{ url_for('static', filename='img/favicon.png') }}"
-            type="image/x-icon"
-        />
-    </head>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tablero_oca.css') }}" />
+{% endblock %}
 
-    <body class="home-body">
-        <header class="main-header">
-            <h1>🌐 Tablero Online — JCM</h1>
-            <p>Juega desde 2 móviles · Por turnos · Comparte el código de partida</p>
+{% block content %}
+<div class="game-container tablero-container">
+    <h1>🌐 Tablero Online — JCM</h1>
+    <p>Juega desde 2 móviles · Por turnos · Comparte el código de partida</p>
 
-            <a class="btn-secondary" href="{{ url_for('main.home') }}">← Volver al inicio</a>
+    <a class="btn-secondary back-link-top" href="{{ url_for('main.home') }}">
+        ← Volver al inicio
+    </a>
 
-            <div class="modo-links">
-                <a class="btn-secondary" href="{{ url_for('main.tablero_oca') }}"
-                    >🎲 Tablero (local)</a
-                >
-                <a class="btn-primary" href="{{ url_for('main.tablero_oca_online') }}"
-                    >🌐 Tablero Online</a
-                >
+    <div class="modo-links">
+        <a class="btn-secondary" href="{{ url_for('main.tablero_oca') }}">🎲 Tablero (local)</a>
+        <a class="btn-primary" href="{{ url_for('main.tablero_oca_online') }}">
+            🌐 Tablero Online
+        </a>
+    </div>
+
+    <main id="tablero_principal" class="tablero-main">
+        <!-- Panel ONLINE: crear / unirse -->
+        <section class="panel-config" id="onlinePanel">
+            <h2>Conectar a una partida</h2>
+
+            <div class="config-block">
+                <label for="onlineName">Tu nombre:</label>
+                <input id="onlineName" type="text" placeholder="Ej: Jesús" />
             </div>
-        </header>
 
-        <main id="tablero_principal" class="tablero-main">
-            <!-- Panel ONLINE: crear / unirse -->
-            <section class="panel-config" id="onlinePanel">
-                <h2>Conectar a una partida</h2>
+            <div class="config-block online-actions">
+                <button id="btnCrear">Crear partida</button>
 
-                <div class="config-block">
-                    <label for="onlineName">Tu nombre:</label>
-                    <input id="onlineName" type="text" placeholder="Ej: Jesús" />
-                </div>
-
-                <div class="config-block online-actions">
-                    <button id="btnCrear">Crear partida</button>
-
-                    <input id="onlineCode" type="text" placeholder="Código (ej: A1B2C)" />
-                    <button id="btnUnir">Unirme</button>
-                </div>
-
-                <div class="config-block online-info">
-                    <p>
-                        <strong>Código:</strong> <span id="codeLabel">—</span>
-                        &nbsp;|&nbsp;
-                        <strong>Tu ID:</strong> <span id="playerLabel">—</span>
-                    </p>
-                    <p class="online-hint">
-                        📌 Crea la partida y pasa el código al otro móvil. Cuando os unáis, empezáis
-                        a tirar por turnos.
-                    </p>
-                </div>
-            </section>
-
-            <section class="panel-tablero">
-                <!-- Casilla SALIDA -->
-                <div id="salida" class="casilla casilla-salida">
-                    <span class="salida-label">SALIDA</span>
-                    <div id="salida-fichas" class="salida-fichas"></div>
-                </div>
-
-                <!-- Tablero -->
-                <div id="tablero" class="tablero"></div>
-            </section>
-
-            <section class="panel-controles">
-                <div class="zona-dado">
-                    <button id="tirarDado" disabled>Tirar dado</button>
-                    <div id="dadoVisual" class="dado-visual"></div>
-                </div>
-
-                <div id="turnoJugador"></div>
-                <div id="estadoJuego"></div>
-
-                <button id="mostrarReglas">Mostrar Reglas</button>
-            </section>
-
-            <section class="reglas">
-                <h1>Cómo funciona el tablero online</h1>
-                <p>🔢 <strong>Tablero:</strong> 55 casillas numeradas del 1 al 55.</p>
-                <p>
-                    👥 <strong>Jugadores:</strong> hasta 6 por partida. Cada jugador entra desde su
-                    móvil.
-                </p>
-                <hr />
-                <h3>Casillas especiales</h3>
-                <p>⚡ <strong>5 y 22 — Impulso:</strong> Avanzas 2 casillas extra.</p>
-                <p>⛓️ <strong>12 y 46 — Cárcel:</strong> Pierdes un turno.</p>
-                <p>🟩 <strong>18 — Trampolín:</strong> Saltas directamente a la casilla 36.</p>
-                <p>🔁 <strong>36 — Rebote:</strong> Vuelves a la casilla 18.</p>
-                <p>⬅️ <strong>40 — Retroceso:</strong> Retrocedes 7 casillas.</p>
-                <p>⏪ <strong>50 — Gran retroceso:</strong> Vuelves a la casilla 25.</p>
-                <p>💀 <strong>34 — Muerte:</strong> Regresas a la SALIDA.</p>
-                <hr />
-                <p>
-                    🏁 <strong>Objetivo:</strong> llegar exactamente a la casilla 55. Si te pasas,
-                    <em>rebotas hacia atrás</em> según el exceso.
-                </p>
-            </section>
-
-            <a href="{{ url_for('main.home') }}" class="back-link">⬅ Volver a Juegos JCM</a>
-        </main>
-
-        <!-- Overlay ganador -->
-        <div id="winnerOverlay" class="winner-overlay">
-            <div class="winner-card">
-                <h2>🎉 ¡Ganador!</h2>
-                <p id="winnerName"></p>
-                <button id="closeWinner">Cerrar</button>
+                <input id="onlineCode" type="text" placeholder="Código (ej: A1B2C)" />
+                <button id="btnUnir">Unirme</button>
             </div>
+
+            <div class="config-block online-info">
+                <p>
+                    <strong>Código:</strong> <span id="codeLabel">—</span>
+                    &nbsp;|&nbsp;
+                    <strong>Tu ID:</strong> <span id="playerLabel">—</span>
+                </p>
+                <p class="online-hint">
+                    📌 Crea la partida y pasa el código al otro móvil. Cuando os unáis,
+                    empezáis a tirar por turnos.
+                </p>
+            </div>
+        </section>
+
+        <section class="panel-tablero">
+            <div id="salida" class="casilla casilla-salida">
+                <span class="salida-label">SALIDA</span>
+                <div id="salida-fichas"></div>
+            </div>
+
+            <div id="tablero" class="tablero"></div>
+        </section>
+
+        <section class="panel-controles">
+            <div class="zona-dado">
+                <button id="tirarDado" disabled>Tirar dado</button>
+                <div id="dadoVisual" class="dado-visual"></div>
+            </div>
+
+            <div id="turnoJugador"></div>
+            <div id="estadoJuego"></div>
+
+            <button id="mostrarReglas">Mostrar Reglas</button>
+        </section>
+
+        <section class="reglas">
+            <h2>Cómo funciona el tablero online</h2>
+            <p><strong>Tablero:</strong> 55 casillas numeradas del 1 al 55.</p>
+            <p>
+                <strong>Jugadores:</strong> hasta 6 por partida. Cada jugador entra desde su móvil.
+            </p>
+        </section>
+
+        <a class="btn-secondary back-link-top" href="{{ url_for('main.home') }}">
+            ← Volver al inicio
+        </a>
+    </main>
+
+    <!-- Overlay ganador -->
+    <div id="winnerOverlay" class="winner-overlay">
+        <div class="winner-card">
+            <h2>🎉 ¡Ganador!</h2>
+            <p id="winnerName"></p>
+            <button id="closeWinner">Cerrar</button>
         </div>
+    </div>
+</div>
+{% endblock %}
 
-        <footer class="footer">
-            <p>© 2025 — JCM</p>
-        </footer>
-
-        <script src="{{ url_for('static', filename='js/tablero_oca_online.js') }}"></script>
-    </body>
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/tablero_oca_online.js') }}"></script>
+{% endblock %}
