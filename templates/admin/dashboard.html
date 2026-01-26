@@ -17,7 +17,6 @@
     </div>
 
     <h2>Visitas por ruta</h2>
-
     <table class="visits-table">
         <thead>
             <tr>
@@ -27,13 +26,53 @@
         </thead>
         <tbody>
             {% for ruta, total in visitas_por_ruta %}
-                <tr>
-                    <td>{{ ruta }}</td>
-                    <td>{{ total }}</td>
-                </tr>
+            <tr>
+                <td>{{ ruta }}</td>
+                <td>{{ total }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
 
+    <h2>Últimas visitas</h2>
+    <table class="visits-table">
+        <thead>
+            <tr>
+                <th>Fecha / Hora</th>
+                <th>Ruta</th>
+                <th>Origen</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in ultimas_visitas %}
+            <tr>
+                <td>{{ v.fecha }}</td>
+                <td>{{ v.ruta }}</td>
+                <td>{{ v.origen }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Visitas por día</h2>
+    <canvas id="visitasDiaChart"></canvas>
+
 </section>
+
+<script>
+const visitasDiaData = {
+    labels: [{% for v in visitas_por_dia %}"{{ v.dia }}",{% endfor %}],
+    datasets: [{
+        label: "Visitas",
+        data: [{% for v in visitas_por_dia %}{{ v.total }},{% endfor %}],
+        borderColor: "#f5c542",
+        backgroundColor: "rgba(245,197,66,0.2)",
+        tension: 0.3
+    }]
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
+
 {% endblock %}
