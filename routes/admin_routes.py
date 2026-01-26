@@ -1,9 +1,13 @@
 from flask import Blueprint, render_template
 from db import get_connection
 
+from routes.auth_routes import admin_required
+
+
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 @admin_bp.route("/dashboard")
+@admin_required
 def dashboard():
     conn = get_connection()
     cur = conn.cursor()

@@ -73,7 +73,7 @@ def login():
     cur = conn.cursor()
     cur.execute(
         """
-        SELECT id, username, best_score, total_score, level_unlocked, password_hash
+        SELECT id, username, best_score, total_score, level_unlocked, password_hash, role
         FROM users
         WHERE username = ?
         """,
@@ -91,7 +91,9 @@ def login():
     # ✅ Guardar sesión (esto es lo clave)
     session["user_id"] = row["id"]
     session["username"] = row["username"]
+    session["role"] = row["role"]
     session.permanent = True  # opcional
+
 
     user = {
         "id": row["id"],
@@ -166,3 +168,16 @@ def login_required(f):
 
 
 
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        # No logueado
+        if "user_id" not in session:
+            return redirect(url_for("main.home"))
+
+        # Logueado pero no admin
+        if session.get("role") != "admin":
+            return jsonify({"error": "admin_required"}), 403
+
+        return f(*args, **kwargs)
+    return decorated

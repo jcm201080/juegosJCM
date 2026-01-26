@@ -1,7 +1,9 @@
 # routes/main_routes.py
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify
 
 from routes.auth_routes import login_required
+
+from utils.visitas import registrar_visita
 
 main_bp = Blueprint("main", __name__)
 
@@ -40,3 +42,18 @@ def juegos_linea():
 @login_required
 def historial():
     return render_template("historial.html")
+
+
+@main_bp.route("/api/track", methods=["POST"])
+def track_visita():
+    data = request.get_json(silent=True) or {}
+
+    ruta = data.get("ruta", "/")
+    origen = data.get("origen", "desconocido")
+
+    registrar_visita(
+        ruta=ruta,
+        origen=origen
+    )
+
+    return jsonify({"status": "ok"})

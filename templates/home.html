@@ -50,6 +50,16 @@
             Entrar al bingo
         </a>
     </article>
+
+    {% if session.get("role") == "admin" %}
+        <article class="game-card">
+            <p>Dashboard Solo para mi</p>
+            <a class="btn-primary" href="{{ url_for('admin.dashboard') }}">
+                📊 Dashboard Admin
+            </a>
+        </article>
+    {% endif %}
+
 </div>
 
 {% if force_login %}
