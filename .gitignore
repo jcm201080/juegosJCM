@@ -12,6 +12,7 @@ venv/
 # Entorno / secretos
 # ======================
 .env
+config.py
 
 # ======================
 # Bases de datos
@@ -37,19 +38,14 @@ Thumbs.db
 *.log
 
 # ======================
+# Documentos locales
+# ======================
+papelera/
+IONOS.docx
+*.docx
+
+# ======================
 # Excepciones
 # ======================
 # NO ignorar imágenes del ajedrez
 !static/img/chess/*.svg
-
-
-# IONOS
-IONOS.docx
-
-config.py
-
-
-__pycache__/
-*.pyc
-papelera/
-*.docx

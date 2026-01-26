@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, session
 from flask_socketio import join_room, leave_room, emit
 
 from bingo.logic.cartones import generar_carton
@@ -11,6 +11,11 @@ from config import (
     BINGO_MAX_CARTONES,
     BINGO_MIN_CARTONES,
 )
+
+from bingo.logic.bingo_stats import registrar_linea, registrar_bingo, crear_partida_bingo, registrar_cruz, registrar_partida_jugada
+
+
+
 
 
 
@@ -117,6 +122,7 @@ def register_bingo_sockets(socketio):
             "nombre": nombre,
             "vidas": 3,
             "cartones": num_cartones,
+            "user_id": session.get("user_id"), 
         }
 
         join_room(codigo)
@@ -148,6 +154,7 @@ def register_bingo_sockets(socketio):
         sala["auto"]["activo"] = False
         sala["bombo"] = BomboBingo()
         sala["cartones"] = {}
+        sala["partida_id"] = crear_partida_bingo(len(sala["jugadores"]))
 
         for jugador_sid, jugador in sala["jugadores"].items():
             lista_cartones = [generar_carton() for _ in range(jugador["cartones"])]
@@ -274,6 +281,11 @@ def register_bingo_sockets(socketio):
         for carton in cartones:
             if comprobar_linea(carton, bolas):
                 sala["linea_cantada"] = True
+
+                user_id = jugador.get("user_id")
+                if user_id:
+                    registrar_linea(user_id, sala["partida_id"])
+
                 emit(
                     "linea_valida",
                     {"nombre": jugador["nombre"]},
@@ -281,6 +293,7 @@ def register_bingo_sockets(socketio):
                 )
                 emitir_estado_a_todos(sala)
                 return
+
 
         perder_vidas(sala, sid, 1)
         emit("linea_invalida", room=sid)
@@ -302,9 +315,14 @@ def register_bingo_sockets(socketio):
         cartones = sala["cartones"].get(sid, [])
         bolas = sala["bombo"].historial
 
+    
         for carton in cartones:
             if comprobar_cruz(carton, bolas):
                 sala["cruz_cantada"] = True
+
+                user_id = jugador.get("user_id")
+                if user_id:
+                    registrar_cruz(user_id, sala["partida_id"])
 
                 emit(
                     "cruz_valida",
@@ -313,7 +331,9 @@ def register_bingo_sockets(socketio):
                 )
 
                 emitir_estado_a_todos(sala)
-                return
+                return   # ← SOLO aquí
+
+
 
         perder_vidas(sala, sid, 1)
         emit("cruz_invalida", room=sid)
@@ -341,6 +361,21 @@ def register_bingo_sockets(socketio):
                 sala["en_partida"] = False
                 sala["auto"]["activo"] = False
 
+                # 🔹 Registrar partida jugada para TODOS los jugadores
+                for j in sala["jugadores"].values():
+                    uid = j.get("user_id")
+                    if uid:
+                        registrar_partida_jugada(uid)
+
+                # 🔹 Registrar bingo SOLO del ganador
+                user_id = jugador.get("user_id")
+                if user_id:
+                    registrar_bingo(
+                        user_id=user_id,
+                        partida_id=sala["partida_id"],
+                        duracion_sec=len(bolas) * 5
+                    )
+
                 emit(
                     "bingo_valido",
                     {"nombre": jugador["nombre"]},
@@ -351,6 +386,7 @@ def register_bingo_sockets(socketio):
 
         perder_vidas(sala, sid, 2)
         emit("bingo_invalido", room=sid)
+
 
 
     # -------------------------

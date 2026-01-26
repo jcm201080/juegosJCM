@@ -91,6 +91,68 @@ def init_db():
         """
     )
 
+    # 🔹 NUEVA TABLA: visitas a la web
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS visitas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fecha TEXT DEFAULT CURRENT_TIMESTAMP,
+            ip TEXT,
+            user_agent TEXT,
+            ruta TEXT
+        )
+        """
+    )
+
+    # =====================================================
+    # 🔹 TABLAS PARA EL BINGO
+    # =====================================================
+
+    # Estadísticas acumuladas por usuario
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS bingo_stats (
+            user_id INTEGER PRIMARY KEY,
+            partidas_jugadas INTEGER DEFAULT 0,
+            lineas INTEGER DEFAULT 0,
+            cruces INTEGER DEFAULT 0,
+            bingos INTEGER DEFAULT 0,
+            bingos_fallidos INTEGER DEFAULT 0,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+        """
+    )
+
+    # Historial de partidas de bingo
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS bingo_partidas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ganador_id INTEGER,
+            duracion_sec INTEGER,
+            jugadores INTEGER,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(ganador_id) REFERENCES users(id)
+        )
+        """
+    )
+
+    # Eventos dentro de una partida (línea, cruce, bingo…)
+    cur.execute(
+        """
+        CREATE TABLE IF NOT EXISTS bingo_eventos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            partida_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            tipo TEXT NOT NULL, -- linea | cruce | bingo | bingo_fallido
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(partida_id) REFERENCES bingo_partidas(id),
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+        """
+    )
+
+
 
     conn.commit()
     conn.close()
