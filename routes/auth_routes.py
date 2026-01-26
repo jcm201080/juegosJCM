@@ -106,10 +106,11 @@ def login():
     return jsonify({"success": True, "user": user})
 
 # (Opcional pero MUY útil) Logout para limpiar sesión
-@auth_bp.route("/api/logout", methods=["POST"])
+@auth_bp.route("/api/logout", methods=["GET", "POST"])
 def logout():
     session.clear()
-    return jsonify({"success": True})
+    return redirect("/")
+
 
 
 
