@@ -28,6 +28,7 @@
     <!-- ✅ Variable global accesible desde sala.js -->
     <script>
         window.CODIGO = "{{ codigo }}";
+        window.BINGO_USER = "{{ session.username or '' }}";
     </script>
 
     <div id="estado-espera">
@@ -93,15 +94,18 @@
         <div id="bolas-container"></div>
     </div>
 
+    
+
     <div id="vidas-container" class="vidas"></div>
 
-    <p id="ultima-bola"></p>
+    <p id="ultima-bola"></p>    
 
     <!-- Aquí se pintan los cartones -->
-    <div id="carton-container"></div>
+    <div id="carton-container"></div>    
 
     <div class="bingo-validaciones">
         <button id="btnLinea" class="btn-linea">🎯 Cantar línea</button>
+        <button id="btnCruz" class="btn-cruz">❌ Cantar cruz</button>
         <button id="btnBingo" class="btn-bingo">🏆 Cantar bingo</button>
     </div>
 

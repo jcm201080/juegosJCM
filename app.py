@@ -2,8 +2,25 @@
 # ⚙️ Detectar entorno
 # =========================
 import os
+import json
 from dotenv import load_dotenv
 from bingo.routes.bingo_routes import bingo_routes
+
+
+
+# =================
+# Version
+# =================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def get_app_version():
+    try:
+        with open(os.path.join(BASE_DIR, "package.json"), "r", encoding="utf-8") as f:
+            return json.load(f).get("version", "unknown")
+    except Exception:
+        return "unknown"
+
+APP_VERSION = get_app_version()
 
 
 
@@ -94,7 +111,11 @@ def contar_visitas():
         registrar_visita()
 
 
-
+# ===
+#Version
+@app.context_processor
+def inject_app_version():
+    return dict(APP_VERSION=APP_VERSION)
 
 # =========================
 # 🔌 Socket.IO

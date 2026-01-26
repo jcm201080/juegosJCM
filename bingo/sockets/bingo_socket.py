@@ -3,7 +3,7 @@ from flask_socketio import join_room, leave_room, emit
 
 from bingo.logic.cartones import generar_carton
 from bingo.logic.bolas import BomboBingo
-from bingo.logic.validaciones import comprobar_linea, comprobar_bingo
+from bingo.logic.validaciones import comprobar_linea, comprobar_bingo, comprobar_cruz
 from bingo.routes.bingo_routes import codigos_validos
 from config import (  
     BINGO_MAX_PLAYERS,
@@ -47,7 +47,9 @@ def emitir_estado(sala, jugador_sid):
             "max": BINGO_MAX_PLAYERS,
             "min": BINGO_MIN_PLAYERS,
             "linea_cantada": sala.get("linea_cantada", False),
+            "cruz_cantada": sala.get("cruz_cantada", False),
             "bingo_cantado": sala.get("bingo_cantado", False),
+
         },
         room=jugador_sid,
     )
@@ -73,6 +75,9 @@ def register_bingo_sockets(socketio):
 
         # 🧠 Nombre recibido (puede venir vacío)
         nombre = (data.get("nombre") or "").strip()
+        if not nombre:
+            nombre = "Invitado"
+
 
         num_cartones = int(data.get("cartones", 1))
         num_cartones = max(1, min(num_cartones, 4))
@@ -91,7 +96,8 @@ def register_bingo_sockets(socketio):
                 "bombo": BomboBingo(),
                 "auto": {"activo": False, "intervalo": 20},
                 "linea_cantada": False,
-                "bingo_cantado": False,
+                "cruz_cantada": False,
+                "bingo_cantado": False,                
             }
 
         sala = salas_bingo[codigo]
@@ -137,6 +143,7 @@ def register_bingo_sockets(socketio):
 
         sala["en_partida"] = True
         sala["linea_cantada"] = False
+        sala["cruz_cantada"] = False
         sala["bingo_cantado"] = False
         sala["auto"]["activo"] = False
         sala["bombo"] = BomboBingo()
@@ -277,6 +284,39 @@ def register_bingo_sockets(socketio):
 
         perder_vidas(sala, sid, 1)
         emit("linea_invalida", room=sid)
+
+    # -------------------------
+    # CANTAR CRUZ
+    # -------------------------
+    @socketio.on("cantar_cruz")
+    def cantar_cruz(data):
+        codigo = data["codigo"]
+        sid = request.sid
+        sala = salas_bingo.get(codigo)
+
+        if not sala or sala.get("cruz_cantada"):
+            emit("cruz_invalida", room=sid)
+            return
+
+        jugador = sala["jugadores"].get(sid)
+        cartones = sala["cartones"].get(sid, [])
+        bolas = sala["bombo"].historial
+
+        for carton in cartones:
+            if comprobar_cruz(carton, bolas):
+                sala["cruz_cantada"] = True
+
+                emit(
+                    "cruz_valida",
+                    {"nombre": jugador["nombre"]},
+                    room=codigo
+                )
+
+                emitir_estado_a_todos(sala)
+                return
+
+        perder_vidas(sala, sid, 1)
+        emit("cruz_invalida", room=sid)
 
 
     # -------------------------

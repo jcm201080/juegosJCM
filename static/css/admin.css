@@ -80,3 +80,17 @@
 .visits-table tbody tr:hover {
     background: #333;
 }
+
+
+/* Version*/
+.app-meta {
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #aaa;
+    text-align: left;
+}
+
+.app-meta strong {
+    color: #f5c542; /* mismo color que los gráficos */
+    font-weight: 600;
+}

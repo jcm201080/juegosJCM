@@ -11,7 +11,8 @@ const socket = io();
 // =======================
 // Nombre del jugador (preparado para login)
 // =======================
-const playerName = localStorage.getItem("bingo_nombre") || "Invitado";
+const playerName = window.BINGO_USER || "Invitado";
+
 
 // =======================
 // Sonido bolas
@@ -149,20 +150,37 @@ function playBingoSound() {
 // =======================
 const codigo = window.CODIGO;
 
-//Eventos y lógica de la sala de bingo:CANTAR bingo y linea
+//Eventos y lógica de la sala de bingo:CANTAR bingo y linea y cruz
 
 const btnLinea = document.getElementById("btnLinea");
 const btnBingo = document.getElementById("btnBingo");
+const btnCruz = document.getElementById("btnCruz");
+
+if (btnCruz) {
+    btnCruz.addEventListener("click", () => {
+        socket.emit("cantar_cruz", {
+            codigo,
+            nombre: playerName,
+        });
+    });
+}
+
 
 if (btnLinea) {
     btnLinea.addEventListener("click", () => {
-        socket.emit("cantar_linea", { codigo });
+        socket.emit("cantar_linea", { 
+            codigo,
+            nombre: playerName,     
+        });
     });
 }
 
 if (btnBingo) {
     btnBingo.addEventListener("click", () => {
-        socket.emit("cantar_bingo", { codigo });
+        socket.emit("cantar_bingo", { 
+            codigo,
+            nombre: playerName
+         });
     });
 }
 
@@ -233,6 +251,8 @@ socket.on("lista_jugadores", (data) => {
 
     const btnLinea = document.getElementById("btnLinea");
     const btnBingo = document.getElementById("btnBingo");
+    const btnCruz = document.getElementById("btnCruz");
+
 
     const intervalSelect = document.getElementById("intervalSelect");
     const validaciones = document.querySelector(".bingo-validaciones");
@@ -297,6 +317,16 @@ socket.on("lista_jugadores", (data) => {
         btnLinea.disabled = false;
         btnLinea.classList.remove("disabled");
     }
+
+    // ❌ Cruz
+    if (!data.en_partida || data.cruz_cantada) {
+        btnCruz.disabled = true;
+        btnCruz.classList.add("disabled");
+    } else {
+        btnCruz.disabled = false;
+        btnCruz.classList.remove("disabled");
+    }
+
 
     // 🏆 Bingo
     if (!data.en_partida || data.bingo_cantado) {
@@ -421,6 +451,7 @@ socket.on("sala_cerrada", () => {
     window.location.href = "/bingo";
 });
 
+
 // =======================
 // AVISO CENTRAL (LÍNEA / BINGO)
 // =======================
@@ -431,13 +462,21 @@ function mostrarAvisoCantar(texto, tipo = "linea") {
     aviso.textContent = texto;
     aviso.className = `aviso-cantar ${tipo}`;
 
+    // ⏱ tiempos distintos
+    const duracion =
+        tipo === "bingo" ? 8000 :
+        tipo === "cruz"  ? 5000 :
+        3000;
+
+
     setTimeout(() => {
         aviso.classList.add("hidden");
-    }, 2500); // ⏱️ tiempo visible
+    }, duracion);
 }
 
+
 // =======================
-// FEEDBACK LINEA / BINGO
+// FEEDBACK LINEA / BINGO / CRUZ
 // =======================
 socket.on("linea_valida", (data) => {
     const jugador = data?.nombre || "un jugador";
@@ -446,6 +485,19 @@ socket.on("linea_valida", (data) => {
     mostrarAvisoCantar(`🎯 LÍNEA de ${jugador}`, "linea");
     showToast(`🎯 Línea válida (${jugador})`);
 });
+
+socket.on("cruz_valida", (data) => {
+    const jugador = data?.nombre || "un jugador";
+
+    playLineaSound();  //cambiar por cruz sound
+    mostrarAvisoCantar(`❌ CRUZ de ${jugador}`, "cruz");
+    showToast(`❌ Cruz válida (${jugador})`);
+});
+
+socket.on("cruz_invalida", () => {
+    showToast("❌ Cruz incorrecta");
+});
+
 
 socket.on("bingo_valido", (data) => {
     const jugador = data?.nombre || "un jugador";

@@ -165,6 +165,33 @@
     box-shadow: 0 0 16px rgba(255, 152, 0, 0.7);
 }
 
+/* =========================
+   BOTONES DESHABILITADOS
+   ========================= */
+
+.bingo-validaciones button.disabled,
+.bingo-validaciones button:disabled {
+    background: #111;
+    color: #777;
+    border: 1px solid #333;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Quitar hover cuando están desactivados */
+.bingo-validaciones button.disabled:hover,
+.bingo-validaciones button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.bingo-validaciones button {
+    transition: all 0.2s ease;
+}
+
+
+
 /* =====================================================
    TÍTULO BINGO
    ===================================================== */

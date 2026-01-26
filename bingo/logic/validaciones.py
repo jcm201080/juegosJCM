@@ -28,3 +28,24 @@ def comprobar_bingo(carton, bolas):
                 return False
 
     return True
+
+
+def comprobar_cruz(carton, bolas):
+    bolas_set = set(bolas)
+    size = len(carton)
+    centro = size // 2
+
+    # Diagonal principal \
+    diag1 = all(
+        (i == centro and j == centro) or carton[i][i] in bolas_set
+        for i, j in [(i, i) for i in range(size)]
+    )
+
+    # Diagonal inversa /
+    diag2 = all(
+        (i == centro and j == centro) or carton[i][size - 1 - i] in bolas_set
+        for i, j in [(i, size - 1 - i) for i in range(size)]
+    )
+
+    return diag1 and diag2
+
