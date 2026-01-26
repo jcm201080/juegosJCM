@@ -76,7 +76,16 @@ app.config.update(
 
 @app.before_request
 def contar_visitas():
+    # ❌ No contar estáticos
     if request.path.startswith("/static"):
+        return
+
+    # ❌ No contar el endpoint de tracking externo
+    if request.path.startswith("/api/track"):
+        return
+
+    # ❌ No contar favicon, robots, etc.
+    if request.path in ("/favicon.ico", "/robots.txt"):
         return
 
     if not session.get("visitado"):
