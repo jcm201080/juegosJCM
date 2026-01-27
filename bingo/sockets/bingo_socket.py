@@ -12,9 +12,14 @@ from config import (
     BINGO_MIN_CARTONES,
 )
 
-from bingo.logic.bingo_stats import registrar_linea, registrar_bingo, crear_partida_bingo, registrar_cruz, registrar_partida_jugada
-
-
+from bingo.logic.bingo_stats import (
+    ensure_bingo_stats,        # 👈 ESTA LÍNEA
+    registrar_linea,
+    registrar_bingo,
+    crear_partida_bingo,
+    registrar_cruz,
+    registrar_partida_jugada
+)
 
 
 
