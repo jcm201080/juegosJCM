@@ -125,6 +125,10 @@ def register_bingo_sockets(socketio):
             "user_id": session.get("user_id"), 
         }
 
+        user_id = session.get("user_id")
+        if user_id:
+            ensure_bingo_stats(user_id)
+
         join_room(codigo)
         emitir_estado_a_todos(sala)
 

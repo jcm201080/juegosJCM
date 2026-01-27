@@ -126,7 +126,7 @@
 }
 
 /* =====================================================
-   CANTAR LÍNEA / BINGO
+   CANTAR LÍNEA / CRUZ / BINGO
    ===================================================== */
 
 .bingo-validaciones {
@@ -137,6 +137,7 @@
     flex-wrap: wrap;
 }
 
+/* BOTÓN BASE (quita estilos nativos y define comportamiento común) */
 .bingo-validaciones button {
     min-width: 170px;
     padding: 14px 22px;
@@ -145,7 +146,13 @@
     border-radius: 16px;
     border: none;
     cursor: pointer;
+
+    /* 👇 CLAVE */
+    appearance: none;
+    -webkit-appearance: none;
+
     color: #fff;
+
     transition:
         transform 0.15s ease,
         box-shadow 0.15s ease;
@@ -154,6 +161,10 @@
 .bingo-validaciones button:hover {
     transform: scale(1.06);
 }
+
+/* ======================
+   BOTONES INDIVIDUALES
+   ====================== */
 
 .btn-linea {
     background: linear-gradient(135deg, #00c853, #2ecc71);
@@ -165,8 +176,23 @@
     box-shadow: 0 0 16px rgba(255, 152, 0, 0.7);
 }
 
+/* CRUZ – clara, activa y legible */
+.btn-cruz {
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+    color: #111;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+.btn-cruz:hover {
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
+}
+.bingo-validaciones button.btn-cruz {
+    color: #000;
+}
+
+
 /* =========================
-   BOTONES DESHABILITADOS
+   BOTONES DESHABILITADOS (GENÉRICO)
    ========================= */
 
 .bingo-validaciones button.disabled,
@@ -178,6 +204,17 @@
     cursor: not-allowed;
     opacity: 0.8;
 }
+
+/* =========================
+   CRUZ DESHABILITADA (ESPECÍFICA)
+   ========================= */
+
+.bingo-validaciones button.btn-cruz:disabled {
+    background: linear-gradient(135deg, #2e2e2e, #1a1a1a);
+    color: #ddd;              /* 👈 TEXTO VISIBLE */
+    border: 1px solid #444;
+}
+
 
 /* Quitar hover cuando están desactivados */
 .bingo-validaciones button.disabled:hover,
