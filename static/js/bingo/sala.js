@@ -388,11 +388,20 @@ function renderHistorial(bolas) {
 
     contenedor.innerHTML = "";
 
-    bolas.forEach((bola, index) => {
+    if (!bolas || bolas.length === 0) return;
+
+    // ⚠️ última bola real (la que acaba de salir)
+    const ultimaBola = bolas[bolas.length - 1];
+
+    // 🔢 copia ordenada de menor a mayor
+    const bolasOrdenadas = [...bolas].sort((a, b) => a - b);
+
+    bolasOrdenadas.forEach((bola) => {
         const span = document.createElement("span");
         span.classList.add("bola-historial");
 
-        if (index === bolas.length - 1) {
+        // ⭐ marcar la última bola cantada
+        if (bola === ultimaBola) {
             span.classList.add("ultima");
         }
 
@@ -401,6 +410,7 @@ function renderHistorial(bolas) {
     });
 }
 
+
 // =======================
 // Última bola visual
 // =======================
@@ -408,7 +418,11 @@ function mostrarBola(bola) {
     const ultimaBola = document.getElementById("ultima-bola");
     if (!ultimaBola) return;
 
-    ultimaBola.innerHTML = `🎱 <strong>Bola actual:</strong> ${bola}`;
+    ultimaBola.innerHTML = `
+        <span class="bola-label">🎱 Bola actual</span>
+        <span class="bola-actual-num">${bola}</span>
+    `;
+
     ultimaBola.classList.remove("flash");
     void ultimaBola.offsetWidth;
     ultimaBola.classList.add("flash");

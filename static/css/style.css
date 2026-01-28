@@ -198,6 +198,7 @@
     background: linear-gradient(135deg, #dbe2d9, #797580);
     color: #fff;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    margin-top: 10px;
 }
 
 .btn-primary:hover {

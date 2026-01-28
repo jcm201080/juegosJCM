@@ -271,6 +271,34 @@
 #ultima-bola.flash {
     animation: pop 0.4s ease;
 }
+#ultima-bola {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.bola-label {
+    font-size: 1rem;
+    opacity: 0.85;
+}
+
+.bola-actual-num {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: radial-gradient(circle at top left, #fff, #ddd);
+    color: #000;
+    font-size: 1.6rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 0 0 3px #7c4dff,
+        0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
 
 /* =====================================================
    HISTORIAL DE BOLAS
