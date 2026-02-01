@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Bingo Online{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="bingo-lobby">
+    <h1>🎱 Bingo Online</h1>
+
+    <div class="bingo-card">
+        <p class="bingo-user">
+            👤 Jugando como <strong>{{ session.username }}</strong>
+        </p>
+
+    </div>
+
+    <form method="post" class="bingo-card" onsubmit="guardarNombre()">
+        <button class="btn-primary">Crear sala</button>
+    </form>
+
+    <div class="bingo-card">
+        <h3>Unirse a una sala</h3>
+        <input type="text" id="codigoSala" placeholder="Código de sala">
+        <button class="btn-secondary" onclick="unirseSala()">Entrar</button>
+    </div>
+</section>
+
+<script>
+function guardarNombre() {
+    const nombre = document.getElementById("nombreJugador").value.trim() || "Jugador";
+    localStorage.setItem("bingo_nombre", nombre);
+}
+
+function unirseSala() {
+    const codigo = document.getElementById("codigoSala").value.trim().toUpperCase();
+    if (!codigo) return;
+
+    guardarNombre();
+    window.location.href = `/bingo/${codigo}`;
+}
+</script>
+
+<script src="{{ url_for('static', filename='js/bingo/lobby.js') }}"></script>
+{% endblock %}

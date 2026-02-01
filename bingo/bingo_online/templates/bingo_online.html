@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Bingo Online{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo_online.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<section class="bingo-sala bingo-online">
+
+    <h1 class="bingo-title">
+        <video
+            src="{{ url_for('static', filename='img/bingo.mp4') }}"
+            autoplay
+            loop
+            muted
+            playsinline
+            class="bingo-icon"
+        ></video>
+        Bingo Online
+    </h1>
+
+    <p class="bingo-player">
+        🎟️ Jugador: <strong>{{ session.username }}</strong>
+    </p>
+
+    <!-- 🧩 CONFIGURACIÓN DE PARTIDA -->
+    <div class="bingo-online-config">
+
+        <label for="numPlayers">
+            👥 Número de jugadores
+        </label>
+
+        <select id="numPlayers">
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6" selected>6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+        </select>
+
+        <label for="numCartones">
+            🧾 Número de cartones
+        </label>
+
+        <select id="numCartones">
+            <option value="1" selected>1 cartón</option>
+            <option value="2">2 cartones</option>
+            <option value="3">3 cartones</option>
+            <option value="4">4 cartones</option>
+        </select>
+        
+
+        <button id="startOnlineBtn" class="btn-primary">
+            🌐 Buscar partida
+        </button>
+
+    </div>
+
+    <!-- ⏳ ESTADO -->
+    <div id="online-status" class="estado-espera">
+        <p>Esperando jugadores…</p>
+        <p><strong>0 / 6</strong></p>
+        <p class="countdown">⏳ 10s</p>
+    </div>
+
+    <!-- 👥 JUGADORES -->
+    <div class="online-players">
+        <h3>Jugadores en la sala</h3>
+        <ul id="playersList">
+            <!-- dinámico -->
+        </ul>
+    </div>
+
+    <a href="{{ url_for('bingo_online.bingo_online_home') }}" class="btn-secondary">
+        ⬅ Volver
+    </a>
+
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.BINGO_USER = "{{ session.username or 'Invitado' }}";
+
+</script>
+
+<script src="{{ url_for('static', filename='js/bingo/online_lobby.js') }}"></script>
+
+{% endblock %}

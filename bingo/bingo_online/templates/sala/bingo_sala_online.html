@@ -1,0 +1,22 @@
+{% extends "sala/bingo_sala_base.html" %}
+
+{% block sala_extra %}
+<script>
+    window.CODIGO = "{{ codigo }}";
+    window.BINGO_USER = "{{ session.username }}";
+    window.IS_ONLINE = true;
+</script>
+
+<h2 style="color:red">🔥 SALA ONLINE CORRECTA 🔥</h2>
+<p>🌐 Partida online a ver si sale esto</p>
+
+<div id="estado-espera">
+    <div id="estado">Preparando partida...</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module"
+        src="{{ url_for('static', filename='js/bingo/online_sala.js') }}">
+</script>
+{% endblock %}

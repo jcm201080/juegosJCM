@@ -1,0 +1,26 @@
+{% extends "sala/bingo_sala_base.html" %}
+
+{% block sala_extra %}
+<p>🎮 Partida local</p>
+
+<p>Código de sala: <strong>{{ codigo }}</strong></p>
+
+<script>
+    window.CODIGO = "{{ codigo }}";
+    window.BINGO_USER = "{{ session.username or '' }}";
+</script>
+
+<div id="estado-espera">
+    <div id="estado">Esperando jugadores...</div>
+</div>
+
+<div id="controles-host">
+    <!-- TODO lo específico del modo local -->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module"
+        src="{{ url_for('static', filename='js/bingo/sala.js') }}">
+</script>
+{% endblock %}

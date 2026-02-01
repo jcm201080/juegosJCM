@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Sala Bingo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo_online.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="volver-bingo">
+    <a href="{{ url_for('bingo_online.bingo_online_home') }}" class="btn-secondary">
+        ⬅ Volver al menú Bingo
+    </a>
+</div>
+
+
+<section class="bingo-sala">
+
+    <h1 class="bingo-title">
+        <video
+            src="{{ url_for('static', filename='img/bingo.mp4') }}"
+            autoplay loop muted playsinline
+            class="bingo-icon"
+        ></video>
+        Sala de Bingo probando
+    </h1>
+
+    <p class="bingo-player">
+        🎟️ Jugador: <strong>{{ session.username }}</strong>
+    </p>
+
+    {# 🔽 Aquí entra LOCAL u ONLINE #}
+    {% block sala_extra %}{% endblock %}
+
+    <div class="historial-bolas">
+        <h3>Bolas:</h3>
+        <div id="bolas-container"></div>
+    </div>
+
+    <div class="jugadores-box">
+        <h3>👥 Jugadores en sala</h3>
+        <ul id="lista-jugadores"></ul>
+    </div>
+        <div class="ranking-box">
+        <h3>🏆 Ranking</h3>
+        <ul id="ranking-list">
+            <!-- dinámico -->
+        </ul>
+    </div>
+
+
+
+    <div id="vidas-container" class="vidas"></div>
+    <div id="ultimas-bolas" class="ultimas-bolas"></div>
+
+
+    <div id="carton-container"></div>
+
+
+    <div class="bingo-validaciones">
+        <button id="btnLinea" class="btn-linea">🎯 Cantar línea</button>
+        <button id="btnCruz" class="btn-cruz">➕ Cantar cruz</button>
+        <button id="btnX" class="btn-x">❌ Cantar X</button>
+        <button id="btnBingo" class="btn-bingo">🏆 Cantar bingo</button>
+    </div>
+
+    <button id="resetBtn" class="btn-secondary">
+        🔄 Salir de la sala
+    </button>
+
+    <div id="toast" class="toast hidden"></div>
+    <div id="aviso-cantar" class="aviso-cantar hidden"></div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

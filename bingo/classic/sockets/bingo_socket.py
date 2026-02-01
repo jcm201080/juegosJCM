@@ -1,10 +1,10 @@
 from flask import request, session
 from flask_socketio import join_room, leave_room, emit
 
-from bingo.logic.cartones import generar_carton
-from bingo.logic.bolas import BomboBingo
-from bingo.logic.validaciones import comprobar_linea, comprobar_bingo, comprobar_cruz
-from bingo.routes.bingo_routes import codigos_validos
+from bingo.classic.logic.cartones import generar_carton
+from bingo.classic.logic.bolas import BomboBingo
+from bingo.classic.logic.validaciones import comprobar_linea, comprobar_bingo, comprobar_cruz
+from bingo.classic.routes.bingo_routes import codigos_validos
 from config import (  
     BINGO_MAX_PLAYERS,
     BINGO_MIN_PLAYERS,
@@ -12,7 +12,7 @@ from config import (
     BINGO_MIN_CARTONES,
 )
 
-from bingo.logic.bingo_stats import (
+from bingo.classic.logic.bingo_stats import (
     ensure_bingo_stats,        # 👈 ESTA LÍNEA
     registrar_linea,
     registrar_bingo,

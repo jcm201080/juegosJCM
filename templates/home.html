@@ -44,12 +44,31 @@
     </article>
 
     <article class="game-card">
-        <h2>🎱 Bingo Online</h2>
-        <p>Juega al bingo en tiempo real con otros jugadores.</p>
-        <a class="btn-primary" href="{{ url_for('bingo_routes.bingo_lobby') }}">
+        <h2>🎱 Bingo Clásico</h2>
+        <p>El bingo de siempre. Partidas locales, validaciones y diversión asegurada.</p>
+        <a class="btn-primary" href="{{ url_for('bingo_classic.bingo_lobby') }}">
             Entrar al bingo
         </a>
     </article>
+
+    <article class="game-card game-card-online">
+        <h2>🌐 Bingo Online</h2>
+        <p>
+            Juega al bingo en tiempo real con otros jugadores.
+            <br>
+            <small class="badge new">NEW ✨</small>
+            <br>
+            <small class="badge beta">BETA · En pruebas</small>
+            
+        </p>
+
+        <a class="btn-primary btn-online"
+        href="{{ url_for('bingo_online.bingo_online_home') }}">
+            Entrar al bingo online
+        </a>
+    </article>
+
+
 
     {% if session.get("role") == "admin" %}
         <article class="game-card">

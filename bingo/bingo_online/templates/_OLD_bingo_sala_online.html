@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Sala Bingo Online{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
+{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('bingo_online.bingo_online_home') }}" class="btn-secondary">
+    ⬅ Volver al menú Bingo
+</a>
+
+<section class="bingo-sala bingo-online">
+
+    <h1 class="bingo-title">
+        <video
+            src="{{ url_for('static', filename='img/bingo.mp4') }}"
+            autoplay loop muted playsinline
+            class="bingo-icon"
+        ></video>
+        Sala de Bingo Online
+    </h1>
+
+    <p class="bingo-player">
+        🎟️ Jugador: <strong>{{ session.username }}</strong>
+    </p>
+
+    <p id="estado-partida" class="bingo-info">
+        🌐 Partida online – preparando partida…
+    </p>
+
+
+    <!-- 🔑 Variables JS -->
+    <script>
+        window.CODIGO = "{{ codigo }}";
+        window.BINGO_USER = "{{ session.username }}";
+    </script>
+
+    <div class="historial-bolas">
+        <h3>Bolas:</h3>
+        <div id="bolas-container"></div>
+    </div>
+
+    <div id="vidas-container" class="vidas"></div>
+    <p id="ultima-bola"></p>
+
+    <div id="carton-container"></div>
+
+    <div class="bingo-validaciones">
+        <button id="btnLinea" class="btn-linea">🎯 Cantar línea</button>
+        <button id="btnCruz" class="btn-cruz">❌ Cantar cruz</button>
+        <button id="btnBingo" class="btn-bingo">🏆 Cantar bingo</button>
+    </div>
+
+    <button id="resetBtn" class="btn-secondary">
+        🔄 Salir de la sala
+    </button>
+
+    <div id="toast" class="toast hidden"></div>
+    <div id="aviso-cantar" class="aviso-cantar hidden"></div>
+
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module"
+        src="{{ url_for('static', filename='js/bingo/online_sala.js') }}">
+</script>
+{% endblock %}

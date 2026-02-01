@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Bingo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="bingo-sala bingo-modo">
+
+    <h1 class="bingo-title">
+        <video
+            src="{{ url_for('static', filename='img/bingo.mp4') }}"
+            autoplay
+            loop
+            muted
+            playsinline
+            class="bingo-icon"
+        ></video>
+        Bingo
+    </h1>
+
+    <p class="bingo-player">
+        🎟️ Jugador: <strong>{{ session.username }}</strong>
+    </p>
+
+    <div class="bingo-modos">
+        <a href="{{ url_for('bingo_routes.bingo_lobby') }}">
+            🧑‍💻 Bingo local
+        </a>
+
+        <a href="{{ url_for('bingo_routes.bingo_online') }}">
+            🌐 Bingo online
+        </a>
+
+    </div>
+
+</section>
+{% endblock %}

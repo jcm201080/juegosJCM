@@ -7,7 +7,7 @@ salas = {}
 codigos_validos = set()
 
 bingo_routes = Blueprint(
-    "bingo_routes",
+    "bingo_classic",
     __name__,
     template_folder="../templates"
 )
@@ -16,7 +16,7 @@ def generar_codigo_sala(longitud=4):
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=longitud))
 
 
-@bingo_routes.route("/bingo", methods=["GET", "POST"])
+@bingo_routes.route("/bingo/classic", methods=["GET", "POST"])
 @login_required
 def bingo_lobby():
     if request.method == "POST":
@@ -29,18 +29,19 @@ def bingo_lobby():
 
         codigos_validos.add(codigo)
 
-        return redirect(url_for("bingo_routes.bingo_sala", codigo=codigo))
+        return redirect(url_for("bingo_classic.bingo_sala", codigo=codigo))
 
-    return render_template("bingo_lobby.html")
+    return render_template("bingo_classic_lobby.html")
 
 
-@bingo_routes.route("/bingo/<codigo>")
+@bingo_routes.route("/bingo/classic/<codigo>")
 @login_required
 def bingo_sala(codigo):
     sala = salas.get(codigo)
 
     if not sala:
-        return redirect(url_for("bingo_routes.bingo_lobby"))
+        return redirect(url_for("bingo_classic.bingo_lobby"))
+
 
     es_host = sala["host"] == session["username"]
 
