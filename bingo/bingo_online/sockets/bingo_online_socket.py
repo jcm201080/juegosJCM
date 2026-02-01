@@ -15,11 +15,12 @@ from bingo.bingo_online.logic.validaciones import (
 
 from config import BINGO_MAX_PLAYERS
 
-ONLINE_COUNTDOWN_SECONDS = 10
+ONLINE_COUNTDOWN_SECONDS = 30
 BOLA_INTERVAL_SECONDS = 5
 
 
 BOT_NAMES = [
+    # 🇪🇸 Españoles clásicos
     "Juan",
     "María",
     "Pepe",
@@ -28,11 +29,75 @@ BOT_NAMES = [
     "Carmen",
     "David",
     "Laura",
-    "La loca del bingo",
-    "Jhon",
+    "José Luis",
+    "María Victoria",
     "Elena CM",
-    "Maria Victoria"
+
+    # 🇪🇸 Con apellido
+    "Juan Pérez",
+    "María López",
+    "Antonio García",
+    "Carmen Ruiz",
+    "Luis Fernández",
+    "Ana Martínez",
+
+    # 😈 Apodos y personajes
+    "La loca del bingo",
+    "El notas",
+    "Don Cartón",
+    "La Reina del Bingo",
+    "El Niño de la Suerte",
+    "Doña Bolilla",
+    "El Cantaor",
+    "La Abuela Leti",
+
+    # 🌍 Internacionales
+    "John",
+    "Michael",
+    "Sarah",
+    "Emily",
+    "Robert",
+    "Jessica",
+    "James",
+    "Laura Smith",
+
+    # 🇫🇷
+    "Pierre",
+    "Marie Dupont",
+    "Luc Moreau",
+
+    # 🇮🇹
+    "Giovanni",
+    "Marco Rossi",
+    "Francesca",
+
+    # 🇩🇪
+    "Hans",
+    "Klara Müller",
+    "Fritz",
+
+    # 🇧🇷 / 🇵🇹
+    "João",
+    "Pedro Silva",
+    "Ana Paula",
+
+    # 🇯🇵
+    "Hiro",
+    "Takashi",
+    "Yuki",
+
+    # 🇷🇺
+    "Ivan",
+    "Nikolai",
+    "Anastasia",
+
+    # 🤖 Guiños frikis
+    "Bot-9000",
+    "Skynet Jr",
+    "HAL Bingo",
+    "ChatBingo"
 ]
+
 
 # Puntos por cantar:
 def sumar_puntos(jugador, puntos):
