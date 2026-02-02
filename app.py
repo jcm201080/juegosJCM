@@ -66,6 +66,12 @@ from bingo.bingo_online.sockets.bingo_online_socket import register_bingo_online
 
 from utils.visitas import registrar_visita
 
+import config
+from config_validator import validate_config
+
+validate_config(config)
+
+
 # =========================
 # 🚀 Crear app
 # =========================
