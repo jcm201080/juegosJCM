@@ -14,89 +14,23 @@ from bingo.bingo_online.logic.validaciones import (
 )
 
 from config import BINGO_MAX_PLAYERS
+from bingo.bingo_online.data.bot_names import BOT_NAMES
+
 
 ONLINE_COUNTDOWN_SECONDS = 30
 BOLA_INTERVAL_SECONDS = 5
 
 
-BOT_NAMES = [
-    # 🇪🇸 Españoles clásicos
-    "Juan",
-    "María",
-    "Pepe",
-    "Lucía",
-    "Antonio",
-    "Carmen",
-    "David",
-    "Laura",
-    "José Luis",
-    "María Victoria",
-    "Elena CM",
+#Penalizar jugador
+def validar_en_cartones(cartones, bolas, funcion_comprobar):
+    """
+    Devuelve True si AL MENOS UN cartón cumple la condición
+    """
+    return any(
+        funcion_comprobar(carton, bolas)
+        for carton in cartones
+    )
 
-    # 🇪🇸 Con apellido
-    "Juan Pérez",
-    "María López",
-    "Antonio García",
-    "Carmen Ruiz",
-    "Luis Fernández",
-    "Ana Martínez",
-
-    # 😈 Apodos y personajes
-    "La loca del bingo",
-    "El notas",
-    "Don Cartón",
-    "La Reina del Bingo",
-    "El Niño de la Suerte",
-    "Doña Bolilla",
-    "El Cantaor",
-    "La Abuela Leti",
-
-    # 🌍 Internacionales
-    "John",
-    "Michael",
-    "Sarah",
-    "Emily",
-    "Robert",
-    "Jessica",
-    "James",
-    "Laura Smith",
-
-    # 🇫🇷
-    "Pierre",
-    "Marie Dupont",
-    "Luc Moreau",
-
-    # 🇮🇹
-    "Giovanni",
-    "Marco Rossi",
-    "Francesca",
-
-    # 🇩🇪
-    "Hans",
-    "Klara Müller",
-    "Fritz",
-
-    # 🇧🇷 / 🇵🇹
-    "João",
-    "Pedro Silva",
-    "Ana Paula",
-
-    # 🇯🇵
-    "Hiro",
-    "Takashi",
-    "Yuki",
-
-    # 🇷🇺
-    "Ivan",
-    "Nikolai",
-    "Anastasia",
-
-    # 🤖 Guiños frikis
-    "Bot-9000",
-    "Skynet Jr",
-    "HAL Bingo",
-    "ChatBingo"
-]
 
 
 # Puntos por cantar:
@@ -194,6 +128,14 @@ def start_online_countdown(socketio):
             "en_partida": True,
             "bombo": BomboBingo(),
             "online": True,
+
+            # 🏆 PREMIOS GLOBALES
+            "premios": {
+            "linea": None,
+            "cruz": None,
+            "x": None,
+            "bingo": None
+            }
         }
 
 
@@ -208,7 +150,8 @@ def start_online_countdown(socketio):
                 "cantado": {
                     "linea": False,
                     "cruz": False,
-                    "x": False
+                    "x": False,
+                    "bingo": False
                 }
             }
 
@@ -291,10 +234,13 @@ def start_online_autoplay(socketio, codigo):
 
                 # LINEA
                 if (
-                    not jugador["cantado"]["linea"]
+                    sala["premios"]["linea"] is None
+                    and not jugador["cantado"]["linea"]
                     and comprobar_linea(carton, bolas)
                 ):
                     jugador["cantado"]["linea"] = True
+                    sala["premios"]["linea"] = nombre   # 🔒 bloqueo global
+
                     socketio.emit(
                         "resultado_cantar",
                         {
@@ -306,12 +252,16 @@ def start_online_autoplay(socketio, codigo):
                     )
                     continue
 
+
                 # CRUZ
                 if (
-                    not jugador["cantado"]["cruz"]
+                    sala["premios"]["cruz"] is None
+                    and not jugador["cantado"]["cruz"]
                     and comprobar_cruz(carton, bolas)
                 ):
                     jugador["cantado"]["cruz"] = True
+                    sala["premios"]["cruz"] = nombre
+
                     socketio.emit(
                         "resultado_cantar",
                         {
@@ -323,12 +273,16 @@ def start_online_autoplay(socketio, codigo):
                     )
                     continue
 
+
                 # X
                 if (
-                    not jugador["cantado"]["x"]
+                    sala["premios"]["x"] is None
+                    and not jugador["cantado"]["x"]
                     and comprobar_x(carton, bolas)
                 ):
                     jugador["cantado"]["x"] = True
+                    sala["premios"]["x"] = nombre
+
                     socketio.emit(
                         "resultado_cantar",
                         {
@@ -339,6 +293,7 @@ def start_online_autoplay(socketio, codigo):
                         room=codigo
                     )
                     continue
+
 
                 # BINGO (cierra partida)
                 if comprobar_bingo(carton, bolas):
@@ -465,7 +420,6 @@ def register_bingo_online_sockets(socketio):
     # -------------------------
     # CANTAR LINEA
     # -------------------------
-
     @socketio.on("cantar_linea")
     def cantar_linea(data):
         codigo = data.get("codigo")
@@ -479,8 +433,6 @@ def register_bingo_online_sockets(socketio):
         if not cartones:
             return
 
-        carton = cartones[0]
-
         jugador = next(
             (j for j in sala["jugadores"].values() if j["sid"] == sid),
             None
@@ -488,11 +440,26 @@ def register_bingo_online_sockets(socketio):
         if not jugador:
             return
 
-        es_valida = comprobar_linea(carton, sala["bombo"].historial)
+        # 🚫 Bloqueo global: ya se cantó la línea en la sala
+        if sala["premios"]["linea"] is not None:
+            return
+
+        # 🚫 Este jugador ya cantó línea
+        if jugador["cantado"]["linea"]:
+            return
+
+        # ✅ VALIDAR EN TODOS LOS CARTONES
+        es_valida = validar_en_cartones(
+            cartones,
+            sala["bombo"].historial,
+            comprobar_linea
+        )
 
         if es_valida:
             jugador["cantado"]["linea"] = True
+            sala["premios"]["linea"] = jugador["nombre"]  # 🔒 bloqueo global
             sumar_puntos(jugador, 1)
+
             emitir_ranking(socketio, codigo, sala)
 
             emit(
@@ -503,7 +470,7 @@ def register_bingo_online_sockets(socketio):
                     "jugador": jugador["nombre"],
                     "puntos": jugador["puntos"]
                 },
-                room=codigo   # 👈 TODOS LO VEN
+                room=codigo
             )
         else:
             penalizar_jugador(jugador, 1)
@@ -518,6 +485,8 @@ def register_bingo_online_sockets(socketio):
                 },
                 room=sid
             )
+
+
 
 
 
@@ -538,8 +507,6 @@ def register_bingo_online_sockets(socketio):
         if not cartones:
             return
 
-        carton = cartones[0]
-
         jugador = next(
             (j for j in sala["jugadores"].values() if j["sid"] == sid),
             None
@@ -547,11 +514,25 @@ def register_bingo_online_sockets(socketio):
         if not jugador:
             return
 
-        es_valida = comprobar_cruz(carton, sala["bombo"].historial)
+        # 🚫 Bloqueo global
+        if sala["premios"]["cruz"] is not None:
+            return
+
+        # 🚫 Ya la cantó este jugador
+        if jugador["cantado"]["cruz"]:
+            return
+
+        es_valida = validar_en_cartones(
+            cartones,
+            sala["bombo"].historial,
+            comprobar_cruz
+        )
 
         if es_valida:
             jugador["cantado"]["cruz"] = True
+            sala["premios"]["cruz"] = jugador["nombre"]
             sumar_puntos(jugador, 2)
+
             emitir_ranking(socketio, codigo, sala)
 
             emit(
@@ -596,8 +577,6 @@ def register_bingo_online_sockets(socketio):
         if not cartones:
             return
 
-        carton = cartones[0]
-
         jugador = next(
             (j for j in sala["jugadores"].values() if j["sid"] == sid),
             None
@@ -605,11 +584,25 @@ def register_bingo_online_sockets(socketio):
         if not jugador:
             return
 
-        es_valida = comprobar_x(carton, sala["bombo"].historial)
+        # 🚫 Bloqueo global
+        if sala["premios"]["x"] is not None:
+            return
+
+        # 🚫 Ya la cantó este jugador
+        if jugador["cantado"]["x"]:
+            return
+
+        es_valida = validar_en_cartones(
+            cartones,
+            sala["bombo"].historial,
+            comprobar_x
+        )
 
         if es_valida:
             jugador["cantado"]["x"] = True
+            sala["premios"]["x"] = jugador["nombre"]
             sumar_puntos(jugador, 2)
+
             emitir_ranking(socketio, codigo, sala)
 
             emit(
@@ -636,8 +629,6 @@ def register_bingo_online_sockets(socketio):
                 room=sid
             )
 
-
-
     # -------------------------
     # CANTAR BINGO
     # -------------------------
@@ -654,8 +645,6 @@ def register_bingo_online_sockets(socketio):
         if not cartones:
             return
 
-        carton = cartones[0]
-
         jugador = next(
             (j for j in sala["jugadores"].values() if j["sid"] == sid),
             None
@@ -663,11 +652,16 @@ def register_bingo_online_sockets(socketio):
         if not jugador:
             return
 
-        es_valida = comprobar_bingo(carton, sala["bombo"].historial)
+        es_valida = validar_en_cartones(
+            cartones,
+            sala["bombo"].historial,
+            comprobar_bingo
+        )
 
         if es_valida:
             sala["en_partida"] = False
             sumar_puntos(jugador, 5)
+
             emitir_ranking(socketio, codigo, sala)
 
             emit(

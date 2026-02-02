@@ -7,10 +7,6 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 1rem;
-}
-
-.bingo-lobby,
-.bingo-sala {
     text-align: center;
 }
 
@@ -24,18 +20,25 @@
 }
 
 /* =====================================================
-   BINGO – CARTONES (GRID)
+   CARTONES – GRID
    ===================================================== */
 
 #carton-container {
     margin-top: 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* por defecto 2 */
     gap: 20px;
 }
 
+/* Escritorio */
+@media (min-width: 900px) {
+    #carton-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 /* =====================================================
-   CARTÓN – WRAPPER (SEPARACIÓN VISUAL)
+   CARTÓN – WRAPPER
    ===================================================== */
 
 .carton-wrapper {
@@ -55,12 +58,15 @@
     left: 12px;
     right: 12px;
     height: 2px;
-    border-radius: 2px;
-    background: linear-gradient(90deg, transparent, rgba(124, 92, 255, 0.6), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(124, 92, 255, 0.6),
+        transparent
+    );
 }
 
 .carton-wrapper h4 {
-    text-align: center;
     margin-bottom: 8px;
     font-size: 0.95rem;
     opacity: 0.9;
@@ -85,19 +91,19 @@
 }
 
 /* =====================================================
-   BINGO – CELDAS
+   CELDAS
    ===================================================== */
 
 .carton .celda {
+    height: 52px;
     background: #1f1f1f;
     border-radius: 8px;
-    height: 48px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #fff;
 
@@ -105,9 +111,7 @@
     cursor: pointer;
     user-select: none;
 
-    transition:
-        background 0.2s ease,
-        transform 0.1s ease;
+    transition: background 0.2s ease, transform 0.1s ease;
 }
 
 .carton .celda:hover {
@@ -126,7 +130,7 @@
 }
 
 /* =====================================================
-   CANTAR LÍNEA / CRUZ / BINGO
+   BOTONES CANTAR
    ===================================================== */
 
 .bingo-validaciones {
@@ -137,7 +141,6 @@
     flex-wrap: wrap;
 }
 
-/* BOTÓN BASE (quita estilos nativos y define comportamiento común) */
 .bingo-validaciones button {
     min-width: 170px;
     padding: 14px 22px;
@@ -146,635 +149,42 @@
     border-radius: 16px;
     border: none;
     cursor: pointer;
-
-    /* 👇 CLAVE */
     appearance: none;
-    -webkit-appearance: none;
-
     color: #fff;
 
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .bingo-validaciones button:hover {
     transform: scale(1.06);
 }
 
-/* ======================
-   BOTONES INDIVIDUALES
-   ====================== */
-
+/* Botones */
 .btn-linea {
     background: linear-gradient(135deg, #00c853, #2ecc71);
-    box-shadow: 0 0 14px rgba(46, 204, 113, 0.6);
 }
 
-.btn-bingo {
-    background: linear-gradient(135deg, #ff9800, #ff5722);
-    box-shadow: 0 0 16px rgba(255, 152, 0, 0.7);
-}
-
-/* CRUZ – clara, activa y legible */
 .btn-cruz {
     background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
     color: #111;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
 }
-
-.btn-cruz:hover {
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
-}
-.bingo-validaciones button.btn-cruz {
-    color: #000;
-}
-
-/* ======================
-   BOTÓN X
-   ====================== */
 
 .btn-x {
     background: linear-gradient(135deg, #e53935, #c62828);
-    box-shadow: 0 0 14px rgba(229, 57, 53, 0.6);
-    color: #fff;
-}
-
-.btn-x:hover {
-    box-shadow: 0 0 18px rgba(229, 57, 53, 0.8);
-}
-
-
-
-/* =========================
-   BOTONES DESHABILITADOS (GENÉRICO)
-   ========================= */
-
-.bingo-validaciones button.disabled,
-.bingo-validaciones button:disabled {
-    background: #111;
-    color: #777;
-    border: 1px solid #333;
-    box-shadow: none;
-    cursor: not-allowed;
-    opacity: 0.8;
-}
-
-/* =========================
-   CRUZ DESHABILITADA (ESPECÍFICA)
-   ========================= */
-
-.bingo-validaciones button.btn-cruz:disabled {
-    background: linear-gradient(135deg, #2e2e2e, #1a1a1a);
-    color: #ddd;              /* 👈 TEXTO VISIBLE */
-    border: 1px solid #444;
-}
-
-
-/* Quitar hover cuando están desactivados */
-.bingo-validaciones button.disabled:hover,
-.bingo-validaciones button:disabled:hover {
-    transform: none;
-    box-shadow: none;
-}
-
-.bingo-validaciones button {
-    transition: all 0.2s ease;
-}
-
-
-
-/* =====================================================
-   TÍTULO BINGO
-   ===================================================== */
-.bingo-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.bingo-icon {
-    width: 40px;
-    height: 40px;
-}
-
-/* =====================================================
-   ANIMACIONES
-   ===================================================== */
-
-@keyframes pop {
-    0% {
-        transform: scale(0.6);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* =====================================================
-   BOLA ACTUAL
-   ===================================================== */
-
-#ultima-bola {
-    font-size: 1.3rem;
-    margin: 10px 0;
-}
-
-#ultima-bola.flash {
-    animation: pop 0.4s ease;
-}
-#ultima-bola {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-.bola-label {
-    font-size: 1rem;
-    opacity: 0.85;
-}
-
-.bola-actual-num {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: radial-gradient(circle at top left, #fff, #ddd);
-    color: #000;
-    font-size: 1.6rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow:
-        0 0 0 3px #7c4dff,
-        0 6px 12px rgba(0, 0, 0, 0.4);
-}
-
-
-/* =====================================================
-   HISTORIAL DE BOLAS
-   ===================================================== */
-
-.historial-bolas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-    gap: 6px;
-    max-width: 420px;
-    margin: 5px auto 14px;
-    justify-items: center;
-}
-
-.historial-bolas h3 {
-    font-size: 0.9rem;
-    opacity: 0.75;
-    margin: 0 auto 12px;
-}
-
-.bola-historial {
-    background: #2b2b2b;
-    border-radius: 8px;
-    padding: 8px 0;
-    font-weight: bold;
-    box-shadow: inset 0 0 0 2px #444;
-}
-
-.bola-historial.ultima {
-    background: #7c5cff;
-    box-shadow: 0 0 12px rgba(124, 92, 255, 0.8);
-}
-
-/* =====================================================
-   AUTOPLAY
-   ===================================================== */
-
-.auto-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin: 16px 0;
-}
-
-.btn-auto {
-    background: linear-gradient(135deg, #7c5cff, #5a3bff);
-    border: none;
-    color: white;
-    font-weight: bold;
-    padding: 8px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.btn-auto.pause {
-    background: linear-gradient(135deg, #ff9800, #ff6f00);
-}
-
-.auto-countdown {
-    font-weight: bold;
-    color: #ddd;
-    min-width: 45px;
-}
-
-/* =====================================================
-   VIDAS
-   ===================================================== */
-
-.vidas {
-    margin: 10px 0;
-    font-size: 1.6rem;
-    user-select: none;
-}
-
-.vidas .heart {
-    margin: 0 3px;
-    animation: pop 0.3s ease;
-}
-
-.vidas .dead {
-    font-size: 1.2rem;
-    color: #c0392b;
-}
-
-/* =====================================================
-   BOTÓN SALIR
-   ===================================================== */
-
-#resetBtn {
-    margin-top: 32px;
-    opacity: 0.85;
-}
-
-#resetBtn:hover {
-    opacity: 1;
-}
-
-/* =====================================================
-   AVISO CANTAR (OVERLAY)
-   ===================================================== */
-
-.aviso-cantar {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-    font-weight: bold;
-    text-align: center;
-    padding: 20px;
-    z-index: 9999;
-    animation: avisoIn 0.3s ease;
-}
-
-.aviso-cantar.linea {
-    color: #2ecc71;
-}
-.aviso-cantar.bingo {
-    color: #ff9800;
-}
-
-.aviso-cantar.hidden {
-    display: none;
-}
-
-@keyframes avisoIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* =====================================================
-   RESPONSIVE – MÓVIL
-   ===================================================== */
-
-@media (max-width: 600px) {
-    #carton-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-
-    .carton-wrapper {
-        padding: 8px 6px 12px;
-        box-shadow:
-            0 4px 14px rgba(0, 0, 0, 0.6),
-            inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-    }
-
-    .carton {
-        margin: 6px auto;
-        gap: 4px;
-    }
-
-    .carton .fila {
-        gap: 4px;
-    }
-
-    .carton .celda {
-        height: 36px;
-        font-size: 13px;
-        border-radius: 6px;
-    }
-
-    #ultima-bola {
-        font-size: 1.1rem;
-        margin: 6px 0 4px;
-    }
-
-    .vidas {
-        margin: 6px 0;
-        font-size: 1.4rem;
-    }
-
-    .historial-bolas {
-        margin: 4px auto 8px;
-        gap: 4px;
-    }
-
-    .bola-historial {
-        font-size: 0.75rem;
-        padding: 5px 0;
-    }
-}
-
-.aviso-cantar {
-    pointer-events: none;
-}
-
-
-
-/*Para plantilla home */
-.bingo-modos {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 30px;
-}
-
-.bingo-modos a.big {
-    padding: 20px 26px;
-    font-size: 1.2rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-
-/* =====================================================
-   BINGO – CONTENEDORES PRINCIPALES
-   ===================================================== */
-
-.bingo-lobby,
-.bingo-sala {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-}
-
-.bingo-lobby,
-.bingo-sala {
-    text-align: center;
-}
-
-.bingo-sala h1 {
-    margin-bottom: 1rem;
-}
-
-#estado {
-    margin: 0.5rem 0 1.2rem;
-    font-size: 1.1rem;
-}
-
-/* =====================================================
-   BINGO – CARTONES (GRID)
-   ===================================================== */
-
-#carton-container {
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-}
-
-/* =====================================================
-   CARTÓN – WRAPPER (SEPARACIÓN VISUAL)
-   ===================================================== */
-
-.carton-wrapper {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 16px;
-    padding: 10px 8px 14px;
-    box-shadow:
-        0 6px 18px rgba(0, 0, 0, 0.45),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-    position: relative;
-}
-
-.carton-wrapper::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 12px;
-    right: 12px;
-    height: 2px;
-    border-radius: 2px;
-    background: linear-gradient(90deg, transparent, rgba(124, 92, 255, 0.6), transparent);
-}
-
-.carton-wrapper h4 {
-    text-align: center;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-    opacity: 0.9;
-}
-
-/* =====================================================
-   CARTÓN – TABLERO
-   ===================================================== */
-
-.carton {
-    display: grid;
-    grid-template-rows: repeat(5, 1fr);
-    gap: 6px;
-    max-width: 320px;
-    margin: 16px auto;
-}
-
-.carton .fila {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-}
-
-/* =====================================================
-   BINGO – CELDAS
-   ===================================================== */
-
-.carton .celda {
-    background: #1f1f1f;
-    border-radius: 8px;
-    height: 48px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 16px;
-    font-weight: bold;
-    color: #fff;
-
-    box-shadow: inset 0 0 0 2px #333;
-    cursor: pointer;
-    user-select: none;
-
-    transition:
-        background 0.2s ease,
-        transform 0.1s ease;
-}
-
-.carton .celda:hover {
-    transform: scale(1.05);
-}
-
-.carton .celda.marcada {
-    background: #4caf50;
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
-    animation: pop 0.2s ease-in-out;
-}
-
-.carton .celda[data-numero="FREE"] {
-    background: #fbc02d;
-    color: #000;
-}
-
-/* =====================================================
-   CANTAR LÍNEA / CRUZ / BINGO
-   ===================================================== */
-
-.bingo-validaciones {
-    display: flex;
-    justify-content: center;
-    gap: 18px;
-    margin: 26px 0 42px;
-    flex-wrap: wrap;
-}
-
-/* BOTÓN BASE (quita estilos nativos y define comportamiento común) */
-.bingo-validaciones button {
-    min-width: 170px;
-    padding: 14px 22px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 16px;
-    border: none;
-    cursor: pointer;
-
-    /* 👇 CLAVE */
-    appearance: none;
-    -webkit-appearance: none;
-
-    color: #fff;
-
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
-}
-
-.bingo-validaciones button:hover {
-    transform: scale(1.06);
-}
-
-/* ======================
-   BOTONES INDIVIDUALES
-   ====================== */
-
-.btn-linea {
-    background: linear-gradient(135deg, #00c853, #2ecc71);
-    box-shadow: 0 0 14px rgba(46, 204, 113, 0.6);
 }
 
 .btn-bingo {
     background: linear-gradient(135deg, #ff9800, #ff5722);
-    box-shadow: 0 0 16px rgba(255, 152, 0, 0.7);
 }
 
-/* CRUZ – clara, activa y legible */
-.btn-cruz {
-    background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
-    color: #111;
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
-}
-
-.btn-cruz:hover {
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
-}
-.bingo-validaciones button.btn-cruz {
-    color: #000;
-}
-
-
-/* =========================
-   BOTONES DESHABILITADOS (GENÉRICO)
-   ========================= */
-
-.bingo-validaciones button.disabled,
+/* Deshabilitados */
 .bingo-validaciones button:disabled {
     background: #111;
     color: #777;
     border: 1px solid #333;
-    box-shadow: none;
     cursor: not-allowed;
-    opacity: 0.8;
-}
-
-/* =========================
-   CRUZ DESHABILITADA (ESPECÍFICA)
-   ========================= */
-
-.bingo-validaciones button.btn-cruz:disabled {
-    background: linear-gradient(135deg, #2e2e2e, #1a1a1a);
-    color: #ddd;              /* 👈 TEXTO VISIBLE */
-    border: 1px solid #444;
-}
-
-
-/* Quitar hover cuando están desactivados */
-.bingo-validaciones button.disabled:hover,
-.bingo-validaciones button:disabled:hover {
-    transform: none;
     box-shadow: none;
-}
-
-.bingo-validaciones button {
-    transition: all 0.2s ease;
-}
-
-
-
-/* =====================================================
-   TÍTULO BINGO
-   ===================================================== */
-.bingo-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.bingo-icon {
-    width: 40px;
-    height: 40px;
+    transform: none;
 }
 
 /* =====================================================
@@ -782,193 +192,13 @@
    ===================================================== */
 
 @keyframes pop {
-    0% {
+    from {
         transform: scale(0.6);
         opacity: 0.5;
     }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* =====================================================
-   BOLA ACTUAL
-   ===================================================== */
-
-#ultima-bola {
-    font-size: 1.3rem;
-    margin: 10px 0;
-}
-
-#ultima-bola.flash {
-    animation: pop 0.4s ease;
-}
-#ultima-bola {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-}
-
-.bola-label {
-    font-size: 1rem;
-    opacity: 0.85;
-}
-
-.bola-actual-num {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: radial-gradient(circle at top left, #fff, #ddd);
-    color: #000;
-    font-size: 1.6rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow:
-        0 0 0 3px #7c4dff,
-        0 6px 12px rgba(0, 0, 0, 0.4);
-}
-
-
-/* =====================================================
-   HISTORIAL DE BOLAS
-   ===================================================== */
-
-.historial-bolas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-    gap: 6px;
-    max-width: 420px;
-    margin: 5px auto 14px;
-    justify-items: center;
-}
-
-.historial-bolas h3 {
-    font-size: 0.9rem;
-    opacity: 0.75;
-    margin: 0 auto 12px;
-}
-
-.bola-historial {
-    background: #2b2b2b;
-    border-radius: 8px;
-    padding: 8px 0;
-    font-weight: bold;
-    box-shadow: inset 0 0 0 2px #444;
-}
-
-.bola-historial.ultima {
-    background: #7c5cff;
-    box-shadow: 0 0 12px rgba(124, 92, 255, 0.8);
-}
-
-/* =====================================================
-   AUTOPLAY
-   ===================================================== */
-
-.auto-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin: 16px 0;
-}
-
-.btn-auto {
-    background: linear-gradient(135deg, #7c5cff, #5a3bff);
-    border: none;
-    color: white;
-    font-weight: bold;
-    padding: 8px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.btn-auto.pause {
-    background: linear-gradient(135deg, #ff9800, #ff6f00);
-}
-
-.auto-countdown {
-    font-weight: bold;
-    color: #ddd;
-    min-width: 45px;
-}
-
-/* =====================================================
-   VIDAS
-   ===================================================== */
-
-.vidas {
-    margin: 10px 0;
-    font-size: 1.6rem;
-    user-select: none;
-}
-
-.vidas .heart {
-    margin: 0 3px;
-    animation: pop 0.3s ease;
-}
-
-.vidas .dead {
-    font-size: 1.2rem;
-    color: #c0392b;
-}
-
-/* =====================================================
-   BOTÓN SALIR
-   ===================================================== */
-
-#resetBtn {
-    margin-top: 32px;
-    opacity: 0.85;
-}
-
-#resetBtn:hover {
-    opacity: 1;
-}
-
-/* =====================================================
-   AVISO CANTAR (OVERLAY)
-   ===================================================== */
-
-.aviso-cantar {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-    font-weight: bold;
-    text-align: center;
-    padding: 20px;
-    z-index: 9999;
-    animation: avisoIn 0.3s ease;
-}
-
-.aviso-cantar.linea {
-    color: #2ecc71;
-}
-.aviso-cantar.bingo {
-    color: #ff9800;
-}
-
-.aviso-cantar.hidden {
-    display: none;
-}
-
-@keyframes avisoIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
     to {
-        opacity: 1;
         transform: scale(1);
+        opacity: 1;
     }
 }
 
@@ -978,107 +208,12 @@
 
 @media (max-width: 600px) {
     #carton-container {
-        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
 
-    .carton-wrapper {
-        padding: 8px 6px 12px;
-        box-shadow:
-            0 4px 14px rgba(0, 0, 0, 0.6),
-            inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-    }
-
-    .carton {
-        margin: 6px auto;
-        gap: 4px;
-    }
-
-    .carton .fila {
-        gap: 4px;
-    }
-
     .carton .celda {
-        height: 36px;
-        font-size: 13px;
+        height: 38px;
+        font-size: 14px;
         border-radius: 6px;
     }
-
-    #ultima-bola {
-        font-size: 1.1rem;
-        margin: 6px 0 4px;
-    }
-
-    .vidas {
-        margin: 6px 0;
-        font-size: 1.4rem;
-    }
-
-    .historial-bolas {
-        margin: 4px auto 8px;
-        gap: 4px;
-    }
-
-    .bola-historial {
-        font-size: 0.75rem;
-        padding: 5px 0;
-    }
-}
-
-.aviso-cantar {
-    pointer-events: none;
-}
-
-
-
-/*Para plantilla home */
-.bingo-modos {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 30px;
-}
-
-.bingo-modos a.big {
-    padding: 20px 26px;
-    font-size: 1.2rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-/* =====================================================
-   VOLVER AL MENÚ BINGO (ONLINE)
-   ===================================================== */
-
-.volver-bingo {
-    display: flex;
-    justify-content: center;
-    margin: 18px 0 26px;
-}
-
-
-
-.badge.new {
-    display: inline-block;
-    margin-top: 6px;
-    padding: 3px 10px;
-    font-size: 0.7rem;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #ffcc70, #ff9f1c);
-    color: #1a1a1a;
-    font-weight: 700;
-    letter-spacing: 0.6px;
-}
-
-.badge.beta {
-    display: inline-block;
-    margin-top: 6px;
-    padding: 2px 8px;
-    font-size: 0.7rem;
-    border-radius: 12px;
-    background: rgba(255, 165, 0, 0.15);
-    color: #ffb347;
-    letter-spacing: 0.5px;
 }
