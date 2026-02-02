@@ -2,6 +2,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -15,10 +16,68 @@
 
     <div class="stats-cards">
         <div class="stat-card">
-            <h3>Total de visitas</h3>
+            <h3>👀 Total de visitas</h3>
             <p class="stat-number">{{ total_visitas }}</p>
         </div>
+
+        <div class="stat-card">
+            <h3>👥 Usuarios registrados</h3>
+            <p class="stat-number">{{ total_usuarios }}</p>
+        </div>
     </div>
+    <div class="stats-cards">
+        <div class="stat-card">
+            <h3>🎮 Partidas de Bingo</h3>
+            <p class="stat-number">{{ bingo_partidas }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>🏆 Bingos cantados</h3>
+            <p class="stat-number">{{ total_bingos }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>📏 Líneas</h3>
+            <p class="stat-number">{{ total_lineas }}</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>❌ Bingos fallidos</h3>
+            <p class="stat-number">{{ bingos_fallidos }}</p>
+        </div>
+    </div>
+
+    <h2>🏆 Top jugadores de Bingo</h2>
+
+    <table class="stats-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Jugador</th>
+                <th>🏆 Bingos</th>
+                <th>📏 Líneas</th>
+                <th>❌ Fallidos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for j in top_jugadores %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ j.username }}</td>
+                <td>{{ j.bingos }}</td>
+                <td>{{ j.lineas }}</td>
+                <td>{{ j.bingos_fallidos }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">No hay datos todavía</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
 
     <h2>Visitas por ruta</h2>
     <table class="visits-table">

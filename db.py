@@ -78,19 +78,7 @@ def init_db():
         """
     )
 
-        # 🔹 NUEVA TABLA: visitas a la web
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS visitas (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            fecha TEXT DEFAULT CURRENT_TIMESTAMP,
-            ip TEXT,
-            user_agent TEXT,
-            ruta TEXT
-        )
-        """
-    )
-
+   
     # 🔹 NUEVA TABLA: visitas a la web
     cur.execute(
         """
@@ -238,3 +226,13 @@ def registrar_evento(partida_id, user_id, tipo):
 
     conn.commit()
     conn.close()
+
+
+#Contar usuarios:
+def contar_usuarios():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM users")
+    total = cur.fetchone()[0]
+    conn.close()
+    return total
