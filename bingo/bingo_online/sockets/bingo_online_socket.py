@@ -1,9 +1,9 @@
 import random
 
 from flask import request
-from flask_socketio import join_room, emit
+from flask_socketio import join_room, emit, leave_room
 
-from bingo.bingo_online.state import salas_bingo_online, online_lobby
+from bingo.bingo_online.state import salas_bingo_online, online_lobbies
 from bingo.bingo_online.logic.cartones import generar_carton
 from bingo.bingo_online.logic.bolas import BomboBingo
 from bingo.bingo_online.logic.validaciones import (
@@ -13,12 +13,15 @@ from bingo.bingo_online.logic.validaciones import (
     comprobar_x
 )
 
-from config import BINGO_MAX_PLAYERS
 from bingo.bingo_online.data.bot_names import BOT_NAMES
 
+from config import (
+    ONLINE_COUNTDOWN_SECONDS,
+    BOLA_INTERVAL_SECONDS,
+)
 
-ONLINE_COUNTDOWN_SECONDS = 30
-BOLA_INTERVAL_SECONDS = 5
+
+
 
 
 #Penalizar jugador
@@ -30,6 +33,20 @@ def validar_en_cartones(cartones, bolas, funcion_comprobar):
         funcion_comprobar(carton, bolas)
         for carton in cartones
     )
+
+
+#Para que se unan a sal de mismos jugadores
+
+def get_lobby(max_players):
+    if max_players not in online_lobbies:
+        online_lobbies[max_players] = {
+            "players": [],
+            "max_players": max_players,
+            "countdown": ONLINE_COUNTDOWN_SECONDS,
+            "timer_running": False
+        }
+    return online_lobbies[max_players]
+
 
 
 
@@ -79,16 +96,18 @@ def emitir_estado_a_todos(socketio, codigo, sala):
 # 🤖 BOTS
 # =====================================================
 
-def fill_with_bots():
-    faltan = online_lobby["max_players"] - len(online_lobby["players"])
+def fill_with_bots(lobby):
+    faltan = lobby["max_players"] - len(lobby["players"])
     nombres = random.sample(BOT_NAMES, faltan)
 
     for nombre in nombres:
-        online_lobby["players"].append({
+        lobby["players"].append({
             "sid": None,
             "nombre": nombre,
-            "bot": True
+            "bot": True,
+            "cartones":1
         })
+
 
 
 
@@ -96,31 +115,26 @@ def fill_with_bots():
 # ⏳ COUNTDOWN ONLINE
 # =====================================================
 
-def start_online_countdown(socketio):
+def start_online_countdown(socketio, lobby):
 
     def run():
-        while online_lobby["countdown"] > 0:
+        while lobby["countdown"] > 0:
             socketio.sleep(1)
-            online_lobby["countdown"] -= 1
+            lobby["countdown"] -= 1
 
-            socketio.emit("online_lobby_update", {
-                "players": [p["nombre"] for p in online_lobby["players"]],
-                "countdown": online_lobby["countdown"],
-                "max_players": online_lobby["max_players"]
-            })
+            socketio.emit(
+                "online_lobby_update",
+                {
+                    "players": [p["nombre"] for p in lobby["players"]],
+                    "countdown": lobby["countdown"],
+                    "max_players": lobby["max_players"]
+                },
+                room=[p["sid"] for p in lobby["players"] if p["sid"]]
+            )
 
+        fill_with_bots(lobby)
 
-        print("👥 PLAYERS EN LOBBY ANTES DE BOTS:", online_lobby["players"])
-
-        fill_with_bots()
-
-        socketio.emit("online_lobby_update", {
-            "players": [p["nombre"] for p in online_lobby["players"]],
-            "countdown": 0
-        })
-
-
-        codigo = "".join(__import__("random").choices("ABCDEFGH123456789", k=4))
+        codigo = "".join(random.choices("ABCDEFGH123456789", k=4))
 
         salas_bingo_online[codigo] = {
             "jugadores": {},
@@ -128,23 +142,20 @@ def start_online_countdown(socketio):
             "en_partida": True,
             "bombo": BomboBingo(),
             "online": True,
-
-            # 🏆 PREMIOS GLOBALES
             "premios": {
-            "linea": None,
-            "cruz": None,
-            "x": None,
-            "bingo": None
+                "linea": None,
+                "cruz": None,
+                "x": None,
+                "bingo": None
             }
         }
 
-
-        for p in online_lobby["players"]:
+        for p in lobby["players"]:
             salas_bingo_online[codigo]["jugadores"][p["nombre"]] = {
                 "nombre": p["nombre"],
                 "vidas": 3,
                 "puntos": 0,
-                "cartones": p.get("cartones", 1),  # 👈 AQUI
+                "cartones": p.get("cartones", 1),
                 "sid": p["sid"],
                 "bot": p.get("bot", False),
                 "cantado": {
@@ -155,16 +166,17 @@ def start_online_countdown(socketio):
                 }
             }
 
-
-
-
         # 🎟️ CARTONES PARA BOTS
         for nombre, jugador in salas_bingo_online[codigo]["jugadores"].items():
             if jugador.get("bot"):
-                salas_bingo_online[codigo]["cartones"][nombre] = [generar_carton()]
+                sala = salas_bingo_online[codigo]
+                sala["cartones"][nombre] = [
+                    generar_carton() for _ in range(jugador["cartones"])
+        ]
 
-        # 👇 DESPUÉS ya rediriges humanos
-        for p in online_lobby["players"]:
+
+        # Redirigir humanos
+        for p in lobby["players"]:
             if p["sid"]:
                 socketio.emit(
                     "redirect_to_game",
@@ -172,14 +184,13 @@ def start_online_countdown(socketio):
                     room=p["sid"]
                 )
 
-        online_lobby.update({
-            "players": [],
-            "active": False,
-            "timer_running": False,
-            "countdown": ONLINE_COUNTDOWN_SECONDS
-        })
+        # 🧹 Limpiar lobby
+        lobby["players"].clear()
+        lobby["timer_running"] = False
+        lobby["countdown"] = ONLINE_COUNTDOWN_SECONDS
 
     socketio.start_background_task(run)
+
 
 
 
@@ -239,18 +250,24 @@ def start_online_autoplay(socketio, codigo):
                     and comprobar_linea(carton, bolas)
                 ):
                     jugador["cantado"]["linea"] = True
-                    sala["premios"]["linea"] = nombre   # 🔒 bloqueo global
+                    sala["premios"]["linea"] = nombre
+                    sumar_puntos(jugador, 1)
+
+                    emitir_ranking(socketio, codigo, sala)
 
                     socketio.emit(
                         "resultado_cantar",
                         {
                             "tipo": "linea",
                             "valida": True,
-                            "jugador": nombre
+                            "jugador": nombre,
+                            "puntos": jugador["puntos"]
                         },
                         room=codigo
                     )
                     continue
+
+
 
 
                 # CRUZ
@@ -261,17 +278,22 @@ def start_online_autoplay(socketio, codigo):
                 ):
                     jugador["cantado"]["cruz"] = True
                     sala["premios"]["cruz"] = nombre
+                    sumar_puntos(jugador, 2)
+
+                    emitir_ranking(socketio, codigo, sala)
 
                     socketio.emit(
                         "resultado_cantar",
                         {
                             "tipo": "cruz",
                             "valida": True,
-                            "jugador": nombre
+                            "jugador": nombre,
+                            "puntos": jugador["puntos"]
                         },
                         room=codigo
                     )
                     continue
+
 
 
                 # X
@@ -282,32 +304,43 @@ def start_online_autoplay(socketio, codigo):
                 ):
                     jugador["cantado"]["x"] = True
                     sala["premios"]["x"] = nombre
+                    sumar_puntos(jugador, 2)
+
+                    emitir_ranking(socketio, codigo, sala)
 
                     socketio.emit(
                         "resultado_cantar",
                         {
                             "tipo": "x",
                             "valida": True,
-                            "jugador": nombre
+                            "jugador": nombre,
+                            "puntos": jugador["puntos"]
                         },
                         room=codigo
                     )
                     continue
 
 
+
                 # BINGO (cierra partida)
                 if comprobar_bingo(carton, bolas):
                     sala["en_partida"] = False
+                    sumar_puntos(jugador, 5)
+
+                    emitir_ranking(socketio, codigo, sala)
+
                     socketio.emit(
                         "resultado_cantar",
                         {
                             "tipo": "bingo",
                             "valida": True,
-                            "jugador": nombre
+                            "jugador": nombre,
+                            "puntos": jugador["puntos"]
                         },
                         room=codigo
                     )
                     return
+
 
     socketio.start_background_task(run)
 
@@ -333,36 +366,28 @@ def register_bingo_online_sockets(socketio):
         sid = request.sid
         nombre = data.get("nombre", "Invitado")
         max_players = int(data.get("max_players", 6))
-        cartones = int(data.get("cartones", 1))  # 👈 AQUI
+        cartones = int(data.get("cartones", 1))
 
+        lobby = get_lobby(max_players)
 
-        if not online_lobby["active"]:
-            online_lobby.update({
-                "players": [],
-                "max_players": max_players,
-                "countdown": ONLINE_COUNTDOWN_SECONDS,
-                "active": True,
-                "timer_running": False
-            })
-
-        if not any(p["sid"] == sid for p in online_lobby["players"]):
-            online_lobby["players"].append({
+        if not any(p["sid"] == sid for p in lobby["players"]):
+            lobby["players"].append({
                 "sid": sid,
                 "nombre": nombre,
-                "cartones": cartones,   # 👈 GUARDADO
+                "cartones": cartones,
                 "bot": False
             })
 
-
-        if not online_lobby["timer_running"]:
-            online_lobby["timer_running"] = True
-            start_online_countdown(socketio)
+        if not lobby["timer_running"]:
+            lobby["timer_running"] = True
+            start_online_countdown(socketio, lobby)
 
         emit("online_lobby_update", {
-            "players": [p["nombre"] for p in online_lobby["players"]],
-            "countdown": online_lobby["countdown"],
-            "max_players": online_lobby["max_players"]
+            "players": [p["nombre"] for p in lobby["players"]],
+            "countdown": lobby["countdown"],
+            "max_players": lobby["max_players"]
         })
+
 
 
 
@@ -699,10 +724,27 @@ def register_bingo_online_sockets(socketio):
 
         sala = salas_bingo_online.get(codigo)
         if not sala:
+            emit("saliste_sala", {}, room=sid)
             return
 
+        # 🧹 Quitar cartones del jugador
         sala["cartones"].pop(sid, None)
 
+        # 🧹 Desvincular SID del jugador
         for jugador in sala["jugadores"].values():
             if jugador.get("sid") == sid:
                 jugador["sid"] = None
+
+        # 🚪 Salir del room Socket.IO
+        leave_room(codigo)
+
+        print(f"🚪 Jugador {sid} salió de la sala {codigo}")
+
+        # 🧨 AQUÍ VA EXACTAMENTE
+        if all(j["sid"] is None for j in sala["jugadores"].values()):
+            print("🧨 Sala vacía, eliminando:", codigo)
+            salas_bingo_online.pop(codigo, None)
+
+        # ✅ Confirmar al frontend
+        emit("saliste_sala", {}, room=sid)
+

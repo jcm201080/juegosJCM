@@ -280,6 +280,10 @@ socket.on("ranking_update", (data) => {
     });
 });
 
+socket.on("saliste_sala", () => {
+    console.log("🚪 Confirmado: fuera de la sala");
+    window.location.href = "/bingo/online";
+});
 
 
 
@@ -287,14 +291,18 @@ socket.on("ranking_update", (data) => {
 
 //Salir de la sala (frontend)
 const salirBtn = document.getElementById("resetBtn");
+
 if (salirBtn) {
     salirBtn.addEventListener("click", () => {
+        salirBtn.disabled = true;
+        salirBtn.textContent = "Saliendo…";
+
         socket.emit("salir_sala", {
             codigo: window.CODIGO
         });
-        window.location.href = "/bingo/online";
     });
 }
+
 
 
 
