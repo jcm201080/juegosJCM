@@ -128,7 +128,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 # =========================
 register_chess_sockets(socketio)
 register_chess_rooms(socketio)
-register_bingo_sockets(socketio)        # classic
+register_bingo_sockets(socketio)      # classic
 register_bingo_online_sockets(socketio)   # online
 
 

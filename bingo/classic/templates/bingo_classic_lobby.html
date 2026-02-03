@@ -27,20 +27,7 @@
     </div>
 </section>
 
-<script>
-function guardarNombre() {
-    const nombre = document.getElementById("nombreJugador").value.trim() || "Jugador";
-    localStorage.setItem("bingo_nombre", nombre);
-}
 
-function unirseSala() {
-    const codigo = document.getElementById("codigoSala").value.trim().toUpperCase();
-    if (!codigo) return;
-
-    guardarNombre();
-    window.location.href = `/bingo/${codigo}`;
-}
-</script>
 
 <script src="{{ url_for('static', filename='js/bingo/lobby.js') }}"></script>
 {% endblock %}

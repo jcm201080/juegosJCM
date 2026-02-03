@@ -7,7 +7,7 @@ salas = {}
 codigos_validos = set()
 
 bingo_routes = Blueprint(
-    "bingo_classic",
+    "bingo_classic",   # 🔥 nombre nuevo
     __name__,
     template_folder="../templates"
 )
@@ -22,7 +22,6 @@ def bingo_lobby():
     if request.method == "POST":
         codigo = generar_codigo_sala()
 
-        # ✅ CREAR SALA AQUÍ
         salas[codigo] = {
             "host": session["username"]
         }
@@ -31,7 +30,7 @@ def bingo_lobby():
 
         return redirect(url_for("bingo_classic.bingo_sala", codigo=codigo))
 
-    return render_template("bingo_classic_lobby.html")
+    return render_template("bingo_lobby.html")
 
 
 @bingo_routes.route("/bingo/classic/<codigo>")
@@ -42,11 +41,10 @@ def bingo_sala(codigo):
     if not sala:
         return redirect(url_for("bingo_classic.bingo_lobby"))
 
-
     es_host = sala["host"] == session["username"]
 
     return render_template(
         "bingo_sala.html",
         codigo=codigo,
-        es_host=es_host   # 🔥 ESTO ES CLAVE
+        es_host=es_host
     )

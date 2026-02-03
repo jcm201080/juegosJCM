@@ -1,21 +1,13 @@
 /* global io */
 
 import { renderCarton, setBolasCantadas } from "./cartones.js";
-import { initAutoPlay } from "./autoplay.js";
+import { initAutoPlayClassic } from "./autoplay_classic.js";
+
 
 console.log("🔥 sala.js CARGADO");
 window.__SALA_JS_OK__ = true;
 
-const socket = io();
-
-
-// =======================
-// Modo sala (local / online)
-// =======================
-const params = new URLSearchParams(window.location.search);
-const isOnline = params.get("online") === "1";
-
-console.log("🎮 Sala online:", isOnline);
+const socket = io("/bingo-classic");
 
 // =======================
 // Nombre del jugador (preparado para login)
@@ -197,18 +189,18 @@ if (btnBingo) {
 // Conexión
 // =======================
 socket.on("connect", () => {
-    const numCartones = isOnline
-        ? 1
-        : parseInt(document.getElementById("numCartones")?.value || 1);
+    const numCartones = parseInt(document.getElementById("numCartones")?.value || 1);
 
     socket.emit("join_bingo", {
         codigo,
         cartones: numCartones,
         nombre: playerName,
-        online: isOnline
     });
 });
 
+socket.on("disconnect", () => {
+    console.log("❌ Socket desconectado");
+});
 
 // =======================
 // Botón sacar bola (manual)
@@ -266,9 +258,6 @@ socket.on("lista_jugadores", (data) => {
     const intervalSelect = document.getElementById("intervalSelect");
     const validaciones = document.querySelector(".bingo-validaciones");
 
-
-    
-
     // ───────── ESTADO DE ESPERA ─────────
     if (data.en_partida) {
         estadoEspera?.remove();
@@ -308,9 +297,10 @@ socket.on("lista_jugadores", (data) => {
     // ───────── AUTOPLAY (solo host) ─────────
     if (data.host && data.en_partida) {
         if (!window.__autoplayInit) {
-            initAutoPlay({ socket, codigo });
+            initAutoPlayClassic({ socket, codigo });
             window.__autoplayInit = true;
         }
+
 
         autoBtn && (autoBtn.style.display = "inline-block");
         intervalSelect && (intervalSelect.style.display = "inline-block");
@@ -464,19 +454,17 @@ const resetBtn = document.getElementById("resetBtn");
 
 if (resetBtn) {
     resetBtn.addEventListener("click", () => {
-        window.location.href = "/bingo/classic";
+        socket.emit("leave_bingo", { codigo });
     });
 }
 
-
-
 socket.on("salida_ok", () => {
-    window.location.href = "/bingo";
+    window.location.href = "/bingo/classic";
 });
 
 socket.on("sala_cerrada", () => {
     alert("El host ha cerrado la sala");
-    window.location.href = "/bingo";
+    window.location.href = "/bingo/classic";
 });
 
 

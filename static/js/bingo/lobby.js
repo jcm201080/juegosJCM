@@ -1,10 +1,13 @@
+function guardarNombre() {
+    const input = document.getElementById("nombreJugador");
+    const nombre = input ? input.value.trim() : "Jugador";
+    localStorage.setItem("bingo_nombre", nombre);
+}
+
 function unirseSala() {
     const codigo = document.getElementById("codigoSala").value.trim().toUpperCase();
+    if (!codigo) return;
 
-    if (!codigo) {
-        alert("Introduce un código de sala");
-        return;
-    }
-
-    window.location.href = `/bingo/${codigo}`;
+    guardarNombre();
+    window.location.href = `/bingo/classic/${codigo}`;
 }
