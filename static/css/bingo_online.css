@@ -156,9 +156,11 @@ button:disabled {
 #carton-container {
     margin-top: 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(2, 1fr); /* 👈 SIEMPRE 2 */
     gap: 20px;
+    justify-content: center;
 }
+
 
 /* =====================================================
    CARTÓN – WRAPPER (SEPARACIÓN VISUAL)
@@ -217,7 +219,7 @@ button:disabled {
 .carton .celda {
     background: #1f1f1f;
     border-radius: 8px;
-    height: 48px;
+    height: 28px;
 
     display: flex;
     align-items: center;
@@ -593,7 +595,7 @@ button:disabled {
 
     .carton .celda {
         height: 36px;
-        font-size: 13px;
+        font-size: 15px;
         border-radius: 6px;
     }
 
@@ -752,3 +754,5 @@ button:disabled {
 #ranking-list li span.puntos {
     color: #ffd54f;
 }
+
+
