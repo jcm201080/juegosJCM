@@ -8,7 +8,8 @@ from bingo.classic.logic.bolas import BomboBingo
 from bingo.classic.logic.validaciones import (
     comprobar_linea,
     comprobar_bingo,
-    comprobar_cruz
+    comprobar_cruz,
+    comprobar_x
 )
 from bingo.classic.routes.bingo_routes import codigos_validos
 
@@ -61,6 +62,7 @@ def emitir_estado(sala, jugador_sid):
             "max": BINGO_MAX_PLAYERS,
             "min": BINGO_MIN_PLAYERS,
             "linea_cantada": sala.get("linea_cantada", False),
+            "x_cantado": sala.get("x_cantado", False),
             "cruz_cantada": sala.get("cruz_cantada", False),
             "bingo_cantado": sala.get("bingo_cantado", False),
         },
@@ -102,6 +104,7 @@ def register_bingo_sockets(socketio):
                 "bombo": BomboBingo(),
                 "auto": {"activo": False, "intervalo": 20},
                 "linea_cantada": False,
+                "x_cantado": False,
                 "cruz_cantada": False,
                 "bingo_cantado": False,
             }
@@ -145,6 +148,7 @@ def register_bingo_sockets(socketio):
 
         sala["en_partida"] = True
         sala["linea_cantada"] = False
+        sala["x_cantado"] = False
         sala["cruz_cantada"] = False
         sala["bingo_cantado"] = False
         sala["auto"]["activo"] = False
@@ -293,6 +297,43 @@ def register_bingo_sockets(socketio):
 
         perder_vidas(sala, sid, 1)
         emit("linea_invalida", room=sid, namespace=NAMESPACE)
+
+    # -------------------------
+    # CANTAR X
+    # -------------------------
+    @socketio.on("cantar_x", namespace=NAMESPACE)
+    def cantar_x(data):
+        codigo = data["codigo"]
+        sid = request.sid
+        sala = salas_bingo.get(codigo)
+
+        if not sala or sala.get("x_cantada"):
+            emit("x_invalida", room=sid, namespace=NAMESPACE)
+            return
+
+        jugador = sala["jugadores"].get(sid)
+
+        for carton in sala["cartones"].get(sid, []):
+            if comprobar_x(carton, sala["bombo"].historial):
+                sala["x_cantada"] = True
+
+                # (opcional stats más adelante)
+                # if jugador["user_id"]:
+                #     registrar_x(jugador["user_id"], sala["partida_id"])
+
+                emit(
+                    "x_valida",
+                    {"nombre": jugador["nombre"]},
+                    room=codigo,
+                    namespace=NAMESPACE,
+                )
+
+                emitir_estado_a_todos(sala)
+                return
+
+        perder_vidas(sala, sid, 1)
+        emit("x_invalida", room=sid, namespace=NAMESPACE)
+
 
     # -------------------------
     # CANTAR CRUZ

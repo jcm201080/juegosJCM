@@ -184,6 +184,11 @@
     color: #111;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
 }
+.btnX{
+    background: linear-gradient(135deg, #632020, #e0e0e0);
+    color: #111;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+}
 
 .btn-cruz:hover {
     box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);

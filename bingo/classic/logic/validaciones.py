@@ -49,3 +49,20 @@ def comprobar_cruz(carton, bolas):
 
     return diag1 and diag2
 
+
+def comprobar_x(carton, bolas):
+    bolas_set = set(bolas)
+    size = len(carton)
+    centro = size // 2
+
+    diag1 = all(
+        (i == centro) or carton[i][i] in bolas_set
+        for i in range(size)
+    )
+
+    diag2 = all(
+        (i == centro) or carton[i][size - 1 - i] in bolas_set
+        for i in range(size)
+    )
+
+    return diag1 and diag2

@@ -14,6 +14,16 @@ const socket = io("/bingo-classic");
 // =======================
 const playerName = window.BINGO_USER || "Invitado";
 
+// =======================
+// 🧮 PUNTUACIÓN
+// =======================
+let puntos = 0;
+
+function actualizarPuntuacion() {
+    const cont = document.getElementById("puntuacion");
+    if (!cont) return;
+    cont.textContent = `⭐ Puntos: ${puntos}`;
+}
 
 // =======================
 // Sonido bolas
@@ -156,6 +166,8 @@ const codigo = window.CODIGO;
 const btnLinea = document.getElementById("btnLinea");
 const btnBingo = document.getElementById("btnBingo");
 const btnCruz = document.getElementById("btnCruz");
+const btnX = document.getElementById("btnX");
+
 
 if (btnCruz) {
     btnCruz.addEventListener("click", () => {
@@ -175,6 +187,16 @@ if (btnLinea) {
         });
     });
 }
+
+if (btnX) {
+    btnX.addEventListener("click", () => {
+        socket.emit("cantar_x", {
+            codigo,
+            nombre: playerName,
+        });
+    });
+}
+
 
 if (btnBingo) {
     btnBingo.addEventListener("click", () => {
@@ -329,6 +351,16 @@ socket.on("lista_jugadores", (data) => {
         btnCruz.classList.remove("disabled");
     }
 
+    // ❌ X
+    if (!data.en_partida || data.x_cantada) {
+        btnX.disabled = true;
+        btnX.classList.add("disabled");
+    } else {
+        btnX.disabled = false;
+        btnX.classList.remove("disabled");
+    }
+
+
 
     // 🏆 Bingo
     if (!data.en_partida || data.bingo_cantado) {
@@ -356,7 +388,10 @@ socket.on("lista_jugadores", (data) => {
 // =======================
 socket.on("game_started", () => {
     console.log("🎬 Partida iniciada");
+    puntos = 0;
+    actualizarPuntuacion();
 });
+
 
 // =======================
 // Cartón recibido
@@ -500,19 +535,51 @@ socket.on("linea_valida", (data) => {
     playLineaSound();
     mostrarAvisoCantar(`🎯 LÍNEA de ${jugador}`, "linea");
     showToast(`🎯 Línea válida (${jugador})`);
+
+    if (jugador === playerName) {
+        puntos += 1;
+        actualizarPuntuacion();
+    }
 });
+
 
 socket.on("cruz_valida", (data) => {
     const jugador = data?.nombre || "un jugador";
 
-    playLineaSound();  //cambiar por cruz sound
-    mostrarAvisoCantar(`❌ CRUZ de ${jugador}`, "cruz");
-    showToast(`❌ Cruz válida (${jugador})`);
+    playLineaSound();
+    mostrarAvisoCantar(`➕ CRUZ de ${jugador}`, "cruz");
+    showToast(`➕ Cruz válida (${jugador})`);
+
+    if (jugador === playerName) {
+        puntos += 2;
+        actualizarPuntuacion();
+    }
 });
+
+
+socket.on("x_valida", (data) => {
+    const jugador = data?.nombre || "un jugador";
+
+    playLineaSound();
+    mostrarAvisoCantar(`❌ X de ${jugador}`, "cruz");
+    showToast(`❌ X válida (${jugador})`);
+
+    if (jugador === playerName) {
+        puntos += 2;
+        actualizarPuntuacion();
+    }
+});
+
+
 
 socket.on("cruz_invalida", () => {
     showToast("❌ Cruz incorrecta");
 });
+
+socket.on("x_invalida", () => {
+    showToast("❌ X incorrecta");
+});
+
 
 
 socket.on("bingo_valido", (data) => {
@@ -521,7 +588,13 @@ socket.on("bingo_valido", (data) => {
     playBingoSound();
     mostrarAvisoCantar(`🏆 BINGO de ${jugador}`, "bingo");
     showToast(`🏆 Bingo válido (${jugador})`);
+
+    if (jugador === playerName) {
+        puntos += 5;
+        actualizarPuntuacion();
+    }
 });
+
 
 socket.on("linea_invalida", () => {
     showToast("❌ Línea incorrecta");
