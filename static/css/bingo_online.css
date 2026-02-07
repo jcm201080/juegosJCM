@@ -26,7 +26,6 @@
     padding: 6px 0;
 }
 
-
 .toast {
     position: fixed;
     top: 90px;
@@ -40,7 +39,9 @@
     z-index: 9999;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
 }
 
 .toast.show {
@@ -56,7 +57,6 @@
     background: linear-gradient(135deg, #d64545, #ef4444);
 }
 
-
 #vidas-container {
     display: flex;
     justify-content: center;
@@ -70,8 +70,12 @@
 }
 
 @keyframes pop {
-    0% { transform: scale(0.7); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(0.7);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .dead {
@@ -79,14 +83,12 @@
     font-weight: bold;
 }
 
-
 button.disabled,
 button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
     filter: grayscale(100%);
 }
-
 
 /*Ultimas bolas*/
 .ultimas-bolas {
@@ -122,7 +124,6 @@ button:disabled {
     justify-content: center;
     opacity: 0.8;
 }
-
 
 /* =====================================================
    BINGO – CONTENEDORES PRINCIPALES
@@ -160,7 +161,6 @@ button:disabled {
     gap: 20px;
     justify-content: center;
 }
-
 
 /* =====================================================
    CARTÓN – WRAPPER (SEPARACIÓN VISUAL)
@@ -318,7 +318,6 @@ button:disabled {
     color: #000;
 }
 
-
 /* =========================
    BOTONES DESHABILITADOS (GENÉRICO)
    ========================= */
@@ -339,10 +338,9 @@ button:disabled {
 
 .bingo-validaciones button.btn-cruz:disabled {
     background: linear-gradient(135deg, #2e2e2e, #1a1a1a);
-    color: #ddd;              /* 👈 TEXTO VISIBLE */
+    color: #ddd; /* 👈 TEXTO VISIBLE */
     border: 1px solid #444;
 }
-
 
 /* Quitar hover cuando están desactivados */
 .bingo-validaciones button.disabled:hover,
@@ -354,8 +352,6 @@ button:disabled {
 .bingo-validaciones button {
     transition: all 0.2s ease;
 }
-
-
 
 /* =====================================================
    TÍTULO BINGO
@@ -426,7 +422,6 @@ button:disabled {
         0 0 0 3px #7c4dff,
         0 6px 12px rgba(0, 0, 0, 0.4);
 }
-
 
 /* =====================================================
    HISTORIAL DE BOLAS
@@ -624,8 +619,6 @@ button:disabled {
     pointer-events: none;
 }
 
-
-
 /*Para plantilla home */
 .bingo-modos {
     display: flex;
@@ -643,14 +636,11 @@ button:disabled {
     gap: 6px;
 }
 
-
-
 .volver-bingo {
     display: flex;
     justify-content: center;
     margin: 16px 0 24px;
 }
-
 
 /* =====================================================
    JUGADORES EN SALA
@@ -686,7 +676,6 @@ button:disabled {
         0 4px 10px rgba(0, 0, 0, 0.35);
 }
 
-
 /* =====================================================
    ÚLTIMAS BOLAS (debajo de la bola actual)
    ===================================================== */
@@ -721,12 +710,11 @@ button:disabled {
     box-shadow: 0 0 10px rgba(124, 92, 255, 0.8);
 }
 
-
 .ranking-box {
     margin: 16px auto;
     max-width: 360px;
     padding: 12px;
-    background: rgba(0,0,0,0.25);
+    background: rgba(0, 0, 0, 0.25);
     border-radius: 12px;
 }
 
@@ -746,7 +734,7 @@ button:disabled {
     justify-content: space-between;
     padding: 6px 10px;
     margin-bottom: 4px;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     font-weight: bold;
 }
@@ -754,5 +742,3 @@ button:disabled {
 #ranking-list li span.puntos {
     color: #ffd54f;
 }
-
-

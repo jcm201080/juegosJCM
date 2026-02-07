@@ -3,7 +3,6 @@
 import { renderCarton, setBolasCantadas } from "./cartones.js";
 import { initAutoPlayClassic } from "./autoplay_classic.js";
 
-
 console.log("🔥 sala.js CARGADO");
 window.__SALA_JS_OK__ = true;
 
@@ -168,7 +167,6 @@ const btnBingo = document.getElementById("btnBingo");
 const btnCruz = document.getElementById("btnCruz");
 const btnX = document.getElementById("btnX");
 
-
 if (btnCruz) {
     btnCruz.addEventListener("click", () => {
         socket.emit("cantar_cruz", {
@@ -178,12 +176,11 @@ if (btnCruz) {
     });
 }
 
-
 if (btnLinea) {
     btnLinea.addEventListener("click", () => {
-        socket.emit("cantar_linea", { 
+        socket.emit("cantar_linea", {
             codigo,
-            nombre: playerName,     
+            nombre: playerName,
         });
     });
 }
@@ -197,13 +194,12 @@ if (btnX) {
     });
 }
 
-
 if (btnBingo) {
     btnBingo.addEventListener("click", () => {
-        socket.emit("cantar_bingo", { 
+        socket.emit("cantar_bingo", {
             codigo,
-            nombre: playerName
-         });
+            nombre: playerName,
+        });
     });
 }
 
@@ -276,7 +272,6 @@ socket.on("lista_jugadores", (data) => {
     const btnBingo = document.getElementById("btnBingo");
     const btnCruz = document.getElementById("btnCruz");
 
-
     const intervalSelect = document.getElementById("intervalSelect");
     const validaciones = document.querySelector(".bingo-validaciones");
 
@@ -323,7 +318,6 @@ socket.on("lista_jugadores", (data) => {
             window.__autoplayInit = true;
         }
 
-
         autoBtn && (autoBtn.style.display = "inline-block");
         intervalSelect && (intervalSelect.style.display = "inline-block");
     } else {
@@ -360,8 +354,6 @@ socket.on("lista_jugadores", (data) => {
         btnX.classList.remove("disabled");
     }
 
-
-
     // 🏆 Bingo
     if (!data.en_partida || data.bingo_cantado) {
         btnBingo.disabled = true;
@@ -391,7 +383,6 @@ socket.on("game_started", () => {
     puntos = 0;
     actualizarPuntuacion();
 });
-
 
 // =======================
 // Cartón recibido
@@ -447,7 +438,6 @@ function renderHistorial(bolas) {
     });
 }
 
-
 // =======================
 // Última bola visual
 // =======================
@@ -502,7 +492,6 @@ socket.on("sala_cerrada", () => {
     window.location.href = "/bingo/classic";
 });
 
-
 // =======================
 // AVISO CENTRAL (LÍNEA / BINGO)
 // =======================
@@ -514,17 +503,12 @@ function mostrarAvisoCantar(texto, tipo = "linea") {
     aviso.className = `aviso-cantar ${tipo}`;
 
     // ⏱ tiempos distintos
-    const duracion =
-        tipo === "bingo" ? 8000 :
-        tipo === "cruz"  ? 5000 :
-        3000;
-
+    const duracion = tipo === "bingo" ? 8000 : tipo === "cruz" ? 5000 : 3000;
 
     setTimeout(() => {
         aviso.classList.add("hidden");
     }, duracion);
 }
-
 
 // =======================
 // FEEDBACK LINEA / BINGO / CRUZ
@@ -542,7 +526,6 @@ socket.on("linea_valida", (data) => {
     }
 });
 
-
 socket.on("cruz_valida", (data) => {
     const jugador = data?.nombre || "un jugador";
 
@@ -555,7 +538,6 @@ socket.on("cruz_valida", (data) => {
         actualizarPuntuacion();
     }
 });
-
 
 socket.on("x_valida", (data) => {
     const jugador = data?.nombre || "un jugador";
@@ -570,8 +552,6 @@ socket.on("x_valida", (data) => {
     }
 });
 
-
-
 socket.on("cruz_invalida", () => {
     showToast("❌ Cruz incorrecta");
 });
@@ -579,8 +559,6 @@ socket.on("cruz_invalida", () => {
 socket.on("x_invalida", () => {
     showToast("❌ X incorrecta");
 });
-
-
 
 socket.on("bingo_valido", (data) => {
     const jugador = data?.nombre || "un jugador";
@@ -594,7 +572,6 @@ socket.on("bingo_valido", (data) => {
         actualizarPuntuacion();
     }
 });
-
 
 socket.on("linea_invalida", () => {
     showToast("❌ Línea incorrecta");

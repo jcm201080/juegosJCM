@@ -1,12 +1,7 @@
-{% extends "base.html" %}
-
-{% block title %}🌐 Tablero Online — JCM{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block title %}🌐 Tablero Online — JCM{% endblock %} {% block extra_css
+%}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/tablero_oca.css') }}" />
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="game-container tablero-container">
     <h1>🌐 Tablero Online — JCM</h1>
     <p>Juega desde 2 móviles · Por turnos · Comparte el código de partida</p>
@@ -46,8 +41,8 @@
                     <strong>Tu ID:</strong> <span id="playerLabel">—</span>
                 </p>
                 <p class="online-hint">
-                    📌 Crea la partida y pasa el código al otro móvil. Cuando os unáis,
-                    empezáis a tirar por turnos.
+                    📌 Crea la partida y pasa el código al otro móvil. Cuando os unáis, empezáis a
+                    tirar por turnos.
                 </p>
             </div>
         </section>
@@ -95,8 +90,6 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{{ url_for('static', filename='js/tablero_oca_online.js') }}"></script>
 {% endblock %}

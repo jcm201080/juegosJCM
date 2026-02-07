@@ -23,7 +23,8 @@ let audioUnlocked = false;
 
 function unlockAudio() {
     if (audioUnlocked) return;
-    ballSound.play()
+    ballSound
+        .play()
         .then(() => {
             ballSound.pause();
             ballSound.currentTime = 0;
@@ -33,7 +34,6 @@ function unlockAudio() {
 }
 
 document.addEventListener("click", unlockAudio, { once: true });
-
 
 // vidas
 let vidasActuales = 3;
@@ -70,11 +70,8 @@ function desactivarTodosLosBotones() {
     });
 }
 
-
 function desactivarBoton(tipo) {
-    const btn = document.getElementById(
-        `btn${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`
-    );
+    const btn = document.getElementById(`btn${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
     if (!btn) return;
 
     btn.disabled = true;
@@ -82,15 +79,12 @@ function desactivarBoton(tipo) {
     botonesCantados[tipo] = true;
 }
 
-
-
 const botonesCantados = {
     linea: false,
     cruz: false,
     bingo: false,
-    x: false
+    x: false,
 };
-
 
 //Ultimas tres bolas
 function renderUltimasBolas(bolas) {
@@ -114,7 +108,6 @@ function renderUltimasBolas(bolas) {
         cont.appendChild(div);
     });
 }
-
 
 // =======================
 // Render cartones
@@ -173,7 +166,7 @@ socket.on("connect", () => {
 
     socket.emit("join_online_game", {
         codigo,
-        nombre: playerName
+        nombre: playerName,
     });
 });
 
@@ -185,13 +178,12 @@ socket.on("lista_jugadores", (data) => {
     if (!cont) return;
 
     cont.innerHTML = "";
-    data.jugadores.forEach(nombre => {
+    data.jugadores.forEach((nombre) => {
         const li = document.createElement("li");
         li.textContent = nombre;
         cont.appendChild(li);
     });
 });
-
 
 // =======================
 // Cartones recibidos
@@ -224,23 +216,17 @@ socket.on("game_started", () => {
     }
 });
 
-
 // cantar linea / cruz / x / bingo
 socket.on("resultado_cantar", (data) => {
-    const { tipo, valida, vidas, jugador, puntos } = data;
+    const { tipo, valida, vidas, jugador, puntos: _puntos } = data;
 
     if (valida) {
         if (tipo === "bingo") {
-            mostrarMensaje(
-                `🏆 BINGO cantado por ${jugador} (+5 pts)`,
-                "ok"
-            );
+            mostrarMensaje(`🏆 BINGO cantado por ${jugador} (+5 pts)`, "ok");
             desactivarTodosLosBotones();
         } else {
             const puntosTexto =
-                tipo === "linea" ? "+1 pt" :
-                tipo === "cruz" || tipo === "x" ? "+2 pts" :
-                "";
+                tipo === "linea" ? "+1 pt" : tipo === "cruz" || tipo === "x" ? "+2 pts" : "";
 
             mostrarMensaje(
                 `✅ ${tipo.toUpperCase()} cantado por ${jugador} (${puntosTexto})`,
@@ -250,17 +236,13 @@ socket.on("resultado_cantar", (data) => {
             desactivarBoton(tipo);
         }
     } else {
-        mostrarMensaje(
-            `❌ ${tipo.toUpperCase()} incorrecto`,
-            "error"
-        );
+        mostrarMensaje(`❌ ${tipo.toUpperCase()} incorrecto`, "error");
 
         if (typeof vidas === "number") {
             actualizarVidas(vidas);
         }
     }
 });
-
 
 socket.on("ranking_update", (data) => {
     const rankingList = document.getElementById("ranking-list");
@@ -285,10 +267,6 @@ socket.on("saliste_sala", () => {
     window.location.href = "/bingo/online";
 });
 
-
-
-
-
 //Salir de la sala (frontend)
 const salirBtn = document.getElementById("resetBtn");
 
@@ -298,15 +276,10 @@ if (salirBtn) {
         salirBtn.textContent = "Saliendo…";
 
         socket.emit("salir_sala", {
-            codigo: window.CODIGO
+            codigo: window.CODIGO,
         });
     });
 }
-
-
-
-
-
 
 // =======================
 // Historial bolas
@@ -349,10 +322,8 @@ function mostrarBola(bola) {
 // =======================
 // Cantar línea / cruz / bingo
 // =======================
-["linea", "cruz","x", "bingo"].forEach((tipo) => {
-    const btn = document.getElementById(
-        `btn${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`
-    );
+["linea", "cruz", "x", "bingo"].forEach((tipo) => {
+    const btn = document.getElementById(`btn${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
     if (!btn) return;
 
     btn.addEventListener("click", () => {

@@ -55,7 +55,7 @@ let turn = "white";
 let lastMove = null;
 let gameOver = false;
 
-let currentRoom = null;
+let _currentRoom = null;
 
 let inRoom = false;
 
@@ -483,7 +483,7 @@ document.getElementById("joinRoomBtn").addEventListener("click", () => {
 });
 
 socket.on("room_created", ({ room, role }) => {
-    currentRoom = room;
+    _currentRoom = room;
     myRole = role;
     inRoom = true;
     gameStarted = false;
@@ -492,7 +492,7 @@ socket.on("room_created", ({ room, role }) => {
 });
 
 socket.on("room_joined", ({ room, role }) => {
-    currentRoom = room;
+    _currentRoom = room;
     myRole = role;
     inRoom = true;
 

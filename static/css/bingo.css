@@ -35,7 +35,6 @@
     justify-content: center;
 }
 
-
 /* =====================================================
    CARTÓN – WRAPPER (SEPARACIÓN VISUAL)
    ===================================================== */
@@ -184,7 +183,7 @@
     color: #111;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
 }
-.btnX{
+.btnX {
     background: linear-gradient(135deg, #632020, #e0e0e0);
     color: #111;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
@@ -196,7 +195,6 @@
 .bingo-validaciones button.btn-cruz {
     color: #000;
 }
-
 
 /* =========================
    BOTONES DESHABILITADOS (GENÉRICO)
@@ -218,10 +216,9 @@
 
 .bingo-validaciones button.btn-cruz:disabled {
     background: linear-gradient(135deg, #2e2e2e, #1a1a1a);
-    color: #ddd;              /* 👈 TEXTO VISIBLE */
+    color: #ddd; /* 👈 TEXTO VISIBLE */
     border: 1px solid #444;
 }
-
 
 /* Quitar hover cuando están desactivados */
 .bingo-validaciones button.disabled:hover,
@@ -233,8 +230,6 @@
 .bingo-validaciones button {
     transition: all 0.2s ease;
 }
-
-
 
 /* =====================================================
    TÍTULO BINGO
@@ -305,7 +300,6 @@
         0 0 0 3px #7c4dff,
         0 6px 12px rgba(0, 0, 0, 0.4);
 }
-
 
 /* =====================================================
    HISTORIAL DE BOLAS

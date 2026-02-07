@@ -48,4 +48,3 @@ export function initAutoPlayClassic({ socket, codigo }) {
         countdown.style.display = "none";
     });
 }
-

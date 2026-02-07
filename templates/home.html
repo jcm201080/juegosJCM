@@ -55,30 +55,23 @@
         <h2>🌐 Bingo Online</h2>
         <p>
             Juega al bingo en tiempo real con otros jugadores.
-            <br>
+            <br />
             <small class="badge new">NEW ✨</small>
-            <br>
+            <br />
             <small class="badge beta">BETA · En pruebas</small>
-            
         </p>
 
-        <a class="btn-primary btn-online"
-        href="{{ url_for('bingo_online.bingo_online_home') }}">
+        <a class="btn-primary btn-online" href="{{ url_for('bingo_online.bingo_online_home') }}">
             Entrar al bingo online
         </a>
     </article>
 
-
-
     {% if session.get("role") == "admin" %}
-        <article class="game-card">
-            <p>Dashboard Solo para mi</p>
-            <a class="btn-primary" href="{{ url_for('admin.dashboard') }}">
-                📊 Dashboard Admin
-            </a>
-        </article>
+    <article class="game-card">
+        <p>Dashboard Solo para mi</p>
+        <a class="btn-primary" href="{{ url_for('admin.dashboard') }}"> 📊 Dashboard Admin </a>
+    </article>
     {% endif %}
-
 </div>
 
 {% if force_login %}

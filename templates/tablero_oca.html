@@ -1,12 +1,7 @@
-{% extends "base.html" %}
-
-{% block title %}🎲 Juego de Tablero JCM{% endblock %}
-
-{% block extra_css %}
+{% extends "base.html" %} {% block title %}🎲 Juego de Tablero JCM{% endblock %} {% block extra_css
+%}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/tablero_oca.css') }}" />
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="game-container tablero-container">
     <h1>🎲 Juego de Tablero JCM</h1>
     <p>De 1 a 6 jugadores · 35 casillas · Penalizaciones y casillas especiales</p>
@@ -76,8 +71,6 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script src="{{ url_for('static', filename='js/tablero_oca.js') }}"></script>
 {% endblock %}

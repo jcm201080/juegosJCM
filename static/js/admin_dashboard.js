@@ -11,17 +11,17 @@ document.addEventListener("DOMContentLoaded", () => {
             responsive: true,
             plugins: {
                 legend: {
-                    labels: { color: "#fff" }
-                }
+                    labels: { color: "#fff" },
+                },
             },
             scales: {
                 x: {
-                    ticks: { color: "#ccc" }
+                    ticks: { color: "#ccc" },
                 },
                 y: {
-                    ticks: { color: "#ccc" }
-                }
-            }
-        }
+                    ticks: { color: "#ccc" },
+                },
+            },
+        },
     });
 });

@@ -11,3 +11,10 @@ function unirseSala() {
     guardarNombre();
     window.location.href = `/bingo/classic/${codigo}`;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("btnUnirse");
+    if (btn) {
+        btn.addEventListener("click", unirseSala);
+    }
+});

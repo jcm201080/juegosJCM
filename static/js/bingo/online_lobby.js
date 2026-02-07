@@ -11,8 +11,7 @@ const statusBox = document.getElementById("online-status");
 const numPlayersSelect = document.getElementById("numPlayers");
 const numCartonesSelect = document.getElementById("numCartones");
 
-
-let countdownInterval = null;
+let _countdownInterval = null;
 
 // =======================
 // Click: Buscar partida
@@ -28,10 +27,9 @@ if (startBtn) {
         socket.emit("join_online_lobby", {
             nombre: window.BINGO_USER || "Invitado",
             max_players: maxPlayers,
-            cartones: numCartones
+            cartones: numCartones,
         });
     });
-
 }
 
 // =======================
@@ -72,10 +70,6 @@ function renderStatus(actuales, max, countdown) {
         <p class="countdown">⏳ ${countdown ?? 30}s</p>
     `;
 }
-
-
-
-
 
 // =======================
 // 🚀 Redirección a la sala

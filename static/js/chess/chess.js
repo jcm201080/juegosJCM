@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const turnoEl = document.getElementById("turno");
     const messageEl = document.getElementById("message");
 
-    const initialBoard = JSON.parse(JSON.stringify(board));
+    const _initialBoard = JSON.parse(JSON.stringify(board));
 
     let turn = "white";
     let selected = null;

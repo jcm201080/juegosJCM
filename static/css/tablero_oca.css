@@ -18,7 +18,6 @@
     margin-bottom: 10px;
 }
 
-
 /* ========== VARIABLES GLOBALES (MÓVIL POR DEFECTO) ========== */
 :root {
     --size-casilla: 56px; /* tamaño casilla en móvil */
@@ -466,8 +465,6 @@
     background-color: #ffaa00;
 }
 
-
-
 /* =========================================================
    CONTROLES EN COLUMNA
    ========================================================= */
@@ -618,7 +615,6 @@
     }
 }
 
-
 /* =========================================================
    BOTONES SUPERIORES (volver / local / online)
    ========================================================= */
@@ -647,10 +643,6 @@
     margin: 10px auto 20px;
 }
 
-
-
-
-
 @media (max-width: 360px) {
     :root {
         --size-casilla: 52px;
@@ -658,13 +650,11 @@
     }
 }
 
-
 /* =========================================================
    📱 MÓVIL (hasta 600px)
    ========================================================= */
 
 @media (max-width: 600px) {
-
     /* ----- Títulos y texto superior ----- */
     .tablero-container h1 {
         font-size: 1.3rem;

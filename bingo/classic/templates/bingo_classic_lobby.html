@@ -16,14 +16,14 @@
 
     </div>
 
-    <form method="post" class="bingo-card" onsubmit="guardarNombre()">
+    <form method="post" class="bingo-card" onsubmit="guardarNombre(); return true;">
         <button class="btn-primary">Crear sala</button>
     </form>
 
     <div class="bingo-card">
         <h3>Unirse a una sala</h3>
         <input type="text" id="codigoSala" placeholder="Código de sala">
-        <button class="btn-secondary" onclick="unirseSala()">Entrar</button>
+        <button class="btn-secondary" id="btnUnirse">Entrar</button>
     </div>
 </section>
 
