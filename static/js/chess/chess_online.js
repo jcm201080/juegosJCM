@@ -14,6 +14,10 @@ import { isValidKingMove } from "./rules/king.js";
 import { isSquareUnderAttack } from "./check.js";
 import { isCheckmate } from "./checkmate.js";
 
+import { renderCoordinates } from "./utils.js";
+
+
+
 const socket = io();
 
 // =========================
@@ -23,6 +27,18 @@ const statusEl = document.getElementById("message");
 const turnoEl = document.getElementById("turno");
 const boardEl = document.getElementById("chessboard");
 const resetBtn = document.getElementById("resetGame");
+
+const clockWhiteEl = document.getElementById("clock-white");
+const clockBlackEl = document.getElementById("clock-black");
+
+const TIME_OPTIONS = {
+    free: null,      // sin reloj
+    "10": 10 * 60,
+    "30": 30 * 60,
+    "60": 60 * 60
+};
+
+
 
 //Botones de rendición y tablas
 const resignBtn = document.getElementById("resignBtn");
@@ -55,6 +71,9 @@ let turn = "white";
 let lastMove = null;
 let gameOver = false;
 
+let promotionPending = null;
+
+
 let _currentRoom = null;
 
 let inRoom = false;
@@ -73,6 +92,34 @@ let castlingRights = {
         rookRightMoved: false,
     },
 };
+
+// =========================
+// ⏱️ RELOJ ONLINE
+// =========================
+let clockEnabled = false;
+let whiteTime = null;
+let blackTime = null;
+function formatTime(seconds) {
+    if (seconds === null) return "--:--";
+
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+
+//oculatar botones de tablas al iniciar
+function hideRoomControls() {
+    const el = document.getElementById("roomControls");
+    if (el) el.style.display = "none";
+}
+
+function showRoomControls() {
+    const el = document.getElementById("roomControls");
+    if (el) el.style.display = "block";
+}
+
+
 
 //Ofrecer tablas
 offerDrawBtn.addEventListener("click", () => {
@@ -225,6 +272,61 @@ function checkGameStateOnline() {
     }
 }
 
+// promoción
+function showPromotionModal(color) {
+    const modal = document.getElementById("promotionModal");
+
+    document.body.classList.add("promotion-active");
+    modal.style.display = "flex";
+
+    modal.querySelectorAll("button").forEach((btn) => {
+        btn.onclick = () => applyPromotion(btn.dataset.piece, color);
+    });
+}
+
+//aplicar promoción
+function applyPromotion(type, color) {
+    const map = {
+        q: color === "white" ? "♕" : "♛",
+        r: color === "white" ? "♖" : "♜",
+        b: color === "white" ? "♗" : "♝",
+        n: color === "white" ? "♘" : "♞",
+    };
+
+    const { from, to } = promotionPending;
+    const promotedPiece = map[type];
+
+    // Aplicar localmente
+    board[to.r][to.c] = promotedPiece;
+    board[from.r][from.c] = "";
+
+    promotionPending = null;
+
+    document.getElementById("promotionModal").style.display = "none";
+    document.body.classList.remove("promotion-active");
+
+    soundPromote.play();
+
+    // Enviar TODO al servidor
+    socket.emit("move", {
+        from,
+        to,
+        promotion: promotedPiece,
+    });
+}
+
+
+//Actualizar estado del reloj (clase "active" para el jugador que tiene el turno)
+function updateClockActive() {
+    if (!clockEnabled) return;
+
+    clockWhiteEl?.classList.toggle("active", turn === "white");
+    clockBlackEl?.classList.toggle("active", turn === "black");
+}
+
+
+
+
 // =========================
 // 🔌 SOCKETS
 // =========================
@@ -236,13 +338,20 @@ socket.on("connect", () => {
 socket.on("role_assigned", ({ role }) => {
     myRole = role;
 
-    if (role === "black") boardEl.classList.add("flipped");
-    else boardEl.classList.remove("flipped");
+    if (role === "black") {
+        boardEl.classList.add("flipped");
+        renderCoordinates("black");
+    } else {
+        boardEl.classList.remove("flipped");
+        renderCoordinates("white");
+    }
 
     updateStatus();
 });
 
+
 socket.on("game_start", () => {
+    updateClockActive();
     gameStarted = true;
     gameOver = false;
     turn = "white";
@@ -255,20 +364,25 @@ socket.on("game_start", () => {
             : "♟️ Partida iniciada · Juegas con NEGRAS";
 
     renderBoard(board, boardEl, onSquareClick, null);
+    renderCoordinates(myRole === "black" ? "black" : "white");
 });
 
-//rendición
-socket.on("player_resigned", ({ color }) => {
+
+// 🏳️ Rendición
+socket.on("player_resigned", ({ resigned }) => {
     gameOver = true;
 
-    if (color === myRole) {
+    if (resigned === myRole) {
         statusEl.textContent = "🏳️ Te has rendido · HAS PERDIDO 😢";
     } else {
         statusEl.textContent = "🏳️ El rival se ha rendido · ¡HAS GANADO! 🎉";
         soundCheckmate.play();
     }
+
     resignBtn.disabled = true;
+    offerDrawBtn.disabled = true;
 });
+
 
 //Tablas aceptadas
 socket.on("draw_accepted", () => {
@@ -295,9 +409,38 @@ socket.on("draw_rejected", () => {
 });
 
 // =========================
+// ⏱️ ACTUALIZACIÓN DEL RELOJ
+// =========================
+socket.on("clock_update", ({ enabled, white, black }) => {
+    
+    updateClockActive();
+
+    clockEnabled = enabled;
+
+    if (!enabled) {
+        whiteTime = null;
+        blackTime = null;
+
+        if (clockWhiteEl) clockWhiteEl.textContent = "--:--";
+        if (clockBlackEl) clockBlackEl.textContent = "--:--";
+        return;
+    }
+
+    whiteTime = white;
+    blackTime = black;
+
+    if (clockWhiteEl) clockWhiteEl.textContent = formatTime(whiteTime);
+    if (clockBlackEl) clockBlackEl.textContent = formatTime(blackTime);
+});
+
+
+
+// =========================
 // ♟️ MOVIMIENTO RECIBIDO
 // =========================
-socket.on("move", ({ from, to }) => {
+socket.on("move", ({ from, to, promotion }) => {
+
+    updateClockActive();
     // 🔴 SI HABÍA TABLAS PENDIENTES, SE CANCELAN AL JUGAR
     if (drawPending) {
         drawPending = false;
@@ -307,6 +450,7 @@ socket.on("move", ({ from, to }) => {
     }
     const piece = board[from.r][from.c];
     const target = board[to.r][to.c];
+
 
     // ENROQUE
     if ((piece === "♔" || piece === "♚") && Math.abs(from.c - to.c) === 2) {
@@ -328,15 +472,13 @@ socket.on("move", ({ from, to }) => {
     board[to.r][to.c] = piece;
     board[from.r][from.c] = "";
 
-    // PROMOCIÓN
-    if (piece === "♙" && to.r === 0) {
-        board[to.r][to.c] = "♕";
+    // PROMOCIÓN RECIBIDA
+    if (promotion) {
+        board[to.r][to.c] = promotion;
         soundPromote.play();
     }
-    if (piece === "♟" && to.r === 7) {
-        board[to.r][to.c] = "♛";
-        soundPromote.play();
-    }
+
+    
 
     lastMove = { piece, from, to };
     selected = null;
@@ -356,6 +498,20 @@ resignBtn.addEventListener("click", () => {
 
     socket.emit("resign");
 });
+
+//Tiempo agotado
+socket.on("time_over", ({ loser, winner }) => {
+    gameOver = true;
+
+    const msg =
+        loser === myRole
+            ? "⏱️ Se te acabó el tiempo · HAS PERDIDO 😢"
+            : "⏱️ Al rival se le acabó el tiempo · ¡HAS GANADO! 🎉";
+
+    statusEl.textContent = msg;
+    soundCheckmate.play();
+});
+
 
 // =========================
 // 🔁 REINICIO ONLINE
@@ -382,13 +538,17 @@ socket.on("game_reset", () => {
 // =========================
 socket.on("player_left", () => {
     gameStarted = false;
+    inRoom = false;
+    showRoomControls(); // 👈 vuelve a mostrar
     updateStatus("❌ El rival se ha desconectado");
 });
+
 
 // =========================
 // 🖱️ CLICK EN TABLERO
 // =========================
 function onSquareClick(r, c) {
+    if (promotionPending) return;
     if (gameOver) return;
     if (!gameStarted) return;
     if (myRole !== turn) return;
@@ -452,6 +612,24 @@ function onSquareClick(r, c) {
             return;
         }
 
+        // =========================
+        // ⭐ PROMOCIÓN DE PEÓN (ONLINE)
+        // =========================
+        if (
+            (piece === "♙" && r === 0) ||
+            (piece === "♟" && r === 7)
+        ) {
+            promotionPending = {
+                from: selected,
+                to: { r, c },
+                color: piece === "♙" ? "white" : "black",
+            };
+
+            showPromotionModal(promotionPending.color);
+            return; // ⛔ NO enviamos aún el move
+        }
+
+
         socket.emit("move", { from: selected, to: { r, c } });
         selected = null;
         return;
@@ -464,6 +642,26 @@ function onSquareClick(r, c) {
     renderBoard(board, boardEl, onSquareClick, null);
 }
 
+// Reseteo al iniciar nueva partida o al salir del rival
+function resetLocalGameState() {
+    board = JSON.parse(JSON.stringify(initialBoard));
+    selected = null;
+    lastMove = null;
+    turn = "white";
+    gameOver = false;
+    drawPending = false;
+    promotionPending = null;
+
+    clockEnabled = false;
+    whiteTime = null;
+    blackTime = null;
+
+    renderBoard(board, boardEl, onSquareClick, null);
+    turnoEl.textContent = "Turno: Blancas";
+}
+
+
+
 // =========================
 // RENDER INICIAL
 // =========================
@@ -472,8 +670,16 @@ updateStatus();
 
 // Crear sala
 document.getElementById("createRoomBtn").addEventListener("click", () => {
-    socket.emit("create_room");
+    const select = document.getElementById("timeControl");
+    const value = select.value;
+
+    const selectedTime = TIME_OPTIONS[value];
+
+    socket.emit("create_room", {
+        time: selectedTime
+    });
 });
+
 
 // Unirse a sala
 document.getElementById("joinRoomBtn").addEventListener("click", () => {
@@ -483,15 +689,40 @@ document.getElementById("joinRoomBtn").addEventListener("click", () => {
 });
 
 socket.on("room_created", ({ room, role }) => {
+    resetLocalGameState();
+
     _currentRoom = room;
     myRole = role;
     inRoom = true;
     gameStarted = false;
 
-    statusEl.textContent = `🏠 Sala creada: ${room} · Esperando rival…`;
+    // ⏱️ Texto del tiempo elegido
+    const select = document.getElementById("timeControl");
+    let timeLabel = "sin reloj";
+
+    if (select && select.value !== "free") {
+        timeLabel = `${select.value} min`;
+    }
+
+    statusEl.textContent = `🏠 Sala creada: ${room} · ${timeLabel} · Esperando rival…`;
+
+    // Orientación del tablero
+    if (role === "black") {
+        boardEl.classList.add("flipped");
+        renderCoordinates("black");
+    } else {
+        boardEl.classList.remove("flipped");
+        renderCoordinates("white");
+    }
+
+    hideRoomControls(); // ✅ ocultamos crear/unirse
 });
 
+
+
 socket.on("room_joined", ({ room, role }) => {
+    resetLocalGameState();
+
     _currentRoom = room;
     myRole = role;
     inRoom = true;
@@ -503,10 +734,15 @@ socket.on("room_joined", ({ room, role }) => {
 
     if (role === "black") {
         boardEl.classList.add("flipped");
+        renderCoordinates("black");
     } else {
         boardEl.classList.remove("flipped");
+        renderCoordinates("white");
     }
+
+    hideRoomControls(); // ✅ también al unirse
 });
+
 
 socket.on("room_error", ({ msg }) => {
     alert(msg);

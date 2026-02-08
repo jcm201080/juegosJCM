@@ -18,8 +18,30 @@
         <div id="turno">Turno: Blancas</div>
     </div>
 
-    <!-- Tablero -->
-    <div id="chessboard" class="chessboard"></div>
+    <!-- Tablero con coordenadas -->
+    <div class="chess-wrapper white-view" id="chess-wrapper">
+
+        <div class="files top"></div>
+
+        <div class="board-row">
+            <div class="ranks left"></div>
+
+            <div id="chessboard" class="chessboard"></div>
+
+            <div class="ranks right"></div>
+        </div>
+
+        <div class="files bottom"></div>
+    </div>
+
+    <div id="promotionModal" class="promotion-modal" style="display:none">
+        <button data-piece="q">♕</button>
+        <button data-piece="r">♖</button>
+        <button data-piece="b">♗</button>
+        <button data-piece="n">♘</button>
+    </div>
+
+
 
     <!-- Mensajes -->
     <div id="message" class="message"></div>

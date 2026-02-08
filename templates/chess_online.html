@@ -1,5 +1,6 @@
 {% extends "base.html" %} {% block title %}Ajedrez Online{% endblock %} {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chess.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chess_online.css') }}" />
 {% endblock %} {% block content %}
 
 <div class="game-container chess-container">
@@ -27,20 +28,69 @@
         <div id="turno">Turno: Blancas</div>
     </div>
 
-    <!-- Tablero -->
-    <div id="chessboard" class="chessboard"></div>
+    <div class="chess-clocks">
+        <div id="clock-white" class="clock white">
+            ♔ Blancas
+            <span class="time">--:--</span>
+        </div>
+        <div id="clock-black" class="clock black">
+            ♚ Negras
+            <span class="time">--:--</span>
+        </div>
+    </div>
+
+
+
+    <!-- Tablero con coordenadas -->
+    <div class="chess-wrapper white-view" id="chess-wrapper">
+
+        <div class="files top"></div>
+
+        <div class="board-row">
+            <div class="ranks left"></div>
+
+            <div id="chessboard" class="chessboard"></div>
+
+            <div class="ranks right"></div>
+        </div>
+
+        <div class="files bottom"></div>
+    </div>
+
+    <div id="promotionModal" class="promotion-modal" style="display:none">
+        <button data-piece="q">♕</button>
+        <button data-piece="r">♖</button>
+        <button data-piece="b">♗</button>
+        <button data-piece="n">♘</button>
+    </div>
 
     <!-- ÚNICO estado del juego -->
     <div id="message" class="message"></div>
 
-    <button id="resignBtn">🏳️ Rendirse</button>
-    <button id="offerDrawBtn">🤝 Ofrecer tablas</button>
-    <button id="acceptDrawBtn" hidden>✅ Aceptar tablas</button>
-    <button id="rejectDrawBtn" hidden>❌ Rechazar</button>
+    <div class="game-actions">
+        <button id="resignBtn">🏳️ Rendirse</button>
+        <button id="offerDrawBtn">🤝 Ofrecer tablas</button>
+        <button id="acceptDrawBtn" hidden>✅ Aceptar tablas</button>
+        <button id="rejectDrawBtn" hidden>❌ Rechazar</button>
+    </div>
 
-    <button id="createRoomBtn">Crear sala</button>
-    <input id="roomCode" placeholder="Código" />
-    <button id="joinRoomBtn">Unirse</button>
+
+    <div id="roomControls">
+        <div class="time-selector">
+            <label for="timeControl">⏱️ Tiempo de partida:</label>
+            <select id="timeControl">
+                <option value="free">Sin reloj</option>
+                <option value="10">10 minutos</option>
+                <option value="30">30 minutos</option>
+                <option value="60">60 minutos</option>
+            </select>
+        </div>
+
+        <button id="createRoomBtn">Crear sala</button>
+        <input id="roomCode" placeholder="Código" />
+        <button id="joinRoomBtn">Unirse</button>
+    </div>
+
 
     <div class="top-info">
         <a href="{{ url_for('main.home') }}" class="chess-boton"> ⬅ Volver a Juegos JCM </a>

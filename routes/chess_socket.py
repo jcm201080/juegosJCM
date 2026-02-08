@@ -1,6 +1,10 @@
 from flask import request
 from flask_socketio import emit
 
+import time
+from routes.chess_rooms import rooms, sid_to_room
+
+
 # 🔗 Importamos el mapa sid → room
 from routes.chess_rooms import sid_to_room
 
@@ -38,10 +42,21 @@ def register_chess_sockets(socketio):
         if not room:
             return
 
-        emit("move", {
-            "from": data["from"],
-            "to": data["to"]
-        }, room=room)
+        r = rooms.get(room)
+        if not r or r["game_over"]:
+            return
+
+        # 🔁 CAMBIAR TURNO
+        r["turn"] = "black" if r["turn"] == "white" else "white"
+
+        # ⏱️ REINICIAR RELOJ PARA EL NUEVO TURNO
+        if r["clock"]["enabled"]:
+            r["clock"]["last_tick"] = time.time()
+
+        # 🔁 REENVIAR MOVIMIENTO (incluye promoción si viene)
+        socketio.emit("move", data, room=room)
+
+
 
     # =========================
     # 🤝 TABLAS
@@ -61,11 +76,16 @@ def register_chess_sockets(socketio):
     def on_accept_draw():
         sid = request.sid
         room = sid_to_room.get(sid)
-
         if not room:
             return
 
+        r = rooms.get(room)
+        if r:
+            r["game_over"] = True
+            r["clock"]["enabled"] = False
+
         emit("draw_accepted", room=room)
+
 
     @socketio.on("reject_draw")
     def on_reject_draw():
@@ -84,14 +104,32 @@ def register_chess_sockets(socketio):
     def on_resign():
         sid = request.sid
         room = sid_to_room.get(sid)
-
         if not room:
             return
 
-        emit(
+        r = rooms.get(room)
+        if not r or r["game_over"]:
+            return
+
+        # 🔍 Determinar quién se rinde
+        if r["white"] == sid:
+            resigned_color = "white"
+        elif r["black"] == sid:
+            resigned_color = "black"
+        else:
+            return  # espectador u error
+
+        # 🛑 Finalizar partida
+        r["game_over"] = True
+        r["clock"]["enabled"] = False
+
+        # 📢 Avisar a todos
+        socketio.emit(
             "player_resigned",
-            {"sid": sid},
+            {"resigned": resigned_color},
             room=room
         )
+
+
 
 

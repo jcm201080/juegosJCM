@@ -11,6 +11,11 @@ import { isValidKingMove } from "./rules/king.js";
 import { isSquareUnderAttack } from "./check.js";
 import { isCheckmate } from "./checkmate.js";
 
+import { renderCoordinates } from "./utils.js";
+
+renderCoordinates("white");
+
+
 console.info("♟️ Chess engine loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -25,6 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastMove = null;
     let gameOver = false;
     let checkSoundPlayed = false;
+    let promotionPending = null;
+
 
     // =========================
     // 🔊 SONIDOS
@@ -117,11 +124,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+
             // =========================
             // ⭐ EJECUTAR MOVIMIENTO
             // =========================
             board[r][c] = piece;
             board[selected.r][selected.c] = "";
+
+            // =========================
+            // ⭐ PROMOCIÓN DE PEÓN (LOCAL)
+            // =========================
+            if (
+                (piece === "♙" && r === 0) ||
+                (piece === "♟" && r === 7)
+            ) {
+                promotionPending = {
+                    r,
+                    c,
+                    color: piece === "♙" ? "white" : "black",
+                };
+
+                showPromotionModal(promotionPending.color);
+                return; // ⛔ detenemos el flujo aquí
+            }
+
 
             // ⭐ ENROQUE: mover torre
             if (result.castling) {
@@ -141,6 +167,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 soundMove.currentTime = 0;
                 soundMove.play();
             }
+
+
 
             // =========================
             // ⭐ ACTUALIZAR DERECHOS ENROQUE
@@ -166,6 +194,46 @@ document.addEventListener("DOMContentLoaded", () => {
             renderBoard(board, boardEl, onSquareClick, selected);
         }
     }
+
+    function showPromotionModal(color) {
+        const modal = document.getElementById("promotionModal");
+
+        document.body.classList.add("promotion-active");
+
+        modal.style.display = "flex";
+
+        modal.querySelectorAll("button").forEach((btn) => {
+            btn.onclick = () => applyPromotion(btn.dataset.piece, color);
+        });
+    }
+
+    function applyPromotion(type, color) {
+        const map = {
+            q: color === "white" ? "♕" : "♛",
+            r: color === "white" ? "♖" : "♜",
+            b: color === "white" ? "♗" : "♝",
+            n: color === "white" ? "♘" : "♞",
+        };
+
+        const { r, c } = promotionPending;
+
+        board[r][c] = map[type];
+        promotionPending = null;
+
+        document.getElementById("promotionModal").style.display = "none";
+
+        document.body.classList.remove("promotion-active");
+
+        soundPromote.play();
+
+        // Ahora SÍ seguimos el flujo normal
+        turn = nextTurn(turn);
+        turnoEl.textContent = `Turno: ${turn === "white" ? "Blancas" : "Negras"}`;
+
+        renderBoard(board, boardEl, onSquareClick, null);
+        checkGameState();
+    }
+
 
     // =========================
     // JAQUE / JAQUE MATE
