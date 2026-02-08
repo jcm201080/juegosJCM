@@ -35,19 +35,22 @@ def comprobar_cruz(carton, bolas):
     size = len(carton)
     centro = size // 2
 
-    # Diagonal principal \
-    diag1 = all(
-        (i == centro and j == centro) or carton[i][i] in bolas_set
-        for i, j in [(i, i) for i in range(size)]
-    )
+    # ➕ Fila central
+    for j in range(size):
+        if j == centro:
+            continue  # FREE
+        if carton[centro][j] not in bolas_set:
+            return False
 
-    # Diagonal inversa /
-    diag2 = all(
-        (i == centro and j == centro) or carton[i][size - 1 - i] in bolas_set
-        for i, j in [(i, size - 1 - i) for i in range(size)]
-    )
+    # ➕ Columna central
+    for i in range(size):
+        if i == centro:
+            continue  # FREE
+        if carton[i][centro] not in bolas_set:
+            return False
 
-    return diag1 and diag2
+    return True
+
 
 
 def comprobar_x(carton, bolas):
@@ -55,14 +58,13 @@ def comprobar_x(carton, bolas):
     size = len(carton)
     centro = size // 2
 
-    diag1 = all(
-        (i == centro) or carton[i][i] in bolas_set
-        for i in range(size)
-    )
+    for i in range(size):
+        # Diagonal principal
+        if i != centro and carton[i][i] not in bolas_set:
+            return False
 
-    diag2 = all(
-        (i == centro) or carton[i][size - 1 - i] in bolas_set
-        for i in range(size)
-    )
+        # Diagonal secundaria
+        if i != centro and carton[i][size - 1 - i] not in bolas_set:
+            return False
 
-    return diag1 and diag2
+    return True

@@ -593,9 +593,19 @@ socket.on("sin_vidas", () => {
     renderVidas(0);
     showToast("☠️ Te has quedado sin vidas", "error");
 
-    const btnLinea = document.getElementById("btnLinea");
-    const btnBingo = document.getElementById("btnBingo");
+    const botones = [
+        "btnLinea",
+        "btnCruz",
+        "btnX",
+        "btnBingo"
+    ];
 
-    if (btnLinea) btnLinea.disabled = true;
-    if (btnBingo) btnBingo.disabled = true;
+    botones.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.disabled = true;
+            btn.classList.add("disabled");
+        }
+    });
 });
+

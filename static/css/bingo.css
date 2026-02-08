@@ -183,11 +183,17 @@
     color: #111;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
 }
-.btnX {
+.btn-x{
     background: linear-gradient(135deg, #632020, #e0e0e0);
     color: #111;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
 }
+
+/* X activa → texto negro */
+.bingo-validaciones button.-x(:disabled) {
+    color: #000;
+}
+
 
 .btn-cruz:hover {
     box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
@@ -195,6 +201,7 @@
 .bingo-validaciones button.btn-cruz {
     color: #000;
 }
+
 
 /* =========================
    BOTONES DESHABILITADOS (GENÉRICO)
