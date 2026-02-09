@@ -189,10 +189,7 @@
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
 }
 
-/* X activa → texto negro */
-.bingo-validaciones button.-x(:disabled) {
-    color: #000;
-}
+
 
 
 .btn-cruz:hover {
@@ -221,12 +218,6 @@
    CRUZ DESHABILITADA (ESPECÍFICA)
    ========================= */
 
-.bingo-validaciones button.btn-cruz:disabled {
-    background: linear-gradient(135deg, #2e2e2e, #1a1a1a);
-    color: #ddd; /* 👈 TEXTO VISIBLE */
-    border: 1px solid #444;
-}
-
 /* Quitar hover cuando están desactivados */
 .bingo-validaciones button.disabled:hover,
 .bingo-validaciones button:disabled:hover {
@@ -236,6 +227,20 @@
 
 .bingo-validaciones button {
     transition: all 0.2s ease;
+}
+
+/* =========================
+   BOTÓN X DESHABILITADO
+   ========================= */
+
+.bingo-validaciones button.btn-x:disabled,
+.bingo-validaciones button.btn-x.disabled {
+    background: #111;
+    color: #777;
+    box-shadow: none;
+    border: 1px solid #333;
+    opacity: 0.8;
+    cursor: not-allowed;
 }
 
 /* =====================================================
@@ -290,23 +295,60 @@
 .bola-label {
     font-size: 1rem;
     opacity: 0.85;
+    margin-bottom: 2px;
 }
 
+/* 🔹 Bolas anteriores */
 .bola-actual-num {
-    width: 56px;
-    height: 56px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
-    background: radial-gradient(circle at top left, #fff, #ddd);
-    color: #000;
-    font-size: 1.6rem;
+    background: #2a2a2a;
+    color: #bbb;
+    font-size: 1rem;
     font-weight: bold;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
+    box-shadow: none;
+    opacity: 0.6;
+}
+
+.bola-actual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+    justify-content: center;
+}
+
+.bola-actual-lista {
+    display: flex;
+    gap: 10px;
+}
+
+
+
+/* 🔥 Bola más reciente (derecha) */
+.bola-actual-num.latest {
+    width: 56px;
+    height: 56px;
+    font-size: 1.6rem;
+    opacity: 1;
+
+    background: radial-gradient(circle at top left, #fff, #ddd);
+    color: #000;
+
     box-shadow:
         0 0 0 3px #7c4dff,
-        0 6px 12px rgba(0, 0, 0, 0.4);
+        0 0 16px rgba(124, 92, 255, 0.9);
+
+    animation: pop 0.25s ease;
 }
+
 
 /* =====================================================
    HISTORIAL DE BOLAS
@@ -339,6 +381,26 @@
     background: #7c5cff;
     box-shadow: 0 0 12px rgba(124, 92, 255, 0.8);
 }
+
+/*Historial desplegable*/
+.historial-toggle {
+    margin: 18px 0;
+}
+
+.historial-panel {
+    max-width: 420px;
+    margin: 0 auto 20px;
+    padding: 12px;
+    background: rgba(0,0,0,0.35);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    animation: pop 0.25s ease;
+}
+
+.historial-panel.hidden {
+    display: none;
+}
+
 
 /* =====================================================
    AUTOPLAY
@@ -502,4 +564,48 @@
 
 .aviso-cantar {
     pointer-events: none;
+}
+
+
+/* 🔒 FORZAR X DESHABILITADA */
+.bingo-validaciones button.btn-x:disabled,
+.bingo-validaciones button.btn-x.disabled {
+    background: #111 !important;
+    color: #777 !important;
+    box-shadow: none !important;
+    border: 1px solid #333;
+    cursor: not-allowed;
+    opacity: 0.85;
+}
+
+
+.ranking-box {
+
+    max-width: 420px;
+    margin: 1rem auto;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+}
+
+#ranking-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#ranking-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+#ranking-list li.me {
+    font-weight: bold;
+    color: #ffd700;
+}
+
+#ranking-list .puntos {
+    opacity: 0.85;
 }

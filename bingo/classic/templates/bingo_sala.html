@@ -88,17 +88,20 @@
             </span>
         </div>
     </div>
-
-    <div class="historial-bolas">
-        <h3>Bolas:</h3>
-        <div id="bolas-container"></div>
-    </div>
+    
 
     
 
     <div id="vidas-container" class="vidas"></div>
 
-    <p id="ultima-bola"></p>    
+    <div id="ultima-bola" class="bola-actual">
+        <span class="bola-label">Bolas actuales</span>
+
+        <div class="bola-actual-lista">
+            <!-- JS mete aquí hasta 4 bolas -->
+        </div>
+    </div>
+   
 
     <!-- Aquí se pintan los cartones -->
     <div id="carton-container"></div>    
@@ -110,7 +113,18 @@
         <button id="btnBingo" class="btn-bingo">🏆 Cantar bingo</button>
     </div>
 
-    <div id="puntuacion" class="puntuacion">⭐ Puntos: 0</div>
+    <div class="ranking-box">
+        <h3>🏆 Ranking</h3>
+        <ul id="ranking-list"></ul>
+    </div>
+
+    <div>
+        hisotrial de bolas
+    </div>
+    <div class="historial-bolas">
+        <h3>Bolas:</h3>
+        <div id="bolas-container"></div>
+    </div>
 
 
     <button id="resetBtn" class="btn-secondary">

@@ -154,6 +154,32 @@ function playBingoSound() {
         t += 0.18;
     });
 }
+// =======================
+// 🎱 BOLAS ACTUALES (últimas 4)
+// =======================
+const bolasActuales = [];
+
+function mostrarBolasActuales(bola) {
+    const contenedor = document.querySelector(".bola-actual-lista");
+    if (!contenedor) return;
+
+    bolasActuales.push(bola);
+    if (bolasActuales.length > 4) bolasActuales.shift();
+
+
+    contenedor.innerHTML = "";
+
+    bolasActuales.forEach((n, i) => {
+        const div = document.createElement("div");
+        div.className =
+            "bola-actual-num" +
+            (i === bolasActuales.length - 1 ? " latest" : "");
+        div.textContent = n;
+        contenedor.appendChild(div);
+    });
+
+}
+
 
 // =======================
 // Datos de la sala
@@ -231,6 +257,9 @@ if (newBallBtn) {
         socket.emit("new_ball", { codigo });
     });
 }
+
+
+
 
 // =======================
 // Botón iniciar partida
@@ -379,10 +408,14 @@ socket.on("lista_jugadores", (data) => {
 // Partida iniciada
 // =======================
 socket.on("game_started", () => {
-    console.log("🎬 Partida iniciada");
     puntos = 0;
     actualizarPuntuacion();
+
+    bolasActuales.length = 0;
+    const cont = document.querySelector(".bola-actual-lista");
+    cont && (cont.innerHTML = "");
 });
+
 
 // =======================
 // Cartón recibido
@@ -403,7 +436,7 @@ socket.on("bola_cantada", (data) => {
 
     // actualizar UI
     setBolasCantadas(data.historial);
-    mostrarBola(data.bola);
+    mostrarBolasActuales(data.bola);
     renderHistorial(data.historial);
 });
 
@@ -438,22 +471,7 @@ function renderHistorial(bolas) {
     });
 }
 
-// =======================
-// Última bola visual
-// =======================
-function mostrarBola(bola) {
-    const ultimaBola = document.getElementById("ultima-bola");
-    if (!ultimaBola) return;
 
-    ultimaBola.innerHTML = `
-        <span class="bola-label">🎱 Bola actual</span>
-        <span class="bola-actual-num">${bola}</span>
-    `;
-
-    ultimaBola.classList.remove("flash");
-    void ultimaBola.offsetWidth;
-    ultimaBola.classList.add("flash");
-}
 
 // =======================
 // Toast de notificaciones
@@ -546,11 +564,19 @@ socket.on("x_valida", (data) => {
     mostrarAvisoCantar(`❌ X de ${jugador}`, "cruz");
     showToast(`❌ X válida (${jugador})`);
 
+    // 🔒 BLOQUEO DEFINITIVO
+    const btnX = document.getElementById("btnX");
+    if (btnX) {
+        btnX.disabled = true;
+        btnX.classList.add("disabled");
+    }
+
     if (jugador === playerName) {
         puntos += 2;
         actualizarPuntuacion();
     }
 });
+
 
 socket.on("cruz_invalida", () => {
     showToast("❌ Cruz incorrecta");
@@ -609,3 +635,28 @@ socket.on("sin_vidas", () => {
     });
 });
 
+// =======================
+// 🏆 RANKING (desde backend)
+// =======================
+socket.on("ranking_update", (data) => {
+    const rankingList = document.getElementById("ranking-list");
+    if (!rankingList) return;
+
+    rankingList.innerHTML = "";
+
+    data.ranking.forEach((j, index) => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            <span>${index + 1}. ${j.nombre}</span>
+            <span class="puntos">${j.puntos} pts</span>
+        `;
+
+        // resaltar al jugador actual
+        if (j.nombre === playerName) {
+            li.classList.add("me");
+        }
+
+        rankingList.appendChild(li);
+    });
+});

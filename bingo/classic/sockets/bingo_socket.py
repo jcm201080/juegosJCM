@@ -62,7 +62,7 @@ def emitir_estado(sala, jugador_sid):
             "max": BINGO_MAX_PLAYERS,
             "min": BINGO_MIN_PLAYERS,
             "linea_cantada": sala.get("linea_cantada", False),
-            "x_cantado": sala.get("x_cantado", False),
+            "x_cantada": sala.get("x_cantado", False),
             "cruz_cantada": sala.get("cruz_cantada", False),
             "bingo_cantado": sala.get("bingo_cantado", False),
         },
@@ -74,6 +74,30 @@ def emitir_estado(sala, jugador_sid):
 def emitir_estado_a_todos(sala):
     for jugador_sid in sala["jugadores"]:
         emitir_estado(sala, jugador_sid)
+
+def sumar_puntos(jugador, puntos):
+    jugador["puntos"] += puntos
+
+
+def emitir_ranking(socketio, codigo, sala):
+    ranking = sorted(
+        sala["jugadores"].values(),
+        key=lambda j: j["puntos"],
+        reverse=True
+    )
+
+    socketio.emit(
+        "ranking_update",
+        {
+            "ranking": [
+                {"nombre": j["nombre"], "puntos": j["puntos"]}
+                for j in ranking
+            ]
+        },
+        room=codigo,
+        namespace=NAMESPACE
+    )
+
 
 # =========================
 # SOCKETS
@@ -118,6 +142,7 @@ def register_bingo_sockets(socketio):
         sala["jugadores"][sid] = {
             "nombre": nombre,
             "vidas": 3,
+            "puntos": 0,
             "cartones": num_cartones,
             "user_id": session.get("user_id"),
         }
@@ -289,11 +314,17 @@ def register_bingo_sockets(socketio):
         for carton in sala["cartones"].get(sid, []):
             if comprobar_linea(carton, sala["bombo"].historial):
                 sala["linea_cantada"] = True
+
+                sumar_puntos(jugador, 1)
+                emitir_ranking(socketio, codigo, sala)
+
                 if jugador["user_id"]:
                     registrar_linea(jugador["user_id"], sala["partida_id"])
+
                 emit("linea_valida", {"nombre": jugador["nombre"]}, room=codigo, namespace=NAMESPACE)
                 emitir_estado_a_todos(sala)
                 return
+
 
         perder_vidas(sala, sid, 1)
         emit("linea_invalida", room=sid, namespace=NAMESPACE)
@@ -307,7 +338,8 @@ def register_bingo_sockets(socketio):
         sid = request.sid
         sala = salas_bingo.get(codigo)
 
-        if not sala or sala.get("x_cantada"):
+        # 🔒 BLOQUEO GLOBAL CORRECTO
+        if not sala or sala.get("x_cantado"):
             emit("x_invalida", room=sid, namespace=NAMESPACE)
             return
 
@@ -315,11 +347,10 @@ def register_bingo_sockets(socketio):
 
         for carton in sala["cartones"].get(sid, []):
             if comprobar_x(carton, sala["bombo"].historial):
-                sala["x_cantada"] = True
+                sala["x_cantado"] = True   # ✅ AQUÍ
 
-                # (opcional stats más adelante)
-                # if jugador["user_id"]:
-                #     registrar_x(jugador["user_id"], sala["partida_id"])
+                sumar_puntos(jugador, 2)
+                emitir_ranking(socketio, codigo, sala)
 
                 emit(
                     "x_valida",
@@ -333,6 +364,8 @@ def register_bingo_sockets(socketio):
 
         perder_vidas(sala, sid, 1)
         emit("x_invalida", room=sid, namespace=NAMESPACE)
+
+
 
 
     # -------------------------
@@ -349,17 +382,31 @@ def register_bingo_sockets(socketio):
             return
 
         jugador = sala["jugadores"].get(sid)
+
         for carton in sala["cartones"].get(sid, []):
             if comprobar_cruz(carton, sala["bombo"].historial):
                 sala["cruz_cantada"] = True
+
+                # ✅ SUMAR PUNTOS
+                sumar_puntos(jugador, 2)
+                emitir_ranking(socketio, codigo, sala)
+
                 if jugador["user_id"]:
                     registrar_cruz(jugador["user_id"], sala["partida_id"])
-                emit("cruz_valida", {"nombre": jugador["nombre"]}, room=codigo, namespace=NAMESPACE)
+
+                emit(
+                    "cruz_valida",
+                    {"nombre": jugador["nombre"]},
+                    room=codigo,
+                    namespace=NAMESPACE
+                )
+
                 emitir_estado_a_todos(sala)
                 return
 
         perder_vidas(sala, sid, 1)
         emit("cruz_invalida", room=sid, namespace=NAMESPACE)
+
 
     # -------------------------
     # CANTAR BINGO
@@ -374,11 +421,16 @@ def register_bingo_sockets(socketio):
             return
 
         jugador = sala["jugadores"].get(sid)
+
         for carton in sala["cartones"].get(sid, []):
             if comprobar_bingo(carton, sala["bombo"].historial):
                 sala["bingo_cantado"] = True
                 sala["en_partida"] = False
                 sala["auto"]["activo"] = False
+
+                # ✅ SUMAR PUNTOS
+                sumar_puntos(jugador, 5)
+                emitir_ranking(socketio, codigo, sala)
 
                 for j in sala["jugadores"].values():
                     if j["user_id"]:
@@ -391,12 +443,19 @@ def register_bingo_sockets(socketio):
                         len(sala["bombo"].historial) * 5,
                     )
 
-                emit("bingo_valido", {"nombre": jugador["nombre"]}, room=codigo, namespace=NAMESPACE)
+                emit(
+                    "bingo_valido",
+                    {"nombre": jugador["nombre"]},
+                    room=codigo,
+                    namespace=NAMESPACE
+                )
+
                 emitir_estado_a_todos(sala)
                 return
 
         perder_vidas(sala, sid, 2)
         emit("bingo_invalido", room=sid, namespace=NAMESPACE)
+
 
     # -------------------------
     # DESCONECTAR
