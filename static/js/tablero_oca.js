@@ -55,9 +55,21 @@ document.addEventListener("DOMContentLoaded", function () {
         dadoVisual.textContent = valor;
     }
 
+    // avanzar turno si el jugador actual está penalizado
+    function avanzarATurnoValido() {
+        while (jugadoresPenalizados.has(jugadores[turno].nombre)) {
+            estadoJuego.textContent = `${jugadores[turno].nombre} pierde su turno por penalización.`;
+            jugadoresPenalizados.delete(jugadores[turno].nombre);
+            turno = (turno + 1) % jugadores.length;
+        }
+    }
+
+
     // ================== UI TURNO ==================
     function actualizarTurnoUI() {
         if (!jugadores.length || juegoTerminado) return;
+
+        avanzarATurnoValido();
 
         const jugadorActual = jugadores[turno];
 
@@ -71,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    tirarDadoBtn.disabled = true;
 
     // ================== OVERLAY GANADOR ==================
     function mostrarGanador(jugador) {
@@ -395,14 +406,6 @@ document.addEventListener("DOMContentLoaded", function () {
             soundDado.play();
         } catch (e) {
             // Ignoramos errores de sonido (no crítico)
-        }
-
-        if (jugadoresPenalizados.has(jugadorActual.nombre)) {
-            estadoJuego.textContent = `${jugadorActual.nombre} pierde su turno por penalización.`;
-            jugadoresPenalizados.delete(jugadorActual.nombre);
-            turno = (turno + 1) % jugadores.length;
-            actualizarTurnoUI();
-            return;
         }
 
         const pasos = tirarDado();

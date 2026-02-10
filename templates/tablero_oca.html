@@ -53,9 +53,27 @@
 
         <section class="reglas">
             <h2>Cómo funciona el juego</h2>
-            <p><strong>Tablero:</strong> 55 casillas</p>
-            <p><strong>Objetivo:</strong> llegar exactamente a la 55</p>
+
+            <p><strong>🎯 Objetivo:</strong> llegar <strong>exactamente</strong> a la casilla 55.
+                El primer jugador que lo consiga gana la partida.</p>
+
+            <p><strong>🎲 Tablero:</strong> 55 casillas numeradas.</p>
+
+            <h3>Casillas especiales</h3>
+            <ul>
+                <li>⚡ <strong>Impulso</strong> (casillas 5 y 22): avanzas <strong>2 casillas extra</strong>.</li>
+                <li>⛓️ <strong>Cárcel</strong> (casillas 12 y 46): <strong>pierdes un turno</strong>.</li>
+                <li>🟩 <strong>Trampolín</strong> (casillas 18 y 36): te mueves automáticamente
+                    <strong>de una a la otra</strong> (ida y vuelta).</li>
+                <li>⬅️ <strong>Retroceso</strong> (casilla 40): retrocedes <strong>7 casillas</strong>.</li>
+                <li>⏪ <strong>Gran retroceso</strong> (casilla 50): retrocedes <strong>25 casillas</strong>.</li>
+                <li>💀 <strong>Muerte</strong> (casilla 34): vuelves a la <strong>salida</strong>.</li>
+            </ul>
+
+            <p><em>⚠️ Si el dado te hace pasar de la casilla 55, deberás esperar a sacar
+                el número exacto.</em></p>
         </section>
+
 
         <a class="btn-secondary back-link-top" href="{{ url_for('main.home') }}">
             ← Volver al inicio
