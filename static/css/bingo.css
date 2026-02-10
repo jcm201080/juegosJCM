@@ -609,3 +609,75 @@
 #ranking-list .puntos {
     opacity: 0.85;
 }
+
+
+/*bingo home- pantalla de inicio- ayuda e introducciones*/
+
+.bingo-help {
+    max-width: 900px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 🔥 clave */
+}
+
+
+.bingo-details {
+    width: 100%;
+    max-width: 700px;   /* 👈 controla el ancho visual */
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+}
+
+
+.bingo-details summary {
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    list-style: none;
+
+    /* 🔥 CLAVE */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    margin: 0 auto;
+}
+
+
+.bingo-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.bingo-details[open] {
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.bingo-modes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.bingo-details summary span {
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+}
+
+.bingo-details summary:hover span {
+    background: rgba(255,255,255,0.15);
+}
+
+
+.bingo-rules {
+    list-style: none;
+    padding: 0;
+    margin: 1rem auto;
+    text-align: left;          /* 👈 esto es correcto */
+    max-width: 420px;          /* 👈 centra el bloque */
+}

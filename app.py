@@ -58,6 +58,8 @@ from routes.chess_rooms import register_chess_rooms
 from bingo.classic.routes.bingo_routes import bingo_routes
 from bingo.classic.sockets.bingo_socket import register_bingo_sockets
 
+from bingo.routes import bingo_bp
+
 # 🎱 Bingo ONLINE
 from bingo.bingo_online.routes.bingo_online_routes import bingo_online_routes
 from bingo.bingo_online.sockets.bingo_online_socket import register_bingo_online_sockets
@@ -147,6 +149,8 @@ app.register_blueprint(puzzle_bp)
 app.register_blueprint(english_games_bp)
 app.register_blueprint(oca_api)
 app.register_blueprint(chess_routes)
+
+app.register_blueprint(bingo_bp)              # bingo general (home, reglas, etc)
 app.register_blueprint(bingo_routes)          # classic
 app.register_blueprint(bingo_online_routes)   # online
 

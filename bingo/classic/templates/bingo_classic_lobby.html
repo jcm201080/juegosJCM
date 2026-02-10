@@ -16,18 +16,35 @@
 
     </div>
 
-    <form method="post" class="bingo-card" onsubmit="guardarNombre(); return true;">
+    <form method="post" class="bingo-card" onsubmit="guardarNombre()">
         <button class="btn-primary">Crear sala</button>
     </form>
 
     <div class="bingo-card">
         <h3>Unirse a una sala</h3>
         <input type="text" id="codigoSala" placeholder="Código de sala">
-        <button class="btn-secondary" id="btnUnirse">Entrar</button>
+        <button class="btn-secondary" onclick="unirseSala()">Entrar</button>
     </div>
+    <a href="{{ url_for('bingo.bingo_home') }}" class="btn-secondary">
+        ⬅ Volver
+    </a>
+
 </section>
 
+<script>
+function guardarNombre() {
+    const nombre = document.getElementById("nombreJugador").value.trim() || "Jugador";
+    localStorage.setItem("bingo_nombre", nombre);
+}
 
+function unirseSala() {
+    const codigo = document.getElementById("codigoSala").value.trim().toUpperCase();
+    if (!codigo) return;
 
-<script src="{{ url_for('static', filename='js/bingo/lobby.js') }}?v=20260203"></script>
+    guardarNombre();
+    window.location.href = `/bingo/${codigo}`;
+}
+</script>
+
+<script src="{{ url_for('static', filename='js/bingo/lobby.js') }}"></script>
 {% endblock %}

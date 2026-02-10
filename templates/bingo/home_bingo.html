@@ -1,0 +1,94 @@
+{% extends "base.html" %} {% block title %}Juegos JCM{% endblock %} {% block content %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bingo.css') }}">
+{% endblock %}
+
+
+<div class="games-grid">  
+    <article class="game-card">
+        <h2>🎱 Bingo Clásico</h2>
+        <p>El bingo de siempre. Partidas locales, validaciones y diversión asegurada.</p>
+        <a class="btn-primary" href="{{ url_for('bingo_classic.bingo_lobby') }}">
+            Entrar al bingo
+        </a>
+    </article>
+
+    <article class="game-card game-card-online">
+        <h2>🌐 Bingo Online</h2>
+        <p>
+            Juega al bingo en tiempo real con otros jugadores.
+            <br />
+            <small class="badge new">NEW ✨</small>
+            <br />
+            <small class="badge beta">BETA · En pruebas</small>
+        </p>
+
+        <a class="btn-primary btn-online" href="{{ url_for('bingo_online.bingo_online_home') }}">
+            Entrar al bingo online
+        </a>
+    </article>
+</div>
+
+<section class="bingo-help">
+
+    <details class="bingo-details">
+        <summary><span>ℹ️ Cómo se juega</span></summary>
+
+        <div class="bingo-modes">
+            <div class="bingo-info-card">
+                <h3>🎱 Bingo Clásico</h3>
+                <p>
+                    Crea una sala privada y comparte el código con tus amigos.
+                    Ellos se unen usando ese código y jugáis juntos.
+                </p>
+                <ul>
+                    <li>✔ Tú creas la sala</li>
+                    <li>✔ Compartes el código</li>
+                    <li>✔ Partida privada</li>
+                </ul>
+            </div>
+
+            <div class="bingo-info-card">
+                <h3>🌐 Bingo Online</h3>
+                <p>
+                    Elige cuántos jugadores quieres y espera hasta 30 segundos.
+                    La partida empieza automáticamente cuando se alcanza el número de jugadores.
+                </p>
+                <ul>
+                    <li>✔ Emparejamiento automático</li>
+                    <li>✔ Número de jugadores configurable</li>
+                    <li>✔ Selección de cartones</li>
+                </ul>
+            </div>
+        </div>
+    </details>
+
+    <details class="bingo-details">
+        <summary><span>📜 Reglas del Bingo</span></summary>
+
+        <ul class="bingo-rules">
+            <li>➖ <strong>Línea</strong>: una fila horizontal completa.</li>
+            <li>❌ <strong>X</strong>: las dos diagonales del cartón.</li>
+            <li>➕ <strong>Cruz</strong>: fila central y columna central.</li>
+            <li>🎉 <strong>Bingo</strong>: todo el cartón completo.</li>
+        </ul>
+
+        <p class="bingo-note">
+            Las validaciones se comprueban automáticamente.
+            Gana quien consiga primero cada combinación.
+        </p>
+    </details>
+
+</section>
+
+
+
+{% if force_login %}
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        if (window.openLoginModal) {
+            openLoginModal();
+        }
+    });
+</script>
+{% endif %} {% endblock %}
