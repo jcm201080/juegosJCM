@@ -199,6 +199,35 @@
     color: #000;
 }
 
+/*boton historial*/
+.btn-historial {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.6rem 1.4rem;
+
+    background: #2c2f3a;
+    color: #dcdcdc;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+
+    transition: all 0.2s ease;
+}
+
+.btn-historial:hover {
+    background: #3a3f4d;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-historial:active {
+    transform: scale(0.98);
+}
+
 
 /* =========================
    BOTONES DESHABILITADOS (GENÉRICO)
