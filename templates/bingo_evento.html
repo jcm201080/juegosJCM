@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Bingo Online - Evento Especial{% endblock %}
+
+{% block extra_css %}
+<style>
+.event-container {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.event-title {
+    font-size: 2.2rem;
+    color: #ffd86b;
+    margin-bottom: 10px;
+}
+
+.event-date {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 30px;
+}
+
+.event-card {
+    background: rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.event-card h3 {
+    color: #ffd86b;
+    margin-bottom: 15px;
+}
+
+.highlight {
+    color: #4de1ff;
+    font-weight: bold;
+}
+
+.cta-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 15px 30px;
+    border-radius: 50px;
+    background: linear-gradient(45deg,#6a5cff,#ff4dc4);
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(255,0,150,0.4);
+}
+
+.contact-box {
+    margin-top: 40px;
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="event-container">
+
+    <h2 class="event-title">🎉 Bingo Online Especial</h2>
+    <div class="event-date">
+        📅 Martes 24/02/2026 — ¡Prepárate para jugar!
+    </div>
+
+    <div class="event-card">
+        <h3>🎟 Cartones disponibles</h3>
+        <p>Elige entre <span class="highlight">1 o 4 cartones</span></p>
+        <p>💰 Precio por cartón: <span class="highlight">0,50€</span></p>
+    </div>
+
+    <div class="event-card">
+        <h3>💸 Reparto de premios</h3>
+        <p>Se reparte el <span class="highlight">100% de lo recaudado</span></p>
+        <p>🏆 Bingo: <span class="highlight">50%</span> + <span class="highlight">20%</span> + <span class="highlight">20%</span></p>
+        <p>📏 Línea: <span class="highlight">10%</span></p>
+    </div>
+
+    <div class="event-card">
+        <h3>📜 Reglas</h3>
+        <p>• Juego online en tiempo real.</p>
+        <p>• Validación automática.</p>
+        <p>• Transparente y justo.</p>
+        <p>• Código de acceso personalizado.</p>
+    </div>
+
+    <a href="{{ url_for('bingo.bingo_home') }}" class="cta-button">
+        🎮 ¡Anímate y juega!
+    </a>
+
+    <div class="contact-box">
+        <p>📲 Para apuntarte se generará un código y se enviará por WhatsApp.</p>
+        <p>
+            Contacto:<br>
+            Jesús 📞 635 487 063<br>
+            Viki 📞 699 160 263<br>
+            📧 jcm201080@gmail.com
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}
